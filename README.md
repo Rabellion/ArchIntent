@@ -1,4 +1,4 @@
-# ArchIntent AI Microservice
+# ArchIntent
 
 This is the Python-based AI Microservice for the ArchIntent platform. It is responsible for decoding client requests and matching them with suitable architecture professionals using semantic analysis.
 
