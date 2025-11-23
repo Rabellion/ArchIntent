@@ -500,4 +500,4 @@ Contributors will be recognized in:
 - Release notes
 - Project documentation
 
-Thank you for contributing to ArchIntent AI Microservice! 🎉
+Thank you for contributing to ArchIntent! 🎉
