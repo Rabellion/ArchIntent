@@ -3,6 +3,8 @@
 **An AI-augmented, three-sided marketplace connecting clients, architects, and construction
 companies — bridging the pre-contract gap in the architecture and construction industry.**
 
+[![CI/CD](https://github.com/Rabellion/ArchIntent/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Rabellion/ArchIntent/actions/workflows/ci-cd.yml)
+
 Final Year Project · Department of Software Engineering · Mirpur University of Science and
 Technology (MUST), Mirpur, AJK, Pakistan.
 
@@ -39,8 +41,8 @@ ArchIntent/
 ├── archintent-frontend/   React 18 + TypeScript + Vite single-page app
 ├── nlp-service/           Python FastAPI microservice — semantic matching only
 ├── fyp-report/            LaTeX source for the final report (XeLaTeX)
-├── archintent.sql         Reference schema dump (30 tables)
-├── TEST_PLAN.md           Full feature test plan (14 suites, 163 cases)
+├── .github/workflows/     CI/CD pipeline (test -> deploy all three services)
+├── DEPLOYMENT.md          Heroku + Vercel provisioning and deployment
 └── ArchIntent_flow_test.pdf   Manual end-to-end test script
 ```
 
@@ -164,21 +166,32 @@ Design notes:
   each other onto the same dyno.
 - **Unconfigured deploys skip rather than fail**, so the pipeline reads green while
   infrastructure is still being provisioned; each one activates automatically once its
-  secrets exist.
+  gating repo variable is set. (The gate has to be a variable — GitHub does not expose the
+  `secrets` context in a job-level `if:`.)
 - Pull requests run the tests but never deploy.
 
-Required GitHub secrets (`HEROKU_API_KEY`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`,
-`VERCEL_PROJECT_ID`) and repo variables (`HEROKU_BACKEND_APP`, `HEROKU_NLP_APP`) are listed
-at the top of the workflow file. Full provisioning steps, environment variable wiring, and a
-post-deploy verification checklist are in `DEPLOYMENT.md`.
+Configured under **Settings → Secrets and variables → Actions**:
+
+| Type | Name |
+|---|---|
+| Secrets | `HEROKU_API_KEY`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` |
+| Variables | `HEROKU_BACKEND_APP`, `HEROKU_NLP_APP`, `VERCEL_ENABLED` |
+
+Full provisioning steps, environment variable wiring, and a post-deploy verification
+checklist are in `DEPLOYMENT.md`.
 
 ## Testing
 
-`TEST_PLAN.md` is the canonical test plan: 14 suites and 163 cases covering authentication,
-public browsing, AI matching, real-time chat, agreements and signatures, payments, design
-delivery, construction bidding, reviews, admin operations, security/authorization, and the
-architect payout demo. It also documents corrections to the older manual flow-test script and a
-static integrity audit of every route and API call in the codebase.
+Automated checks run on every push (see the pipeline above): PHP linting across all 134
+backend sources, PHPUnit, a zero-error TypeScript typecheck, a production frontend build,
+and dependency resolution for the NLP service.
+
+Beyond that, the project maintains a manual test plan of 14 suites and 163 cases covering
+authentication, public browsing, AI matching, real-time chat, agreements and signatures,
+payments, design delivery, construction bidding, reviews, admin operations,
+security/authorization, and the architect payout demo — alongside a static integrity audit
+of every route and API call in the codebase. Those documents are kept locally rather than
+committed (`TEST_PLAN.md`, `VERIFICATION_REPORT.md`) and are available on request.
 
 ## Known limitations
 
@@ -202,8 +215,7 @@ payouts run through Stripe Connect, which is implemented separately.
 
 - `fyp-report/` — the full LaTeX final report (build with `fyp-report/compile.sh` or upload the
   folder to Overleaf; see `fyp-report/README.md`)
-- `TEST_PLAN.md` — full feature test plan
-- `VERIFICATION_REPORT.md` — a prior end-to-end verification pass with bugs found and fixed
+- `DEPLOYMENT.md` — provisioning and deployment for Heroku and Vercel
 - `ArchIntent.postman_collection.json` — a Postman collection for the API
 
 ## Team
