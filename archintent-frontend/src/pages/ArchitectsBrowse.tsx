@@ -168,7 +168,7 @@ export default function ArchitectsBrowse() {
     return (
       <div className="flex flex-col items-center justify-center py-40">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-slate-100 rounded-full" />
+          <div className="w-16 h-16 border-4 border-slate-800 rounded-full" />
           <div className="w-16 h-16 border-4 border-t-indigo-600 rounded-full animate-spin absolute top-0 left-0" />
         </div>
         <p className="text-slate-500 mt-4 font-black tracking-widest uppercase text-[10px] animate-pulse">Scanning Portfolio Network...</p>
@@ -177,7 +177,7 @@ export default function ArchitectsBrowse() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-950">
       {/* Hero Section */}
       <div className="bg-slate-900 text-white pt-24 pb-32 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] -mr-64 -mt-64" />
@@ -199,7 +199,7 @@ export default function ArchitectsBrowse() {
                   value={search} 
                   onChange={(e) => setSearch(e.target.value)} 
                   placeholder="Search architects, projects, styles, or cities..." 
-                  className="w-full pl-16 pr-8 py-6 rounded-[2rem] bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:bg-white/10 transition-all text-lg font-medium" 
+                  className="w-full pl-16 pr-8 py-6 rounded-[2rem] bg-white/5 border border-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:bg-white/10 transition-all text-lg font-medium" 
                 />
               </div>
 
@@ -223,24 +223,24 @@ export default function ArchitectsBrowse() {
 
       {/* Results Section */}
       <div className="max-w-7xl mx-auto px-4 -mt-16 pb-24 relative z-20">
-        {error && <div className="mb-8 rounded-2xl border border-rose-100 bg-rose-50 text-rose-700 px-6 py-4 font-bold text-sm text-center">{error}</div>}
+        {error && <div className="mb-8 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-300 px-6 py-4 font-bold text-sm text-center">{error}</div>}
 
         {viewMode === 'architect' ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {filteredArchitects.map((a) => (
-              <article key={a.architect_id} className="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-200/20 transition-all group">
+              <article key={a.architect_id} className="bg-slate-900 rounded-[2.5rem] border border-slate-800 p-8 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-200/20 transition-all group">
                 <div className="flex items-center justify-between mb-8">
                    <div className="flex items-center gap-6">
                       {a.profile_image ? (
                         <img src={resolveImageUrl(a.profile_image)} alt={a.full_name} className="w-20 h-20 rounded-3xl object-cover border-4 border-slate-50 group-hover:scale-105 transition-transform" />
                       ) : (
-                        <div className="w-20 h-20 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-3xl font-black italic uppercase">
+                        <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-3xl font-black italic uppercase">
                           {a.full_name?.charAt(0)}
                         </div>
                       )}
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <button onClick={() => navigate(`/architect/${a.architect_id}`)} className="text-2xl font-black text-slate-900 italic uppercase tracking-tight hover:text-indigo-600 transition-colors">{a.full_name}</button>
+                          <button onClick={() => navigate(`/architect/${a.architect_id}`)} className="text-2xl font-black text-slate-100 italic uppercase tracking-tight hover:text-indigo-300 transition-colors">{a.full_name}</button>
                           {a.verification_status === 'verified' && <ShieldCheck className="text-emerald-500 w-5 h-5" />}
                         </div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">{a.specialization} • {a.experience_years || 0} Years Experience</p>
@@ -257,11 +257,11 @@ export default function ArchitectsBrowse() {
 
                 <div className="grid grid-cols-3 gap-3 mb-8">
                   {(a.portfolio?.projects || []).slice(0, 3).map((p) => (
-                    <div key={p.architect_project_id} className="rounded-2xl border border-slate-100 overflow-hidden relative group/img aspect-square">
+                    <div key={p.architect_project_id} className="rounded-2xl border border-slate-800 overflow-hidden relative group/img aspect-square">
                       {p.cover_image?.image_url ? (
                         <img src={resolveImageUrl(p.cover_image.image_url)} alt={p.project_title} className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-700" />
                       ) : (
-                        <div className="w-full h-full bg-slate-50" />
+                        <div className="w-full h-full bg-slate-800" />
                       )}
                       <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                          <span className="text-[8px] font-black text-white uppercase tracking-widest">View Project</span>
@@ -269,13 +269,13 @@ export default function ArchitectsBrowse() {
                     </div>
                   ))}
                   {(a.portfolio?.projects?.length || 0) < 3 && Array.from({length: 3 - (a.portfolio?.projects?.length || 0)}).map((_, i) => (
-                    <div key={i} className="rounded-2xl bg-slate-50 border border-slate-100 border-dashed aspect-square flex items-center justify-center text-slate-200">
+                    <div key={i} className="rounded-2xl bg-slate-800 border border-slate-800 border-dashed aspect-square flex items-center justify-center text-slate-200">
                        <Zap className="w-6 h-6" />
                     </div>
                   ))}
                 </div>
 
-                <button onClick={() => navigate(`/architect/${a.architect_id}`)} className="w-full py-4 rounded-2xl bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all">
+                <button onClick={() => navigate(`/architect/${a.architect_id}`)} className="w-full py-4 rounded-2xl bg-indigo-500/10 text-indigo-300 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all">
                   Browse Detailed Portfolio
                 </button>
               </article>
@@ -284,8 +284,8 @@ export default function ArchitectsBrowse() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((p) => (
-              <article key={`${p.architect_id}-${p.project_ref}`} className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden group">
-                <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+              <article key={`${p.architect_id}-${p.project_ref}`} className="bg-slate-900 rounded-[2.5rem] border border-slate-800 shadow-xl shadow-slate-200/50 overflow-hidden group">
+                <div className="relative aspect-[4/3] bg-slate-800 overflow-hidden">
                   {p.cover_image ? (
                     <img src={resolveImageUrl(p.cover_image)} alt={p.project_title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                   ) : (
@@ -304,10 +304,10 @@ export default function ArchitectsBrowse() {
                 <div className="p-8 space-y-6">
                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 text-[10px] font-black italic uppercase">
+                         <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-300 text-[10px] font-black italic uppercase">
                             {p.architect_name.charAt(0)}
                          </div>
-                         <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest italic">{p.architect_name}</span>
+                         <span className="text-[10px] font-black text-slate-100 uppercase tracking-widest italic">{p.architect_name}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-slate-400">
                          <MapPin className="w-3.5 h-3.5" />
@@ -316,10 +316,10 @@ export default function ArchitectsBrowse() {
                    </div>
                    <div className="flex flex-wrap gap-2">
                      {(p.style_tags || []).slice(0, 3).map((s) => (
-                       <span key={s} className="px-3 py-1 bg-slate-50 text-slate-500 text-[8px] font-black uppercase tracking-widest rounded-lg border border-slate-100">{s}</span>
+                       <span key={s} className="px-3 py-1 bg-slate-800 text-slate-500 text-[8px] font-black uppercase tracking-widest rounded-lg border border-slate-800">{s}</span>
                      ))}
                    </div>
-                   <button onClick={() => navigate(`/architect/projects/${p.project_ref}`)} className="w-full py-4 rounded-2xl border-2 border-slate-900 text-slate-900 text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all">
+                   <button onClick={() => navigate(`/architect/projects/${p.project_ref}`)} className="w-full py-4 rounded-2xl border-2 border-slate-900 text-slate-100 text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all">
                      View Project Story
                    </button>
                 </div>
@@ -332,7 +332,7 @@ export default function ArchitectsBrowse() {
             explanation, which read as a broken page. */}
         {!error && architects.length === 0 && (
           <div className="py-24 text-center">
-            <p className="text-slate-900 font-black uppercase tracking-widest text-sm mb-2">
+            <p className="text-slate-100 font-black uppercase tracking-widest text-sm mb-2">
               No architects found
             </p>
             <p className="text-slate-400 text-xs font-bold">
@@ -350,7 +350,7 @@ export default function ArchitectsBrowse() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="px-6 py-3 rounded-2xl border-2 border-slate-900 text-slate-900 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-slate-900 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-slate-900"
+              className="px-6 py-3 rounded-2xl border-2 border-slate-900 text-slate-100 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-slate-900 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-slate-100"
             >
               Previous
             </button>
@@ -363,7 +363,7 @@ export default function ArchitectsBrowse() {
             <button
               onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
               disabled={page >= lastPage}
-              className="px-6 py-3 rounded-2xl border-2 border-slate-900 text-slate-900 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-slate-900 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-slate-900"
+              className="px-6 py-3 rounded-2xl border-2 border-slate-900 text-slate-100 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-slate-900 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-slate-100"
             >
               Next
             </button>

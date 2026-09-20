@@ -89,7 +89,7 @@ const ContractorBids: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-[2px] bg-white" />
+                <div className="w-12 h-[2px] bg-slate-900" />
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">CONSTRUCTION FLEET</p>
               </div>
               <h1 className="text-6xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-none">
@@ -115,7 +115,7 @@ const ContractorBids: React.FC = () => {
                   <div className="flex items-center gap-3 relative z-10">
                     <span className="text-[10px] font-bold tracking-[0.2em]">{tab.label}</span>
                     <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                      filter === tab.val ? 'bg-slate-100 text-slate-900' : 'bg-white/10'
+                      filter === tab.val ? 'bg-slate-800 text-slate-100' : 'bg-white/10'
                     }`}>
                       {tab.count}
                     </span>

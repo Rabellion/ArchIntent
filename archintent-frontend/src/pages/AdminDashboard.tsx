@@ -410,7 +410,7 @@ export default function AdminDashboard() {
             })
           ) : (
             <div className="p-12 text-center">
-              <span className="material-symbols-outlined text-slate-600 text-5xl mb-3">history_toggle_off</span>
+              <span className="material-symbols-outlined text-slate-400 text-5xl mb-3">history_toggle_off</span>
               <p className="text-slate-400 text-sm font-medium">No recent logs found</p>
             </div>
           )}

@@ -162,7 +162,7 @@ const ConstructionJobs: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 min-h-[60vh]">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-slate-100 rounded-full" />
+          <div className="w-16 h-16 border-4 border-slate-800 rounded-full" />
           <div className="w-16 h-16 border-4 border-t-indigo-600 rounded-full animate-spin absolute top-0 left-0" />
         </div>
         <p className="text-slate-500 mt-4 font-medium animate-pulse tracking-widest uppercase text-[10px]">Loading Project Feed...</p>
@@ -176,29 +176,29 @@ const ConstructionJobs: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
            <div className="flex items-center gap-3 mb-2">
-              <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-indigo-100">
+              <span className="px-3 py-1 bg-indigo-500/10 text-indigo-300 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-indigo-500/30">
                 Marketplace
               </span>
               <span className="text-slate-400 text-[10px] font-black uppercase tracking-widest">
                 {jobs.length} Opportunities Found
               </span>
            </div>
-           <h1 className="text-4xl font-black text-slate-900 tracking-tight italic uppercase leading-none">
-             Bidding <span className="text-indigo-600">Opportunities</span>
+           <h1 className="text-4xl font-black text-slate-100 tracking-tight italic uppercase leading-none">
+             Bidding <span className="text-indigo-300">Opportunities</span>
            </h1>
         </div>
         
         <div className="flex items-center gap-4">
-           <div className="p-1 bg-slate-100 rounded-2xl flex items-center gap-1">
+           <div className="p-1 bg-slate-800 rounded-2xl flex items-center gap-1">
               <button 
                 onClick={() => setSortBy('newest')}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === 'newest' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === 'newest' ? 'bg-slate-900 text-indigo-300 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
               >
                 Newest
               </button>
               <button 
                 onClick={() => setSortBy('budget-high')}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === 'budget-high' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${sortBy === 'budget-high' ? 'bg-slate-900 text-indigo-300 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
               >
                 Top Budget
               </button>
@@ -210,7 +210,7 @@ const ConstructionJobs: React.FC = () => {
         {/* Left Column: Filters */}
         <div className="lg:col-span-1">
           <div className="sticky top-10 space-y-8">
-            <section className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
+            <section className="bg-slate-900 rounded-[2rem] border border-slate-800 p-8 shadow-sm">
               <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                 <Filter className="w-4 h-4" /> Refine Search
               </h3>
@@ -226,7 +226,7 @@ const ConstructionJobs: React.FC = () => {
                       placeholder="Location, Title..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-50 rounded-2xl text-sm font-bold text-slate-700 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-100 outline-none transition-all placeholder:text-slate-300"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-800 border-2 border-slate-50 rounded-2xl text-sm font-bold text-slate-300 focus:bg-slate-900 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500/30 outline-none transition-all placeholder:text-slate-300"
                     />
                   </div>
                 </div>
@@ -239,10 +239,10 @@ const ConstructionJobs: React.FC = () => {
                       <button
                         key={type}
                         onClick={() => setSelectedType(type)}
-                        className={`w-full px-4 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest text-left transition-all flex items-center justify-between group ${selectedType === type ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                        className={`w-full px-4 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest text-left transition-all flex items-center justify-between group ${selectedType === type ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-800 text-slate-500 hover:bg-slate-700'}`}
                       >
                         <span className="flex items-center gap-3">
-                          <div className={`p-1.5 rounded-lg ${selectedType === type ? 'bg-white/20' : 'bg-white group-hover:bg-slate-200'} transition-colors`}>
+                          <div className={`p-1.5 rounded-lg ${selectedType === type ? 'bg-white/20' : 'bg-slate-900 group-hover:bg-slate-700'} transition-colors`}>
                             {getTypeIcon(type)}
                           </div>
                           {type}
@@ -262,15 +262,15 @@ const ConstructionJobs: React.FC = () => {
                       placeholder="Min"
                       value={budgetMin}
                       onChange={(e) => setBudgetMin(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-50 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white outline-none transition-all placeholder:text-slate-300"
+                      className="w-full px-4 py-3 bg-slate-800 border-2 border-slate-50 rounded-2xl text-xs font-bold text-slate-300 focus:bg-slate-900 outline-none transition-all placeholder:text-slate-300"
                     />
-                    <div className="w-2 h-0.5 bg-slate-200 shrink-0" />
+                    <div className="w-2 h-0.5 bg-slate-700 shrink-0" />
                     <input
                       type="number"
                       placeholder="Max"
                       value={budgetMax}
                       onChange={(e) => setBudgetMax(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-50 rounded-2xl text-xs font-bold text-slate-700 focus:bg-white outline-none transition-all placeholder:text-slate-300"
+                      className="w-full px-4 py-3 bg-slate-800 border-2 border-slate-50 rounded-2xl text-xs font-bold text-slate-300 focus:bg-slate-900 outline-none transition-all placeholder:text-slate-300"
                     />
                   </div>
                 </div>
@@ -301,7 +301,7 @@ const ConstructionJobs: React.FC = () => {
         {/* Main Column: Feed */}
         <div className="lg:col-span-3 space-y-6">
           {error && (
-            <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex gap-4 animate-in slide-in-from-top-4 duration-300">
+            <div className="bg-rose-500/10 border border-red-500/30 rounded-2xl p-6 flex gap-4 animate-in slide-in-from-top-4 duration-300">
               <AlertCircle className="w-6 h-6 text-red-500 shrink-0" />
               <div>
                 <h4 className="text-sm font-black text-red-900 uppercase tracking-widest mb-1">Update Failed</h4>
@@ -311,11 +311,11 @@ const ConstructionJobs: React.FC = () => {
           )}
 
           {filteredJobs.length === 0 ? (
-            <div className="bg-white rounded-[2rem] border border-slate-100 p-20 text-center shadow-sm">
-              <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <div className="bg-slate-900 rounded-[2rem] border border-slate-800 p-20 text-center shadow-sm">
+              <div className="w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <Search className="w-10 h-10 text-slate-200" />
               </div>
-              <h2 className="text-2xl font-black text-slate-900 italic uppercase tracking-tight mb-2 leading-none">No Results <span className="text-indigo-600">Found</span></h2>
+              <h2 className="text-2xl font-black text-slate-100 italic uppercase tracking-tight mb-2 leading-none">No Results <span className="text-indigo-300">Found</span></h2>
               <p className="text-slate-500 text-sm font-medium mb-8">Try adjusting your filters or expanding your search radius.</p>
               <button 
                 onClick={() => {
@@ -338,7 +338,7 @@ const ConstructionJobs: React.FC = () => {
                   return (
                     <article 
                       key={job.project_id} 
-                      className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden"
+                      className="bg-slate-900 rounded-[2rem] border border-slate-800 p-8 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden"
                     >
                       {/* Hover Accent */}
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -347,10 +347,10 @@ const ConstructionJobs: React.FC = () => {
                         {/* Type Icon Container */}
                         <div className="shrink-0 flex flex-col items-center gap-3">
                           <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-inner border border-slate-50 transition-transform group-hover:scale-110 duration-500 ${
-                            job.project_type === 'residential' ? 'bg-blue-50 text-blue-500' :
-                            job.project_type === 'commercial' ? 'bg-purple-50 text-purple-500' :
-                            job.project_type === 'industrial' ? 'bg-amber-50 text-amber-500' :
-                            'bg-green-50 text-green-500'
+                            job.project_type === 'residential' ? 'bg-blue-500/10 text-blue-500' :
+                            job.project_type === 'commercial' ? 'bg-purple-500/10 text-purple-500' :
+                            job.project_type === 'industrial' ? 'bg-amber-500/10 text-amber-500' :
+                            'bg-emerald-500/10 text-green-500'
                           }`}>
                             {React.cloneElement(getTypeIcon(job.project_type) as React.ReactElement<{ size?: number }>, { size: 32 })}
                           </div>
@@ -360,21 +360,21 @@ const ConstructionJobs: React.FC = () => {
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-2 mb-3">
-                             <span className="px-2.5 py-1 bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-slate-100">
+                             <span className="px-2.5 py-1 bg-slate-800 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-slate-800">
                                 {job.project_type}
                              </span>
                              {existingBid && (
                                <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border ${
-                                 existingBid.status === 'accepted' ? 'bg-green-50 text-green-600 border-green-100' :
-                                 existingBid.status === 'rejected' ? 'bg-red-50 text-red-600 border-red-100' :
-                                 'bg-amber-50 text-amber-600 border-amber-100'
+                                 existingBid.status === 'accepted' ? 'bg-emerald-500/10 text-green-600 border-green-500/30' :
+                                 existingBid.status === 'rejected' ? 'bg-rose-500/10 text-red-600 border-red-500/30' :
+                                 'bg-amber-500/10 text-amber-600 border-amber-500/30'
                                }`}>
                                  Bid {existingBid.status}
                                </span>
                              )}
                           </div>
 
-                          <h3 className="text-2xl font-black text-slate-900 italic uppercase tracking-tight mb-2 group-hover:text-indigo-600 transition-colors truncate">
+                          <h3 className="text-2xl font-black text-slate-100 italic uppercase tracking-tight mb-2 group-hover:text-indigo-300 transition-colors truncate">
                             {job.project_title}
                           </h3>
 
@@ -396,7 +396,7 @@ const ConstructionJobs: React.FC = () => {
                           <div className="flex flex-wrap items-center justify-between gap-6 pt-6 border-t border-slate-50">
                              <div>
                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Project Budget</span>
-                               <span className="text-2xl font-black italic tracking-tight uppercase text-slate-900">
+                               <span className="text-2xl font-black italic tracking-tight uppercase text-slate-100">
                                  PKR {job.budget.toLocaleString('en-PK')}
                                </span>
                              </div>
@@ -432,7 +432,7 @@ const ConstructionJobs: React.FC = () => {
                 <button
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page === 1}
-                  className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-100 text-slate-500 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-slate-50 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                  className="flex items-center gap-2 px-6 py-3 bg-slate-900 border border-slate-800 text-slate-500 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Previous
@@ -443,7 +443,7 @@ const ConstructionJobs: React.FC = () => {
                      <button
                        key={i}
                        onClick={() => setPage(i + 1)}
-                       className={`w-10 h-10 rounded-xl font-black text-[10px] transition-all ${page === i + 1 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white text-slate-400 hover:bg-slate-50'}`}
+                       className={`w-10 h-10 rounded-xl font-black text-[10px] transition-all ${page === i + 1 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-900 text-slate-400 hover:bg-slate-800'}`}
                      >
                        {i + 1}
                      </button>
@@ -453,7 +453,7 @@ const ConstructionJobs: React.FC = () => {
                 <button
                   onClick={() => setPage(page + 1)}
                   disabled={!hasMore}
-                  className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-100 text-slate-500 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                  className="flex items-center gap-2 px-6 py-3 bg-slate-900 border border-slate-800 text-slate-500 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                 >
                   Next Phase
                   <ArrowRight className="w-4 h-4" />

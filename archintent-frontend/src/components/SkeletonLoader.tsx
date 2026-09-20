@@ -7,12 +7,12 @@ interface SkeletonLoaderProps {
 
 const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({ type = 'card', count = 3 }) => {
   const skeletonCard = () => (
-    <div key={Math.random()} className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="bg-gray-200 h-48 w-full animate-pulse"></div>
+    <div key={Math.random()} className="bg-slate-900 rounded-lg shadow overflow-hidden">
+      <div className="bg-slate-700 h-48 w-full animate-pulse"></div>
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-        <div className="h-3 bg-gray-200 rounded w-full animate-pulse"></div>
-        <div className="h-3 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+        <div className="h-4 bg-slate-700 rounded w-3/4 animate-pulse"></div>
+        <div className="h-3 bg-slate-700 rounded w-full animate-pulse"></div>
+        <div className="h-3 bg-slate-700 rounded w-2/3 animate-pulse"></div>
       </div>
     </div>
   );
@@ -22,11 +22,11 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({ type = 'card', count = 
       {Array(count)
         .fill(0)
         .map((_, i) => (
-          <div key={i} className="flex gap-4 p-4 bg-white rounded-lg shadow">
-            <div className="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0 animate-pulse"></div>
+          <div key={i} className="flex gap-4 p-4 bg-slate-900 rounded-lg shadow">
+            <div className="w-12 h-12 bg-slate-700 rounded-full flex-shrink-0 animate-pulse"></div>
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+              <div className="h-4 bg-slate-700 rounded w-1/4 animate-pulse"></div>
+              <div className="h-3 bg-slate-700 rounded w-1/2 animate-pulse"></div>
             </div>
           </div>
         ))}
@@ -38,12 +38,12 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({ type = 'card', count = 
       {Array(count)
         .fill(0)
         .map((_, i) => (
-          <div key={i} className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="bg-gray-200 h-48 w-full animate-pulse"></div>
+          <div key={i} className="bg-slate-900 rounded-lg shadow overflow-hidden">
+            <div className="bg-slate-700 h-48 w-full animate-pulse"></div>
             <div className="p-4 space-y-3">
-              <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-              <div className="h-3 bg-gray-200 rounded w-full animate-pulse"></div>
-              <div className="h-3 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+              <div className="h-4 bg-slate-700 rounded w-3/4 animate-pulse"></div>
+              <div className="h-3 bg-slate-700 rounded w-full animate-pulse"></div>
+              <div className="h-3 bg-slate-700 rounded w-2/3 animate-pulse"></div>
             </div>
           </div>
         ))}
@@ -56,36 +56,36 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({ type = 'card', count = 
         .fill(0)
         .map((_, i) => (
           <div key={i} className="space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-1/4 animate-pulse"></div>
-            <div className="h-10 bg-gray-200 rounded w-full animate-pulse"></div>
+            <div className="h-4 bg-slate-700 rounded w-1/4 animate-pulse"></div>
+            <div className="h-10 bg-slate-700 rounded w-full animate-pulse"></div>
           </div>
         ))}
-      <div className="h-10 bg-gray-200 rounded w-full animate-pulse"></div>
+      <div className="h-10 bg-slate-700 rounded w-full animate-pulse"></div>
     </div>
   );
 
   const skeletonTable = () => (
     <div key={Math.random()} className="space-y-3">
-      <div className="flex gap-4 p-4 bg-gray-100 rounded-lg">
+      <div className="flex gap-4 p-4 bg-slate-800 rounded-lg">
         {Array(4)
           .fill(0)
           .map((_, i) => (
             <div
               key={i}
-              className="h-4 bg-gray-300 rounded flex-1 animate-pulse"
+              className="h-4 bg-slate-700 rounded flex-1 animate-pulse"
             ></div>
           ))}
       </div>
       {Array(count)
         .fill(0)
         .map((_, i) => (
-          <div key={i} className="flex gap-4 p-4 bg-white rounded-lg shadow">
+          <div key={i} className="flex gap-4 p-4 bg-slate-900 rounded-lg shadow">
             {Array(4)
               .fill(0)
               .map((_, j) => (
                 <div
                   key={j}
-                  className="h-4 bg-gray-200 rounded flex-1 animate-pulse"
+                  className="h-4 bg-slate-700 rounded flex-1 animate-pulse"
                 ></div>
               ))}
           </div>

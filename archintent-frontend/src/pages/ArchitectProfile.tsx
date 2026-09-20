@@ -154,7 +154,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
                   <button 
                     type="button" 
                     onClick={() => { onFileChange(null); if (inputRef.current) inputRef.current.value = ''; }}
-                    className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center hover:bg-rose-200 transition-colors"
+                    className="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-600 flex items-center justify-center hover:bg-rose-200 transition-colors"
                   >
                      <X className="w-5 h-5" />
                   </button>
@@ -325,7 +325,7 @@ const ArchitectProfile: React.FC = () => {
       {/* Header */}
       <div className="pt-12 pb-16 max-w-5xl mx-auto px-4">
         <nav className="flex items-center gap-3 text-slate-400 mb-8">
-           <Link to="/architect/dashboard" className="text-[10px] font-black uppercase tracking-widest hover:text-indigo-600 transition-colors">Workspace</Link>
+           <Link to="/architect/dashboard" className="text-[10px] font-black uppercase tracking-widest hover:text-indigo-300 transition-colors">Workspace</Link>
            <ChevronRight className="w-3 h-3" />
            <span className="text-[10px] font-black uppercase tracking-widest text-slate-200">Professional Identity</span>
         </nav>
@@ -341,12 +341,12 @@ const ArchitectProfile: React.FC = () => {
            </div>
            
            {!user?.profile_completed && (
-              <div className="bg-amber-50 border-2 border-amber-100 rounded-[2rem] p-6 flex items-center gap-4 shadow-xl shadow-amber-200/20 max-w-sm">
+              <div className="bg-amber-500/10 border-2 border-amber-500/30 rounded-[2rem] p-6 flex items-center gap-4 shadow-xl shadow-amber-200/20 max-w-sm">
                  <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white shrink-0">
                     <Zap className="w-6 h-6" />
                  </div>
                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-700 leading-none mb-1">Activation Required</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-300 leading-none mb-1">Activation Required</p>
                     <p className="text-xs font-bold text-amber-900 leading-tight">Complete identity setup to go live in the marketplace.</p>
                  </div>
               </div>
@@ -356,14 +356,14 @@ const ArchitectProfile: React.FC = () => {
 
       <div className="max-w-5xl mx-auto px-4 pb-24 space-y-12">
         {error && (
-          <div className="p-6 bg-rose-50 border-2 border-rose-100 rounded-[2.5rem] flex items-center gap-4 text-rose-700 shadow-xl shadow-rose-200/20">
+          <div className="p-6 bg-rose-500/10 border-2 border-rose-500/30 rounded-[2.5rem] flex items-center gap-4 text-rose-300 shadow-xl shadow-rose-200/20">
              <AlertCircle className="w-6 h-6" />
              <p className="font-bold text-sm uppercase tracking-wide">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="p-6 bg-emerald-50 border-2 border-emerald-100 rounded-[2.5rem] flex items-center gap-4 text-emerald-700 shadow-xl shadow-emerald-200/20">
+          <div className="p-6 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-[2.5rem] flex items-center gap-4 text-emerald-300 shadow-xl shadow-emerald-200/20">
              <CheckCircle2 className="w-6 h-6" />
              <p className="font-bold text-sm uppercase tracking-wide">{success}</p>
           </div>
@@ -556,7 +556,7 @@ const ArchitectProfile: React.FC = () => {
                     <div>
                        <div className="flex items-center gap-3">
                           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500 mb-1 leading-none">Module 02</p>
-                          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black uppercase tracking-widest rounded">Optional</span>
+                          <span className="px-2 py-0.5 bg-emerald-500/15 text-emerald-300 text-[8px] font-black uppercase tracking-widest rounded">Optional</span>
                        </div>
                        <h3 className="text-2xl font-black italic uppercase tracking-tight text-slate-100">Professional Credentials</h3>
                     </div>

@@ -147,8 +147,8 @@ const ArchitectDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-40 min-h-screen bg-white">
-        <div className="w-20 h-20 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center py-40 min-h-screen bg-slate-950">
+        <div className="w-20 h-20 border-4 border-slate-800 border-t-indigo-600 rounded-full animate-spin" />
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-8 animate-pulse">Syncing Portfolio Records...</p>
       </div>
     );
@@ -156,8 +156,8 @@ const ArchitectDetail: React.FC = () => {
 
   if (!architect) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
-        <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-900 mb-4">Registry Fault</h2>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-8">
+        <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-100 mb-4">Registry Fault</h2>
         <p className="text-slate-500 font-medium text-lg mb-8">{error || 'Architect identity not found in the global registry.'}</p>
         <button onClick={() => navigate('/architects')} className="px-10 py-4 bg-slate-900 text-white rounded-full text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all">Back to Browse</button>
       </div>
@@ -165,25 +165,25 @@ const ArchitectDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-950">
       {/* Dynamic Header */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-             <button onClick={() => navigate('/architects')} className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-900 hover:bg-slate-900 hover:text-white transition-all">
+             <button onClick={() => navigate('/architects')} className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center text-slate-100 hover:bg-slate-900 hover:text-white transition-all">
                 <ChevronLeft className="w-5 h-5" />
              </button>
              <div className="hidden md:block">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Architect Profile</p>
-                <h2 className="text-sm font-black italic uppercase tracking-tight text-slate-900">{architect.user.full_name}</h2>
+                <h2 className="text-sm font-black italic uppercase tracking-tight text-slate-100">{architect.user.full_name}</h2>
              </div>
           </div>
           <div className="flex items-center gap-6">
              <div className="text-right hidden sm:block">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Portoflio Tier</p>
-                <p className="text-xs font-black text-slate-900">{architect.portfolio?.total_projects_count || 0} Projects Synchronized</p>
+                <p className="text-xs font-black text-slate-100">{architect.portfolio?.total_projects_count || 0} Projects Synchronized</p>
              </div>
-             <button className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors">
+             <button className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-indigo-300 transition-colors">
                 <Share2 className="w-5 h-5" />
              </button>
           </div>
@@ -219,9 +219,9 @@ const ArchitectDetail: React.FC = () => {
 
                <div className="flex-1 space-y-6">
                   <div>
-                     <h1 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter leading-[0.8] text-slate-900 mb-4">
+                     <h1 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter leading-[0.8] text-slate-100 mb-4">
                         {architect.user.full_name.split(' ')[0]} <br/>
-                        <span className="text-indigo-600">{architect.user.full_name.split(' ').slice(1).join(' ')}</span>
+                        <span className="text-indigo-300">{architect.user.full_name.split(' ').slice(1).join(' ')}</span>
                      </h1>
                      <div className="flex flex-wrap items-center gap-6 mt-6">
                         <div className="flex items-center gap-2">
@@ -235,7 +235,7 @@ const ArchitectDetail: React.FC = () => {
                      </div>
                   </div>
 
-                  <p className="text-xl text-slate-600 font-medium leading-relaxed max-w-2xl">
+                  <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-2xl">
                      {architect.bio || architect.portfolio?.bio_statement || 'Defining modern architecture through structural excellence and visionary design principles.'}
                   </p>
 
@@ -263,23 +263,23 @@ const ArchitectDetail: React.FC = () => {
 
             {/* Expertise Grid */}
             <section className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-               <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between h-48">
+               <div className="bg-slate-800 p-10 rounded-[3rem] border border-slate-800 flex flex-col justify-between h-48">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                      <Briefcase className="w-4 h-4" /> Focus Domain
                   </p>
-                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-900">{architect.specialization}</p>
+                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-100">{architect.specialization}</p>
                </div>
-               <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between h-48">
+               <div className="bg-slate-800 p-10 rounded-[3rem] border border-slate-800 flex flex-col justify-between h-48">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                      <Clock className="w-4 h-4" /> Tenure
                   </p>
-                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-900">{architect.experience_years || 0} Years Experience</p>
+                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-100">{architect.experience_years || 0} Years Experience</p>
                </div>
-               <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between h-48">
+               <div className="bg-slate-800 p-10 rounded-[3rem] border border-slate-800 flex flex-col justify-between h-48">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                      <Layers className="w-4 h-4" /> Catalog Size
                   </p>
-                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-900">{architect.portfolio?.total_projects_count || 0} Active Projects</p>
+                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-100">{architect.portfolio?.total_projects_count || 0} Active Projects</p>
                </div>
             </section>
 
@@ -288,7 +288,7 @@ const ArchitectDetail: React.FC = () => {
                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                   <div>
                      <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-2 leading-none">Catalog 01</p>
-                     <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-900">Project <br/><span className="text-indigo-600">Masterworks</span></h2>
+                     <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-100">Project <br/><span className="text-indigo-300">Masterworks</span></h2>
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {['all', 'residential', 'commercial', 'industrial', 'landscape'].map((type) => {
@@ -300,7 +300,7 @@ const ArchitectDetail: React.FC = () => {
                              className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border-2 ${
                                 active 
                                 ? 'bg-slate-900 text-white border-slate-900 shadow-xl' 
-                                : 'bg-white border-slate-100 text-slate-500 hover:border-indigo-600 hover:text-indigo-600'
+                                : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-indigo-600 hover:text-indigo-300'
                              }`}
                           >
                              {type === 'all' ? 'Universal' : type}
@@ -312,7 +312,7 @@ const ArchitectDetail: React.FC = () => {
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                  {projects.map((p) => (
-                   <div key={p.architect_project_id} className="group bg-white rounded-[3.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 overflow-hidden hover:border-indigo-200 transition-all duration-500">
+                   <div key={p.architect_project_id} className="group bg-slate-900 rounded-[3.5rem] border border-slate-800 shadow-2xl shadow-slate-200/50 overflow-hidden hover:border-indigo-500/30 transition-all duration-500">
                      <div className="relative aspect-[16/10] overflow-hidden">
                        {(p.cover_image?.image_url || p.images?.[0]?.image_url) ? (
                          <img 
@@ -321,7 +321,7 @@ const ArchitectDetail: React.FC = () => {
                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                          />
                        ) : (
-                         <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                         <div className="w-full h-full bg-slate-800 flex items-center justify-center">
                             <Layers className="w-12 h-12 text-slate-300" />
                          </div>
                        )}
@@ -331,14 +331,14 @@ const ArchitectDetail: React.FC = () => {
                        </div>
                        <button 
                          onClick={() => setLightbox(resolveImageUrl(p.cover_image?.image_url || p.images?.[0]?.image_url) || null)}
-                         className="absolute bottom-6 right-6 w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-900 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all shadow-xl hover:bg-slate-900 hover:text-white"
+                         className="absolute bottom-6 right-6 w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-slate-100 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all shadow-xl hover:bg-slate-900 hover:text-white"
                        >
                           <Maximize2 className="w-5 h-5" />
                        </button>
                      </div>
                      <div className="p-10 space-y-6">
                        <div>
-                         <h3 className="text-2xl font-black italic uppercase tracking-tight text-slate-900 mb-2">{p.project_title}</h3>
+                         <h3 className="text-2xl font-black italic uppercase tracking-tight text-slate-100 mb-2">{p.project_title}</h3>
                          <div className="flex flex-wrap items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                             <div className="flex items-center gap-1.5"><MapPin className="w-3 h-3" /> {p.location || 'N/A'}</div>
                             <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
@@ -350,14 +350,14 @@ const ArchitectDetail: React.FC = () => {
                        </p>
                        <div className="flex flex-wrap gap-2">
                          {(p.style_tags || []).slice(0, 3).map((t) => (
-                           <span key={t} className="text-[8px] font-black bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full uppercase tracking-widest">{t}</span>
+                           <span key={t} className="text-[8px] font-black bg-indigo-500/10 text-indigo-300 px-3 py-1 rounded-full uppercase tracking-widest">{t}</span>
                          ))}
                        </div>
                        <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
-                          <p className="text-lg font-black italic text-slate-900 tracking-tight">{p.formatted_budget || 'Fiscal Request'}</p>
+                          <p className="text-lg font-black italic text-slate-100 tracking-tight">{p.formatted_budget || 'Fiscal Request'}</p>
                           <button 
                             onClick={() => navigate(`/architect/projects/${p.project_ref}`)} 
-                            className="text-[10px] font-black uppercase tracking-widest text-indigo-600 flex items-center gap-2 hover:text-slate-900 transition-colors"
+                            className="text-[10px] font-black uppercase tracking-widest text-indigo-300 flex items-center gap-2 hover:text-slate-100 transition-colors"
                           >
                              Full Narrative <ChevronRight className="w-4 h-4" />
                           </button>
@@ -372,22 +372,22 @@ const ArchitectDetail: React.FC = () => {
             <section id="reviews" className="space-y-12">
                <div>
                   <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em] mb-2 leading-none">Catalog 02</p>
-                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-900">Client <br/><span className="text-indigo-600">Feedback</span></h2>
+                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-100">Client <br/><span className="text-indigo-300">Feedback</span></h2>
                </div>
 
                {reviewSummary.total_reviews === 0 ? (
-                 <div className="p-12 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-100 text-center">
+                 <div className="p-12 bg-slate-800 rounded-[3rem] border-2 border-dashed border-slate-800 text-center">
                     <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-6" />
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No project reviews synchronized yet.</p>
                  </div>
                ) : (
                  <div className="space-y-12">
-                    <div className="bg-white rounded-[3.5rem] border border-slate-100 p-10 shadow-2xl shadow-slate-200/50">
+                    <div className="bg-slate-900 rounded-[3.5rem] border border-slate-800 p-10 shadow-2xl shadow-slate-200/50">
                        <ReviewSummary summary={reviewSummary} />
                     </div>
                     <div className="grid grid-cols-1 gap-8">
                       {reviews.slice(0, visibleReviews).map((review) => (
-                        <div key={review.review_id} className="bg-white rounded-[2.5rem] border border-slate-100 p-10 shadow-lg shadow-slate-100/50 group hover:border-indigo-100 transition-colors">
+                        <div key={review.review_id} className="bg-slate-900 rounded-[2.5rem] border border-slate-800 p-10 shadow-lg shadow-slate-100/50 group hover:border-indigo-500/30 transition-colors">
                            <ReviewCard review={review} />
                         </div>
                       ))}
@@ -398,7 +398,7 @@ const ArchitectDetail: React.FC = () => {
                          <button
                            type="button"
                            onClick={loadMoreReviews}
-                           className="px-10 py-5 bg-white border-2 border-slate-200 rounded-full text-xs font-black uppercase tracking-widest text-slate-900 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-xl shadow-slate-100 flex items-center gap-4 group"
+                           className="px-10 py-5 bg-slate-900 border-2 border-slate-700 rounded-full text-xs font-black uppercase tracking-widest text-slate-100 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-xl shadow-slate-100 flex items-center gap-4 group"
                          >
                            {loadingMoreReviews ? (
                              <div className="w-4 h-4 border-2 border-slate-300 border-t-slate-900 rounded-full animate-spin" />
@@ -449,9 +449,9 @@ const ArchitectDetail: React.FC = () => {
                 </div>
 
                 {/* Info Widget */}
-                <div className="bg-indigo-50 rounded-[3rem] p-10 border border-indigo-100">
-                   <ShieldCheck className="w-10 h-10 text-indigo-600 mb-6" />
-                   <h4 className="text-lg font-black italic uppercase tracking-tight text-slate-900 mb-4">Secure Hiring</h4>
+                <div className="bg-indigo-500/10 rounded-[3rem] p-10 border border-indigo-500/30">
+                   <ShieldCheck className="w-10 h-10 text-indigo-300 mb-6" />
+                   <h4 className="text-lg font-black italic uppercase tracking-tight text-slate-100 mb-4">Secure Hiring</h4>
                    <p className="text-sm text-indigo-900/60 font-medium leading-relaxed">
                       All projects initiated through ArchIntent are protected by our secure project protocol and automated agreement system.
                    </p>

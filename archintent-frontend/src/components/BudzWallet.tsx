@@ -45,10 +45,10 @@ const BudzWallet: React.FC<BudzWalletProps> = ({ compact = false, showHistoryHin
 
   if (compact) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
         <div className="flex items-center justify-between gap-2">
           <div>
-            <p className="text-xs text-amber-800 font-semibold">Budz Balance</p>
+            <p className="text-xs text-amber-300 font-semibold">Budz Balance</p>
             <p className="text-lg font-bold text-amber-900">{loading ? '...' : `${wallet.balance} Budz`}</p>
           </div>
           <button
@@ -63,10 +63,10 @@ const BudzWallet: React.FC<BudzWalletProps> = ({ compact = false, showHistoryHin
   }
 
   return (
-    <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-5">
+    <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-500/30 rounded-xl p-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm text-amber-800 font-semibold flex items-center gap-2">
+          <p className="text-sm text-amber-300 font-semibold flex items-center gap-2">
             <Coins size={16} aria-hidden />
             Budz wallet
           </p>
@@ -74,7 +74,7 @@ const BudzWallet: React.FC<BudzWalletProps> = ({ compact = false, showHistoryHin
             {loading ? 'Loading...' : `${wallet.balance} Budz`}
           </p>
           {showHistoryHint && (
-            <p className="text-xs text-amber-700 mt-1">Spend Budz to boost ranking in client bid list.</p>
+            <p className="text-xs text-amber-300 mt-1">Spend Budz to boost ranking in client bid list.</p>
           )}
         </div>
         <button

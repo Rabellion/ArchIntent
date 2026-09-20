@@ -13,7 +13,7 @@ export default function NotFoundPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-6 pt-24 pb-16">
       <div className="text-center max-w-lg">
         {/* Giant 404 */}
-        <h1 className="text-[12rem] font-black italic text-slate-800 uppercase tracking-tighter leading-none select-none">
+        <h1 className="text-[12rem] font-black italic text-slate-200 uppercase tracking-tighter leading-none select-none">
           404
         </h1>
 

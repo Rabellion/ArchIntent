@@ -108,7 +108,7 @@ const HomePage: React.FC = () => {
               <div className="flex flex-wrap gap-6 pt-6">
                 <button
                   onClick={() => navigate('/register')}
-                  className="group flex items-center gap-6 bg-slate-100 text-slate-900 px-12 py-6 rounded-2xl hover:bg-indigo-500 hover:text-white transition-all duration-500 shadow-2xl shadow-black/30"
+                  className="group flex items-center gap-6 bg-slate-800 text-slate-100 px-12 py-6 rounded-2xl hover:bg-indigo-500 hover:text-white transition-all duration-500 shadow-2xl shadow-black/30"
                 >
                   <span className="font-black uppercase tracking-[0.2em] text-xs italic">Post A Mission</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
@@ -182,7 +182,7 @@ const HomePage: React.FC = () => {
             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-10">
                {STEPS.map((step, i) => (
                  <div key={i} className="group space-y-6">
-                    <div className="text-8xl font-black text-slate-800 italic leading-none group-hover:text-indigo-900/40 transition-colors">
+                    <div className="text-8xl font-black text-slate-200 italic leading-none group-hover:text-indigo-900/40 transition-colors">
                       {step.id}
                     </div>
                     <div className="space-y-3">
@@ -240,7 +240,7 @@ const HomePage: React.FC = () => {
                          </li>
                        ))}
                     </ul>
-                    <button onClick={() => navigate('/register')} className="flex items-center gap-6 bg-slate-100 text-slate-900 px-10 py-5 rounded-2xl hover:bg-slate-950 hover:text-white transition-all duration-500 shadow-2xl">
+                    <button onClick={() => navigate('/register')} className="flex items-center gap-6 bg-slate-800 text-slate-100 px-10 py-5 rounded-2xl hover:bg-slate-950 hover:text-white transition-all duration-500 shadow-2xl">
                        <span className="font-black uppercase tracking-widest text-xs italic">Start Project</span>
                        <ArrowRight className="w-4 h-4" />
                     </button>
@@ -262,7 +262,7 @@ const HomePage: React.FC = () => {
                          </li>
                        ))}
                     </ul>
-                    <button onClick={() => navigate('/register')} className="flex items-center gap-6 bg-white/5 border border-white/10 text-white px-10 py-5 rounded-2xl hover:bg-slate-100 transition-all duration-500 hover:text-slate-900">
+                    <button onClick={() => navigate('/register')} className="flex items-center gap-6 bg-white/5 border border-white/10 text-white px-10 py-5 rounded-2xl hover:bg-slate-800 transition-all duration-500 hover:text-slate-100">
                        <span className="font-black uppercase tracking-widest text-xs italic">Join Registry</span>
                        <ArrowUpRight className="w-4 h-4" />
                     </button>
@@ -309,7 +309,7 @@ const HomePage: React.FC = () => {
            </div>
 
            <div className="pt-20 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-              <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest italic">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
                 © 2026 ARCHINTENT OPERATIONAL GROUP. KARACHI // ISLAMABAD // LAHORE
               </p>
               <div className="flex items-center gap-8">

@@ -244,10 +244,10 @@ const ProjectAgreement: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 p-8 flex items-center justify-center">
         <div className="text-center">
-          <Loader size={48} className="mx-auto mb-4 text-indigo-600 animate-spin" />
-          <p className="text-gray-600">Loading agreement...</p>
+          <Loader size={48} className="mx-auto mb-4 text-indigo-300 animate-spin" />
+          <p className="text-slate-400">Loading agreement...</p>
         </div>
       </div>
     );
@@ -255,12 +255,12 @@ const ProjectAgreement: React.FC = () => {
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-slate-950 p-8">
         <div className="max-w-4xl mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 mb-6 font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-indigo-300 hover:text-indigo-300 mb-6 font-semibold">
             <ArrowLeft size={20} /> Back
           </button>
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">Project not found</div>
+          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 px-4 py-3 rounded-lg">Project not found</div>
         </div>
       </div>
     );
@@ -275,31 +275,31 @@ const ProjectAgreement: React.FC = () => {
       (agreement.status === 'draft' && isClient))
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-slate-950 p-8">
       <div className="max-w-4xl mx-auto">
-        <button onClick={() => navigate(`/project/${id}`)} className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 mb-6 font-semibold">
+        <button onClick={() => navigate(`/project/${id}`)} className="flex items-center gap-2 text-indigo-300 hover:text-indigo-300 mb-6 font-semibold">
           <ArrowLeft size={20} /> Back to Project
         </button>
 
-        <div className="bg-white rounded-lg shadow p-8 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Project Agreement</h1>
-          <p className="text-gray-600">{project.project_title}</p>
+        <div className="bg-slate-900 rounded-lg shadow p-8 mb-8">
+          <h1 className="text-3xl font-bold text-slate-100 mb-2">Project Agreement</h1>
+          <p className="text-slate-400">{project.project_title}</p>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-2">
+          <div className="mb-6 bg-rose-500/10 border border-rose-500/30 text-rose-300 px-4 py-3 rounded-lg flex items-start gap-2">
             <AlertCircle size={18} className="mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {(showCreateForm || showEditForm) && (
-          <div className="bg-white rounded-lg shadow p-8 mb-8 space-y-5">
-            <h2 className="text-2xl font-bold text-gray-900">{showCreateForm ? 'Create Agreement Draft' : 'Edit Agreement Draft'}</h2>
+          <div className="bg-slate-900 rounded-lg shadow p-8 mb-8 space-y-5">
+            <h2 className="text-2xl font-bold text-slate-100">{showCreateForm ? 'Create Agreement Draft' : 'Edit Agreement Draft'}</h2>
 
             {showEditForm && agreement?.change_request_message && (
               <div
-                className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-950"
+                className="rounded-lg border border-amber-300 bg-amber-500/10 px-4 py-3 text-amber-950"
                 role="region"
                 aria-label="Client change request"
               >
@@ -312,13 +312,13 @@ const ProjectAgreement: React.FC = () => {
             <Field label="Deliverables" value={form.deliverables} onChange={(v) => setForm({ ...form, deliverables: v })} rows={4} />
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Timeline (days)</label>
+              <label className="block text-sm font-semibold text-slate-300 mb-2">Timeline (days)</label>
               <input
                 type="number"
                 min={1}
                 value={form.timeline_days}
                 onChange={(e) => setForm({ ...form, timeline_days: Math.max(1, parseInt(e.target.value || '1', 10)) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-4 py-2 border border-slate-700 rounded-lg"
               />
             </div>
 
@@ -340,18 +340,18 @@ const ProjectAgreement: React.FC = () => {
         )}
 
         {isClient && !agreement && (
-          <div className="bg-white rounded-lg shadow p-8 mb-8">
-            <p className="text-gray-700">No agreement yet. Waiting for the selected architect to create and finalize the agreement.</p>
+          <div className="bg-slate-900 rounded-lg shadow p-8 mb-8">
+            <p className="text-slate-300">No agreement yet. Waiting for the selected architect to create and finalize the agreement.</p>
           </div>
         )}
 
         {showReadOnly && agreement && (
-          <div className="bg-white rounded-lg shadow p-8 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Agreement Document</h2>
+          <div className="bg-slate-900 rounded-lg shadow p-8 mb-8">
+            <h2 className="text-2xl font-bold text-slate-100 mb-4">Agreement Document</h2>
             <StatusBadge status={agreement.status} />
 
             {isClient && agreement.status === 'draft' && agreement.change_request_message && (
-              <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-900 text-sm">
+              <div className="mb-6 rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-3 text-blue-900 text-sm">
                 You asked for updates below. The architect is revising the agreement. You will be notified when it is ready to sign again.
               </div>
             )}
@@ -364,8 +364,8 @@ const ProjectAgreement: React.FC = () => {
             <ReadOnlyBlock title="Cancellation Terms" text={agreement.cancellation_terms || 'Not specified'} />
 
             {canRequestAgreementChanges && (
-              <div className="mt-8 border-t border-gray-200 pt-6">
-                <p className="text-sm text-gray-600 mb-3">
+              <div className="mt-8 border-t border-slate-700 pt-6">
+                <p className="text-sm text-slate-400 mb-3">
                   Need edits before you sign? Send a message to the architect. The agreement will return to draft and signatures will reset.
                 </p>
                 <button
@@ -374,7 +374,7 @@ const ProjectAgreement: React.FC = () => {
                     setRequestChangeMessage('')
                     setShowRequestChangesModal(true)
                   }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-600 text-amber-800 bg-amber-50 hover:bg-amber-100 font-semibold text-sm"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-600 text-amber-300 bg-amber-500/10 hover:bg-amber-500/15 font-semibold text-sm"
                   aria-label="Request changes to agreement before signing"
                 >
                   <MessageSquare size={18} aria-hidden />
@@ -386,8 +386,8 @@ const ProjectAgreement: React.FC = () => {
         )}
 
         {agreement && agreement.status !== 'draft' && (
-          <div className="bg-white rounded-lg shadow p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Signatures</h3>
+          <div className="bg-slate-900 rounded-lg shadow p-8">
+            <h3 className="text-xl font-bold text-slate-100 mb-4">Signatures</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <SignatureCard
                 roleLabel="Architect"
@@ -414,20 +414,20 @@ const ProjectAgreement: React.FC = () => {
                 this client has not signed yet. The backend enforces the
                 same rule and returns 422 once they have signed. */}
             {isClient && canCurrentUserSign && (
-              <div className="mt-6 p-4 rounded-lg bg-amber-50 border border-amber-200">
+              <div className="mt-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/30">
                 <div className="flex items-start gap-3">
                   <AlertCircle size={18} className="mt-0.5 text-amber-600 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="font-semibold text-amber-900">
                       Not happy with these terms?
                     </p>
-                    <p className="text-sm text-amber-800 mt-1">
+                    <p className="text-sm text-amber-300 mt-1">
                       You can ask the architect to revise the agreement before you sign.
                       This clears both signatures and returns the agreement to draft.
                     </p>
                     <button
                       onClick={() => setShowRequestChangesModal(true)}
-                      className="mt-3 px-5 py-2.5 rounded-lg border-2 border-amber-600 text-amber-800 font-semibold text-sm hover:bg-amber-600 hover:text-white transition-colors"
+                      className="mt-3 px-5 py-2.5 rounded-lg border-2 border-amber-600 text-amber-300 font-semibold text-sm hover:bg-amber-600 hover:text-white transition-colors"
                     >
                       Request Changes
                     </button>
@@ -437,7 +437,7 @@ const ProjectAgreement: React.FC = () => {
             )}
 
             {agreement.status === 'signed' && (
-              <div className="mt-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-800 flex items-start gap-2">
+              <div className="mt-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-start gap-2">
                 <CheckCircle2 size={18} className="mt-0.5" />
                 <span>Agreement is fully signed. Project status will proceed to payment.</span>
               </div>
@@ -448,16 +448,16 @@ const ProjectAgreement: React.FC = () => {
 
       {showRequestChangesModal && agreement && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
-            <h4 className="text-xl font-bold text-gray-900 mb-2">Request agreement changes</h4>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-slate-900 rounded-lg shadow-lg max-w-lg w-full p-6">
+            <h4 className="text-xl font-bold text-slate-100 mb-2">Request agreement changes</h4>
+            <p className="text-sm text-slate-400 mb-4">
               Describe what should be updated (at least 10 characters). The architect will revise the draft and re-finalize for signing.
             </p>
             <textarea
               value={requestChangeMessage}
               onChange={(e) => setRequestChangeMessage(e.target.value)}
               rows={5}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4"
+              className="w-full px-4 py-2 border border-slate-700 rounded-lg mb-4"
               placeholder="e.g. Please clarify milestone dates and add a second revision round."
               aria-label="Change request details"
             />
@@ -468,7 +468,7 @@ const ProjectAgreement: React.FC = () => {
                   setShowRequestChangesModal(false)
                   setRequestChangeMessage('')
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-semibold"
+                className="flex-1 px-4 py-2 border border-slate-700 rounded-lg font-semibold"
                 disabled={requestingChanges}
               >
                 Cancel
@@ -488,18 +488,18 @@ const ProjectAgreement: React.FC = () => {
 
       {showSignModal && agreement && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
-            <h4 className="text-xl font-bold text-gray-900 mb-3">Sign Agreement</h4>
-            <p className="text-sm text-gray-600 mb-4">Type your full name and confirm to sign this agreement.</p>
+          <div className="bg-slate-900 rounded-lg shadow-lg max-w-md w-full p-6">
+            <h4 className="text-xl font-bold text-slate-100 mb-3">Sign Agreement</h4>
+            <p className="text-sm text-slate-400 mb-4">Type your full name and confirm to sign this agreement.</p>
 
             <input
               value={signName}
               onChange={(e) => setSignName(e.target.value)}
               placeholder="Your full name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3"
+              className="w-full px-4 py-2 border border-slate-700 rounded-lg mb-3"
             />
 
-            <label className="flex items-start gap-2 text-sm text-gray-700 mb-4">
+            <label className="flex items-start gap-2 text-sm text-slate-300 mb-4">
               <input type="checkbox" checked={confirmChecked} onChange={(e) => setConfirmChecked(e.target.checked)} className="mt-1" />
               <span>I confirm I have read and agree to the terms of this agreement.</span>
             </label>
@@ -511,7 +511,7 @@ const ProjectAgreement: React.FC = () => {
                   setSignName('');
                   setConfirmChecked(false);
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-semibold"
+                className="flex-1 px-4 py-2 border border-slate-700 rounded-lg font-semibold"
                 disabled={signing}
               >
                 Cancel
@@ -543,29 +543,29 @@ const Field = ({
   rows: number;
 }) => (
   <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-2">{label}</label>
+    <label className="block text-sm font-semibold text-slate-300 mb-2">{label}</label>
     <textarea
       value={value}
       onChange={(e) => onChange(e.target.value)}
       rows={rows}
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+      className="w-full px-4 py-2 border border-slate-700 rounded-lg"
     />
   </div>
 );
 
 const ReadOnlyBlock = ({ title, text }: { title: string; text: string }) => (
   <div className="mb-5">
-    <h4 className="font-semibold text-gray-900 mb-1">{title}</h4>
-    <p className="text-gray-700 whitespace-pre-wrap">{text}</p>
+    <h4 className="font-semibold text-slate-100 mb-1">{title}</h4>
+    <p className="text-slate-300 whitespace-pre-wrap">{text}</p>
   </div>
 );
 
 const StatusBadge = ({ status }: { status: AgreementStatus }) => {
   const styles: Record<AgreementStatus, string> = {
-    draft: 'bg-gray-100 text-gray-800',
-    pending_signatures: 'bg-yellow-100 text-yellow-800',
-    signed: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
+    draft: 'bg-slate-800 text-slate-200',
+    pending_signatures: 'bg-amber-500/15 text-amber-300',
+    signed: 'bg-emerald-500/15 text-emerald-300',
+    cancelled: 'bg-rose-500/15 text-rose-300',
   };
   return <span className={`inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold ${styles[status]}`}>{status.replace(/_/g, ' ')}</span>;
 };
@@ -581,16 +581,16 @@ const SignatureCard = ({
   canSign: boolean;
   onSign: () => void;
 }) => (
-  <div className="border border-gray-200 rounded-lg p-4">
-    <p className="text-sm font-semibold text-gray-700 mb-2">{roleLabel}</p>
+  <div className="border border-slate-700 rounded-lg p-4">
+    <p className="text-sm font-semibold text-slate-300 mb-2">{roleLabel}</p>
     {signature?.signed_at ? (
-      <div className="text-green-700">
+      <div className="text-emerald-300">
         <p className="font-semibold">Signed</p>
         <p className="text-sm">{signature.user?.full_name || 'User'}</p>
         <p className="text-xs">{new Date(signature.signed_at).toLocaleString()}</p>
       </div>
     ) : (
-      <div className="text-yellow-700">
+      <div className="text-amber-300">
         <p className="font-semibold">Pending</p>
       </div>
     )}

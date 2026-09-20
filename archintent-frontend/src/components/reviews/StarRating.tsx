@@ -59,7 +59,7 @@ const StarRating: React.FC<StarRatingProps> = ({
                 className="focus:outline-none"
               >
                 <Star
-                  className={`${sizeClasses[size]} ${isFilled ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'} cursor-pointer transition`}
+                  className={`${sizeClasses[size]} ${isFilled ? 'text-yellow-400 fill-yellow-400' : 'text-slate-400'} cursor-pointer transition`}
                 />
               </button>
             );
@@ -68,12 +68,12 @@ const StarRating: React.FC<StarRatingProps> = ({
           return (
             <Star
               key={starValue}
-              className={`${sizeClasses[size]} ${isFilled ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'} transition`}
+              className={`${sizeClasses[size]} ${isFilled ? 'text-yellow-400 fill-yellow-400' : 'text-slate-400'} transition`}
             />
           );
         })}
       </div>
-      <span className="text-sm text-gray-700">{displayText}</span>
+      <span className="text-sm text-slate-300">{displayText}</span>
     </div>
   );
 };

@@ -21,10 +21,10 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
       {icon || (
-        <Database className="w-16 h-16 text-gray-400 mb-4" />
+        <Database className="w-16 h-16 text-slate-500 mb-4" />
       )}
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-600 text-center mb-6 max-w-sm">{message}</p>
+      <h3 className="text-lg font-semibold text-slate-100 mb-2">{title}</h3>
+      <p className="text-slate-400 text-center mb-6 max-w-sm">{message}</p>
       {showButton && actionLabel && onAction && (
         <button
           onClick={onAction}

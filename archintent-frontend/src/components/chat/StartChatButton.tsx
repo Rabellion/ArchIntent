@@ -146,7 +146,7 @@ const StartChatButton: React.FC<Props> = ({
       ? 'bg-blue-600 hover:bg-blue-700 text-white'
       : variant === 'outline'
         ? 'bg-transparent border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
-        : 'bg-white border border-blue-200 text-blue-700 hover:bg-blue-50';
+        : 'bg-slate-900 border border-blue-500/30 text-blue-300 hover:bg-blue-500/10';
 
   return (
     <>
@@ -162,16 +162,16 @@ const StartChatButton: React.FC<Props> = ({
 
       {showComposer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl">
-            <h3 className="text-lg font-semibold text-gray-900">Start Conversation</h3>
-            <p className="mt-1 text-sm text-gray-600">Send an opening message to begin chatting.</p>
+          <div className="w-full max-w-md rounded-xl bg-slate-900 p-5 shadow-xl">
+            <h3 className="text-lg font-semibold text-slate-100">Start Conversation</h3>
+            <p className="mt-1 text-sm text-slate-400">Send an opening message to begin chatting.</p>
 
             <textarea
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               placeholder="Hi, I would like to discuss this."
               rows={4}
-              className="mt-4 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="mt-4 w-full rounded-lg border border-slate-700 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
             />
 
             <div className="mt-4 flex items-center justify-end gap-2">
@@ -181,7 +181,7 @@ const StartChatButton: React.FC<Props> = ({
                   setShowComposer(false);
                   setDraft('');
                 }}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                className="rounded-lg border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-slate-800"
               >
                 Cancel
               </button>

@@ -182,7 +182,7 @@ export default function ProfilePage() {
       <div className="pt-12 pb-16 max-w-5xl mx-auto px-4">
         <nav className="flex items-center gap-3 text-slate-500 mb-8">
            <Link to="/" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-400 transition-colors">Environment</Link>
-           <ChevronRight className="w-3 h-3 text-slate-600" />
+           <ChevronRight className="w-3 h-3 text-slate-400" />
            <span className="text-[10px] font-black uppercase tracking-widest text-slate-200">Identity Settings</span>
         </nav>
         
@@ -222,7 +222,7 @@ export default function ProfilePage() {
                       {previewUrl || currentImage ? (
                         <img src={previewUrl || currentImage} alt="Identity Preview" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       ) : (
-                        <User className="w-20 h-20 text-slate-700" />
+                        <User className="w-20 h-20 text-slate-300" />
                       )}
                     </div>
                     <label className="absolute -bottom-4 -right-4 w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-indigo-500 transition-all shadow-2xl border-4 border-slate-900 group-hover:scale-110">
@@ -338,7 +338,7 @@ export default function ProfilePage() {
                                 value={otpCode}
                                 onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                 placeholder="000000"
-                                className="w-full rounded-2xl border-2 border-slate-700 bg-slate-800 px-6 py-4 text-center font-mono text-2xl font-black tracking-[0.5em] text-slate-100 shadow-sm outline-none transition-all placeholder:text-slate-600 focus:border-indigo-500"
+                                className="w-full rounded-2xl border-2 border-slate-700 bg-slate-800 px-6 py-4 text-center font-mono text-2xl font-black tracking-[0.5em] text-slate-100 shadow-sm outline-none transition-all placeholder:text-slate-400 focus:border-indigo-500"
                              />
                           </div>
                           <button

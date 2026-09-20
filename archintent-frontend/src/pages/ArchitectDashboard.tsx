@@ -524,7 +524,7 @@ const ArchitectDashboard: React.FC = () => {
                    <button
                      onClick={handleStartStripeOnboarding}
                      disabled={stripeBusy}
-                     className="w-full py-4 bg-slate-100 text-indigo-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-xl disabled:opacity-50"
+                     className="w-full py-4 bg-slate-800 text-indigo-300 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-xl disabled:opacity-50"
                    >
                      {stripeBusy ? 'Syncing...' : 'Setup Stripe'}
                    </button>

@@ -176,8 +176,8 @@ const AdminVerificationDocuments = () => {
     return (
       <div className="max-w-xl mx-auto py-24 px-4 text-center">
         <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-4" aria-hidden />
-        <p className="text-slate-600 font-medium">Invalid link.</p>
-        <Link to="/dashboard/admin" className="mt-6 inline-block text-indigo-600 font-bold text-sm">
+        <p className="text-slate-400 font-medium">Invalid link.</p>
+        <Link to="/dashboard/admin" className="mt-6 inline-block text-indigo-300 font-bold text-sm">
           Admin dashboard
         </Link>
       </div>
@@ -185,22 +185,22 @@ const AdminVerificationDocuments = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
-      <div className="border-b border-slate-200 bg-white">
+    <div className="min-h-screen bg-slate-950 pb-20">
+      <div className="border-b border-slate-700 bg-slate-900">
         <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <Link
               to={backHref}
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-indigo-600 text-xs font-bold uppercase tracking-widest mb-3"
+              className="inline-flex items-center gap-2 text-slate-500 hover:text-indigo-300 text-xs font-bold uppercase tracking-widest mb-3"
             >
               <ArrowLeft className="w-4 h-4" aria-hidden />
               Back to application
             </Link>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">{title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">{title}</h1>
             <p className="text-slate-500 text-sm mt-1">
               {subjectName ? (
                 <>
-                  <span className="font-semibold text-slate-700">{subjectName}</span>
+                  <span className="font-semibold text-slate-300">{subjectName}</span>
                   <span className="text-slate-400"> · </span>
                 </>
               ) : null}
@@ -210,7 +210,7 @@ const AdminVerificationDocuments = () => {
           <div className="flex flex-wrap gap-2 shrink-0">
             <Link
               to={queueHref}
-              className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-widest hover:bg-slate-50"
+              className="px-4 py-2.5 rounded-xl border border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-widest hover:bg-slate-800"
             >
               Queue
             </Link>
@@ -230,12 +230,12 @@ const AdminVerificationDocuments = () => {
 
       <div className="max-w-5xl mx-auto px-4 py-8">
         {loadingDoc || loadingMeta ? (
-          <div className="flex flex-col items-center justify-center py-32 rounded-3xl border border-slate-200 bg-white">
-            <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" aria-hidden />
+          <div className="flex flex-col items-center justify-center py-32 rounded-3xl border border-slate-700 bg-slate-900">
+            <Loader2 className="w-10 h-10 text-indigo-300 animate-spin" aria-hidden />
             <p className="mt-4 text-sm font-semibold text-slate-500">Loading document…</p>
           </div>
         ) : error ? (
-          <div className="rounded-3xl border border-rose-200 bg-rose-50 p-8 flex gap-4 text-rose-800">
+          <div className="rounded-3xl border border-rose-500/30 bg-rose-500/10 p-8 flex gap-4 text-rose-300">
             <AlertCircle className="w-6 h-6 shrink-0" aria-hidden />
             <div>
               <p className="font-black uppercase tracking-wide text-sm">Unable to load file</p>
@@ -244,8 +244,8 @@ const AdminVerificationDocuments = () => {
           </div>
         ) : blobUrl ? (
           <div className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white border border-slate-200 px-4 py-3">
-              <div className="flex items-center gap-2 text-sm text-slate-600">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-900 border border-slate-700 px-4 py-3">
+              <div className="flex items-center gap-2 text-sm text-slate-400">
                 <FileText className="w-4 h-4 text-indigo-500 shrink-0" aria-hidden />
                 <span className="font-mono text-xs truncate max-w-[min(100%,28rem)]">{downloadName}</span>
               </div>
@@ -253,15 +253,15 @@ const AdminVerificationDocuments = () => {
             </div>
 
             {isPdf ? (
-              <div className="rounded-3xl border border-slate-200 bg-slate-900 overflow-hidden shadow-lg min-h-[75vh]">
+              <div className="rounded-3xl border border-slate-700 bg-slate-900 overflow-hidden shadow-lg min-h-[75vh]">
                 <iframe
                   title="Verification document preview"
                   src={blobUrl}
-                  className="w-full min-h-[75vh] bg-white"
+                  className="w-full min-h-[75vh] bg-slate-900"
                 />
               </div>
             ) : isImage ? (
-              <div className="rounded-3xl border border-slate-200 bg-white p-4 flex justify-center overflow-auto">
+              <div className="rounded-3xl border border-slate-700 bg-slate-900 p-4 flex justify-center overflow-auto">
                 <img
                   src={blobUrl}
                   alt="Uploaded verification document"
@@ -269,8 +269,8 @@ const AdminVerificationDocuments = () => {
                 />
               </div>
             ) : (
-              <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center">
-                <p className="text-slate-700 font-semibold">No in-browser preview for this file type.</p>
+              <div className="rounded-3xl border border-slate-700 bg-slate-900 p-10 text-center">
+                <p className="text-slate-300 font-semibold">No in-browser preview for this file type.</p>
                 <p className="text-slate-500 text-sm mt-2">Use Download to open it locally (Office, viewer, print, etc.).</p>
                 <button
                   type="button"

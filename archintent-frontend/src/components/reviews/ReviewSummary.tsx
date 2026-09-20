@@ -24,14 +24,14 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({ summary }) => {
   };
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="rounded-xl border border-slate-700 bg-slate-900 p-6 shadow-sm">
       <div className="grid gap-6 md:grid-cols-[220px,1fr] md:items-center">
         <div>
-          <p className="text-5xl font-bold text-gray-900">{average.toFixed(1)}</p>
+          <p className="text-5xl font-bold text-slate-100">{average.toFixed(1)}</p>
           <div className="mt-2">
             <StarRating rating={average} />
           </div>
-          <p className="mt-2 text-sm text-gray-600">{total} reviews</p>
+          <p className="mt-2 text-sm text-slate-400">{total} reviews</p>
         </div>
 
         <div className="space-y-2">
@@ -41,11 +41,11 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({ summary }) => {
 
             return (
               <div key={star} className="grid grid-cols-[40px,1fr,28px] items-center gap-2 text-sm">
-                <span className="text-gray-700">{star} ★</span>
-                <div className="h-2.5 overflow-hidden rounded-full bg-gray-100">
+                <span className="text-slate-300">{star} ★</span>
+                <div className="h-2.5 overflow-hidden rounded-full bg-slate-800">
                   <div className={`h-full ${barColors[star]}`} style={{ width: `${width}%` }} />
                 </div>
-                <span className="text-right text-gray-600">{count}</span>
+                <span className="text-right text-slate-400">{count}</span>
               </div>
             );
           })}

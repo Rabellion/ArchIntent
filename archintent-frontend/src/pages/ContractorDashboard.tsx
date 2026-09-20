@@ -180,7 +180,7 @@ const ContractorDashboard: React.FC = () => {
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">MODULE 01</p>
                   <h2 className="text-3xl font-black italic uppercase tracking-tight text-slate-100">Fleet Analytics</h2>
                 </div>
-                <Activity className="text-slate-600" size={40} />
+                <Activity className="text-slate-400" size={40} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

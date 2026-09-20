@@ -96,16 +96,16 @@ const LeaveReviewModal: React.FC<LeaveReviewModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4">
-      <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
+      <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6 shadow-2xl">
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Review {revieweeName}</h3>
-            <p className="mt-1 text-sm text-gray-600">{subtitle}</p>
+            <h3 className="text-xl font-bold text-slate-100">Review {revieweeName}</h3>
+            <p className="mt-1 text-sm text-slate-400">{subtitle}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            className="rounded-full p-1 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
           >
             <X size={18} />
           </button>
@@ -113,11 +113,11 @@ const LeaveReviewModal: React.FC<LeaveReviewModalProps> = ({
 
         {submitted ? (
           <div className="py-8 text-center">
-            <div className="mx-auto mb-4 inline-flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-green-100 text-green-600">
+            <div className="mx-auto mb-4 inline-flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-emerald-500/15 text-green-600">
               <CheckCircle2 size={34} />
             </div>
-            <p className="text-2xl font-bold text-gray-900">Review Submitted!</p>
-            <p className="mt-2 text-gray-600">Thank you for your feedback</p>
+            <p className="text-2xl font-bold text-slate-100">Review Submitted!</p>
+            <p className="mt-2 text-slate-400">Thank you for your feedback</p>
             <button
               type="button"
               onClick={onClose}
@@ -128,41 +128,41 @@ const LeaveReviewModal: React.FC<LeaveReviewModalProps> = ({
           </div>
         ) : (
           <>
-            <div className="mb-5 rounded-lg border border-gray-200 bg-gray-50 p-4">
-              <p className="mb-2 text-sm font-medium text-gray-700">Rating</p>
+            <div className="mb-5 rounded-lg border border-slate-700 bg-slate-800 p-4">
+              <p className="mb-2 text-sm font-medium text-slate-300">Rating</p>
               <StarRating rating={rating} size="lg" interactive onRate={setRating} />
               {rating > 0 ? (
-                <p className="mt-2 text-sm font-medium text-indigo-600">{ratingLabels[rating]}</p>
+                <p className="mt-2 text-sm font-medium text-indigo-300">{ratingLabels[rating]}</p>
               ) : null}
             </div>
 
             <div className="mb-4">
-              <label className="mb-1 block text-sm font-medium text-gray-700">Title (optional)</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">Title (optional)</label>
               <input
                 type="text"
                 maxLength={255}
                 placeholder="Summarize your experience"
                 value={reviewTitle}
                 onChange={(e) => setReviewTitle(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-slate-700 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
             </div>
 
             <div className="mb-4">
-              <label className="mb-1 block text-sm font-medium text-gray-700">Your Review (optional)</label>
+              <label className="mb-1 block text-sm font-medium text-slate-300">Your Review (optional)</label>
               <textarea
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="Describe your experience working with this architect/contractor. What went well? What could be improved?"
                 rows={5}
                 maxLength={2000}
-                className="min-h-[120px] w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="min-h-[120px] w-full rounded-lg border border-slate-700 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
-              <p className="mt-1 text-right text-xs text-gray-500">{reviewText.length}/2000</p>
+              <p className="mt-1 text-right text-xs text-slate-400">{reviewText.length}/2000</p>
             </div>
 
             {error ? (
-              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
                 {error}
               </div>
             ) : null}
@@ -171,7 +171,7 @@ const LeaveReviewModal: React.FC<LeaveReviewModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 hover:bg-gray-50"
+                className="flex-1 rounded-lg border border-slate-700 px-4 py-2.5 font-medium text-slate-300 hover:bg-slate-800"
               >
                 Cancel
               </button>

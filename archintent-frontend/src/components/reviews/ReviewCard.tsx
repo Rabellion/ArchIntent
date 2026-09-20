@@ -8,11 +8,11 @@ interface ReviewCardProps {
 }
 
 const avatarColors = [
-  'bg-rose-100 text-rose-700',
-  'bg-sky-100 text-sky-700',
-  'bg-emerald-100 text-emerald-700',
-  'bg-amber-100 text-amber-700',
-  'bg-indigo-100 text-indigo-700',
+  'bg-rose-500/15 text-rose-300',
+  'bg-sky-500/15 text-sky-300',
+  'bg-emerald-500/15 text-emerald-300',
+  'bg-amber-500/15 text-amber-300',
+  'bg-indigo-500/15 text-indigo-300',
 ];
 
 const getInitials = (name: string): string => {
@@ -45,15 +45,15 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   const colorClass = avatarColors[review.review_id % avatarColors.length];
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-slate-700 bg-slate-900 p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold ${colorClass}`}>
             {initials}
           </div>
-          <p className="font-semibold text-gray-900">{reviewerName}</p>
+          <p className="font-semibold text-slate-100">{reviewerName}</p>
         </div>
-        <p className="text-sm text-gray-500">{getDateLabel(review.created_at)}</p>
+        <p className="text-sm text-slate-400">{getDateLabel(review.created_at)}</p>
       </div>
 
       <div className="mb-3">
@@ -61,24 +61,24 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
       </div>
 
       {review.review_title ? (
-        <h4 className="mb-2 text-base font-semibold text-gray-900">{review.review_title}</h4>
+        <h4 className="mb-2 text-base font-semibold text-slate-100">{review.review_title}</h4>
       ) : null}
 
       {review.review_text ? (
-        <p className="mb-4 whitespace-pre-wrap text-sm leading-relaxed text-gray-700">{review.review_text}</p>
+        <p className="mb-4 whitespace-pre-wrap text-sm leading-relaxed text-slate-300">{review.review_text}</p>
       ) : null}
 
       <div className="flex flex-wrap items-center gap-2 text-xs">
         {review.project?.project_type ? (
-          <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-medium text-indigo-700">
+          <span className="rounded-full bg-indigo-500/10 px-2.5 py-1 font-medium text-indigo-300">
             {review.project.project_type}
           </span>
         ) : null}
         {review.project?.project_title ? (
-          <span className="text-gray-500">{review.project.project_title}</span>
+          <span className="text-slate-400">{review.project.project_title}</span>
         ) : null}
         {(review.is_verified ?? true) ? (
-          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 font-medium text-green-700">
+          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 font-medium text-emerald-300">
             <CheckCircle2 size={12} /> Verified Review
           </span>
         ) : null}

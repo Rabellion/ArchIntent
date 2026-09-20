@@ -153,8 +153,8 @@ const ContractorDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-40 min-h-screen bg-white">
-        <div className="w-20 h-20 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center py-40 min-h-screen bg-slate-950">
+        <div className="w-20 h-20 border-4 border-slate-800 border-t-indigo-600 rounded-full animate-spin" />
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-8 animate-pulse">Syncing Entity Registry...</p>
       </div>
     );
@@ -162,8 +162,8 @@ const ContractorDetail: React.FC = () => {
 
   if (error || !contractor) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
-        <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-900 mb-4">Registry Fault</h2>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-8">
+        <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-100 mb-4">Registry Fault</h2>
         <p className="text-slate-500 font-medium text-lg mb-8">{error || 'Contractor identity not found in the global registry.'}</p>
         <button onClick={() => navigate(-1)} className="px-10 py-4 bg-slate-900 text-white rounded-full text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all">Back to Browse</button>
       </div>
@@ -171,25 +171,25 @@ const ContractorDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-950">
       {/* Premium Dynamic Header */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-             <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-900 hover:bg-slate-900 hover:text-white transition-all">
+             <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center text-slate-100 hover:bg-slate-900 hover:text-white transition-all">
                 <ChevronLeft className="w-5 h-5" />
              </button>
              <div className="hidden md:block">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Contractor Entity</p>
-                <h2 className="text-sm font-black italic uppercase tracking-tight text-slate-900">{contractor.company_name}</h2>
+                <h2 className="text-sm font-black italic uppercase tracking-tight text-slate-100">{contractor.company_name}</h2>
              </div>
           </div>
           <div className="flex items-center gap-6">
              <div className="text-right hidden sm:block">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Fiscal Tier</p>
-                <p className="text-xs font-black text-slate-900">{contractor.won_bids_count} Project Wins</p>
+                <p className="text-xs font-black text-slate-100">{contractor.won_bids_count} Project Wins</p>
              </div>
-             <button className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors">
+             <button className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-indigo-300 transition-colors">
                 <Share2 className="w-5 h-5" />
              </button>
           </div>
@@ -225,9 +225,9 @@ const ContractorDetail: React.FC = () => {
 
                <div className="flex-1 space-y-6">
                   <div>
-                     <h1 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter leading-[0.8] text-slate-900 mb-4">
+                     <h1 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter leading-[0.8] text-slate-100 mb-4">
                         {contractor.company_name.split(' ')[0]} <br/>
-                        <span className="text-indigo-600">{contractor.company_name.split(' ').slice(1).join(' ')}</span>
+                        <span className="text-indigo-300">{contractor.company_name.split(' ').slice(1).join(' ')}</span>
                      </h1>
                      <div className="flex flex-wrap items-center gap-6 mt-6">
                         <div className="flex items-center gap-2">
@@ -241,36 +241,36 @@ const ContractorDetail: React.FC = () => {
                      </div>
                   </div>
 
-                  <p className="text-xl text-slate-600 font-medium leading-relaxed max-w-2xl italic">
+                  <p className="text-xl text-slate-400 font-medium leading-relaxed max-w-2xl italic">
                      "{contractor.portfolio?.company_bio || contractor.bio || 'Executing high-fidelity construction projects with engineering precision and fiscal transparency.'}"
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm font-black uppercase tracking-widest text-slate-400 pt-4">
-                    {contractor.user?.email && <div className="flex items-center gap-2"><span className="text-slate-900">Email:</span> {contractor.user.email}</div>}
-                    {contractor.company_address && <div className="flex items-center gap-2"><span className="text-slate-900">Entity HQ:</span> {contractor.company_address}</div>}
+                    {contractor.user?.email && <div className="flex items-center gap-2"><span className="text-slate-100">Email:</span> {contractor.user.email}</div>}
+                    {contractor.company_address && <div className="flex items-center gap-2"><span className="text-slate-100">Entity HQ:</span> {contractor.company_address}</div>}
                   </div>
                </div>
             </section>
 
             {/* Performance Grid */}
             <section className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-               <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between h-48">
+               <div className="bg-slate-800 p-10 rounded-[3rem] border border-slate-800 flex flex-col justify-between h-48">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                      <Briefcase className="w-4 h-4" /> Tenure
                   </p>
-                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-900">{contractor.experience_years}+ Years Experience</p>
+                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-100">{contractor.experience_years}+ Years Experience</p>
                </div>
-               <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between h-48">
+               <div className="bg-slate-800 p-10 rounded-[3rem] border border-slate-800 flex flex-col justify-between h-48">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                      <Trophy className="w-4 h-4" /> Market Cap
                   </p>
-                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-900">{contractor.won_bids_count} Project Wins</p>
+                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-100">{contractor.won_bids_count} Project Wins</p>
                </div>
-               <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between h-48">
+               <div className="bg-slate-800 p-10 rounded-[3rem] border border-slate-800 flex flex-col justify-between h-48">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                      <Activity className="w-4 h-4" /> Reliability Score
                   </p>
-                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-900">Tier A Expert</p>
+                  <p className="text-2xl font-black italic uppercase tracking-tight text-slate-100">Tier A Expert</p>
                </div>
             </section>
 
@@ -278,23 +278,23 @@ const ContractorDetail: React.FC = () => {
             <section className="space-y-12">
                <div>
                   <p className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-2 leading-none">Catalog 01</p>
-                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-900">Construction <br/><span className="text-indigo-600">Chronicles</span></h2>
+                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-100">Construction <br/><span className="text-indigo-300">Chronicles</span></h2>
                </div>
 
                {!contractor.portfolio?.projects?.length ? (
-                 <div className="p-20 bg-slate-50 rounded-[4rem] border-2 border-dashed border-slate-100 text-center">
+                 <div className="p-20 bg-slate-800 rounded-[4rem] border-2 border-dashed border-slate-800 text-center">
                     <HardHat className="w-16 h-16 text-slate-300 mx-auto mb-6" />
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No construction projects synchronized in the portfolio subsystem.</p>
                  </div>
                ) : (
                  <div className="space-y-12">
                    {contractor.portfolio.projects.map((project) => (
-                     <div key={project.contractor_project_id} className="group bg-white rounded-[4rem] border border-slate-100 shadow-2xl shadow-slate-200/50 overflow-hidden hover:border-indigo-200 transition-all duration-500">
+                     <div key={project.contractor_project_id} className="group bg-slate-900 rounded-[4rem] border border-slate-800 shadow-2xl shadow-slate-200/50 overflow-hidden hover:border-indigo-500/30 transition-all duration-500">
                        <div className="p-10 md:p-12 space-y-10">
                          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-50 pb-8">
                             <div>
                                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">{project.project_ref}</p>
-                               <h3 className="text-3xl font-black italic uppercase tracking-tight text-slate-900">{project.project_title}</h3>
+                               <h3 className="text-3xl font-black italic uppercase tracking-tight text-slate-100">{project.project_title}</h3>
                             </div>
                             <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-slate-400">
                                <div className="flex items-center gap-2"><Calendar className="w-4 h-4" /> {project.completion_date ? new Date(project.completion_date).toLocaleDateString() : 'N/A'}</div>
@@ -303,7 +303,7 @@ const ContractorDetail: React.FC = () => {
                             </div>
                          </div>
 
-                         <p className="text-lg text-slate-600 font-medium leading-relaxed italic">
+                         <p className="text-lg text-slate-400 font-medium leading-relaxed italic">
                            "{project.project_description || 'High-fidelity implementation focused on structural integrity and engineering precision.'}"
                          </p>
 
@@ -339,13 +339,13 @@ const ContractorDetail: React.FC = () => {
                             {project.project_value_pkr && (
                                <div>
                                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Project Valuation</p>
-                                  <p className="text-xl font-black italic text-slate-900 tracking-tight">PKR {project.project_value_pkr.toLocaleString()}</p>
+                                  <p className="text-xl font-black italic text-slate-100 tracking-tight">PKR {project.project_value_pkr.toLocaleString()}</p>
                                </div>
                             )}
                             {project.duration_days && (
                                <div>
                                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Execution Period</p>
-                                  <p className="text-xl font-black italic text-slate-900 tracking-tight">{project.duration_days} Operating Days</p>
+                                  <p className="text-xl font-black italic text-slate-100 tracking-tight">{project.duration_days} Operating Days</p>
                                </div>
                             )}
                          </div>
@@ -360,22 +360,22 @@ const ContractorDetail: React.FC = () => {
             <section id="reviews" className="space-y-12">
                <div>
                   <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em] mb-2 leading-none">Catalog 02</p>
-                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-900">Client <br/><span className="text-indigo-600">Testimonials</span></h2>
+                  <h2 className="text-4xl font-black italic uppercase tracking-tighter text-slate-100">Client <br/><span className="text-indigo-300">Testimonials</span></h2>
                </div>
 
                {reviewSummary.total_reviews === 0 ? (
-                 <div className="p-12 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-100 text-center">
+                 <div className="p-12 bg-slate-800 rounded-[3rem] border-2 border-dashed border-slate-800 text-center">
                     <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-6" />
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No project feedback synchronized yet.</p>
                  </div>
                ) : (
                  <div className="space-y-12">
-                    <div className="bg-white rounded-[3.5rem] border border-slate-100 p-10 shadow-2xl shadow-slate-200/50">
+                    <div className="bg-slate-900 rounded-[3.5rem] border border-slate-800 p-10 shadow-2xl shadow-slate-200/50">
                        <ReviewSummary summary={reviewSummary} />
                     </div>
                     <div className="grid grid-cols-1 gap-8">
                       {reviews.slice(0, visibleReviews).map((review) => (
-                        <div key={review.review_id} className="bg-white rounded-[2.5rem] border border-slate-100 p-10 shadow-lg shadow-slate-100/50 group hover:border-indigo-100 transition-colors">
+                        <div key={review.review_id} className="bg-slate-900 rounded-[2.5rem] border border-slate-800 p-10 shadow-lg shadow-slate-100/50 group hover:border-indigo-500/30 transition-colors">
                            <ReviewCard review={review} />
                         </div>
                       ))}
@@ -386,7 +386,7 @@ const ContractorDetail: React.FC = () => {
                          <button
                            type="button"
                            onClick={loadMoreReviews}
-                           className="px-10 py-5 bg-white border-2 border-slate-200 rounded-full text-xs font-black uppercase tracking-widest text-slate-900 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-xl shadow-slate-100 flex items-center gap-4 group"
+                           className="px-10 py-5 bg-slate-900 border-2 border-slate-700 rounded-full text-xs font-black uppercase tracking-widest text-slate-100 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-xl shadow-slate-100 flex items-center gap-4 group"
                          >
                            {loadingMoreReviews ? (
                              <div className="w-4 h-4 border-2 border-slate-300 border-t-slate-900 rounded-full animate-spin" />
@@ -437,9 +437,9 @@ const ContractorDetail: React.FC = () => {
                 </div>
 
                 {/* Fiscal Tier Widget */}
-                <div className="bg-indigo-50 rounded-[3rem] p-10 border border-indigo-100">
-                   <Award className="w-10 h-10 text-indigo-600 mb-6" />
-                   <h4 className="text-lg font-black italic uppercase tracking-tight text-slate-900 mb-4">Fiscal Tier: A</h4>
+                <div className="bg-indigo-500/10 rounded-[3rem] p-10 border border-indigo-500/30">
+                   <Award className="w-10 h-10 text-indigo-300 mb-6" />
+                   <h4 className="text-lg font-black italic uppercase tracking-tight text-slate-100 mb-4">Fiscal Tier: A</h4>
                    <p className="text-sm text-indigo-900/60 font-medium leading-relaxed">
                       This entity has been authorized for high-budget construction projects based on fiscal transparency and past performance records.
                    </p>

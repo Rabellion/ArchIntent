@@ -169,8 +169,8 @@ const AdminVerifyContractorDetail = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-40 min-h-screen bg-white">
-        <div className="w-20 h-20 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center py-40 min-h-screen bg-slate-950">
+        <div className="w-20 h-20 border-4 border-slate-800 border-t-indigo-600 rounded-full animate-spin" />
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-8 animate-pulse">Syncing Entity Matrix...</p>
       </div>
     )
@@ -179,10 +179,10 @@ const AdminVerifyContractorDetail = () => {
   if (error || !contractor) {
     return (
       <div className="max-w-2xl mx-auto py-24 px-4 text-center">
-        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-8">
+        <div className="w-20 h-20 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
            <AlertCircle className="w-10 h-10 text-red-400" />
         </div>
-        <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tighter italic uppercase">Registry Fault</h2>
+        <h2 className="text-4xl font-black text-slate-100 mb-4 tracking-tighter italic uppercase">Registry Fault</h2>
         <p className="text-slate-500 mb-10 text-lg font-medium">{error || 'The requested contractor record is missing from the global registry.'}</p>
         <Link
           to="/admin/verify-contractors"
@@ -203,7 +203,7 @@ const AdminVerifyContractorDetail = () => {
       <div className="mb-16">
         <Link
           to="/admin/verify-contractors"
-          className="inline-flex items-center gap-2 text-slate-400 hover:text-indigo-600 mb-6 transition-colors group"
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-indigo-300 mb-6 transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-[10px] font-black uppercase tracking-widest">Back to Contractor Queue</span>
@@ -212,15 +212,15 @@ const AdminVerifyContractorDetail = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div>
             <div className="flex items-center gap-4 mb-4">
-               <span className="px-4 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-indigo-100">
+               <span className="px-4 py-1 bg-indigo-500/10 text-indigo-300 text-[10px] font-black uppercase tracking-widest rounded-full border border-indigo-500/30">
                   Company Audit
                </span>
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                   ID: CON-{contractor.contractor_id.toString().padStart(5, '0')}
                </span>
             </div>
-            <h1 className="text-5xl lg:text-7xl font-black text-slate-900 tracking-tighter italic uppercase leading-[0.85]">
-              Verify <br/><span className="text-indigo-600">Contractor</span>
+            <h1 className="text-5xl lg:text-7xl font-black text-slate-100 tracking-tighter italic uppercase leading-[0.85]">
+              Verify <br/><span className="text-indigo-300">Contractor</span>
             </h1>
           </div>
           
@@ -262,10 +262,10 @@ const AdminVerifyContractorDetail = () => {
               <div className="flex-1 space-y-6 pt-4">
                 <div>
                    <div className="flex items-center gap-2 mb-2">
-                      <HardHat className="w-4 h-4 text-indigo-600" />
-                      <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">{contractor.company_name || 'Individual Entity'}</span>
+                      <HardHat className="w-4 h-4 text-indigo-300" />
+                      <span className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em]">{contractor.company_name || 'Individual Entity'}</span>
                    </div>
-                   <h2 className="text-4xl font-black text-slate-900 italic uppercase tracking-tight mb-2">
+                   <h2 className="text-4xl font-black text-slate-100 italic uppercase tracking-tight mb-2">
                      {u?.full_name || 'System User'}
                    </h2>
                    <div className="flex flex-wrap gap-4">
@@ -279,17 +279,17 @@ const AdminVerifyContractorDetail = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
-                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                  <div className="bg-slate-800 p-6 rounded-3xl border border-slate-800">
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Company Reg</span>
-                    <span className="text-lg font-black text-slate-900 font-mono tracking-wider italic uppercase">{contractor.registration_number || 'NULL'}</span>
+                    <span className="text-lg font-black text-slate-100 font-mono tracking-wider italic uppercase">{contractor.registration_number || 'NULL'}</span>
                   </div>
-                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                  <div className="bg-slate-800 p-6 rounded-3xl border border-slate-800">
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Market Tenure</span>
-                    <span className="text-lg font-black text-slate-900 italic uppercase tracking-tight">{contractor.experience_years ? `${contractor.experience_years} Years` : '—'}</span>
+                    <span className="text-lg font-black text-slate-100 italic uppercase tracking-tight">{contractor.experience_years ? `${contractor.experience_years} Years` : '—'}</span>
                   </div>
-                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                  <div className="bg-slate-800 p-6 rounded-3xl border border-slate-800">
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">PEC Status</span>
-                    <span className="text-lg font-black text-slate-900 font-mono tracking-wider italic uppercase">{contractor.pec_registration || 'None'}</span>
+                    <span className="text-lg font-black text-slate-100 font-mono tracking-wider italic uppercase">{contractor.pec_registration || 'None'}</span>
                   </div>
                 </div>
               </div>
@@ -300,20 +300,20 @@ const AdminVerifyContractorDetail = () => {
           <section className="space-y-16">
             <div className="space-y-10">
                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-                     <Layers className="w-6 h-6 text-slate-900" />
+                  <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-800">
+                     <Layers className="w-6 h-6 text-slate-100" />
                   </div>
                   <div>
                      <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest leading-none mb-1">Module 01</p>
-                     <h3 className="text-xl font-black italic uppercase tracking-tight text-slate-900">Operational Profile</h3>
+                     <h3 className="text-xl font-black italic uppercase tracking-tight text-slate-100">Operational Profile</h3>
                   </div>
                </div>
                
-               <div className="bg-slate-50 rounded-[3rem] p-10 border border-slate-100 space-y-10">
+               <div className="bg-slate-800 rounded-[3rem] p-10 border border-slate-800 space-y-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                      <div className="space-y-4">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Primary Specialization</p>
-                        <p className="text-lg font-black italic uppercase text-slate-900 bg-white px-6 py-4 rounded-2xl border border-slate-100 inline-block">
+                        <p className="text-lg font-black italic uppercase text-slate-100 bg-slate-900 px-6 py-4 rounded-2xl border border-slate-800 inline-block">
                            {contractor.specialization || 'General Construction'}
                         </p>
                      </div>
@@ -329,9 +329,9 @@ const AdminVerifyContractorDetail = () => {
                      </div>
                   </div>
 
-                  <div className="pt-10 border-t border-slate-200/50">
+                  <div className="pt-10 border-t border-slate-700/50">
                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-2">Entity Description</p>
-                     <p className="text-sm text-slate-600 font-medium leading-relaxed italic bg-white p-8 rounded-[2.5rem] border border-slate-100">
+                     <p className="text-sm text-slate-400 font-medium leading-relaxed italic bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800">
                         "{contractor.bio || 'This entity specializes in professional construction services with a focus on project fidelity and structural excellence.'}"
                      </p>
                   </div>
@@ -341,12 +341,12 @@ const AdminVerifyContractorDetail = () => {
             {contractor.verification_document && (
               <div className="space-y-10">
                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-                       <FileText className="w-6 h-6 text-slate-900" />
+                    <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-800">
+                       <FileText className="w-6 h-6 text-slate-100" />
                     </div>
                     <div>
                        <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest leading-none mb-1">Module 02</p>
-                       <h3 className="text-xl font-black italic uppercase tracking-tight text-slate-900">Legal Credentials</h3>
+                       <h3 className="text-xl font-black italic uppercase tracking-tight text-slate-100">Legal Credentials</h3>
                     </div>
                  </div>
 
@@ -368,7 +368,7 @@ const AdminVerifyContractorDetail = () => {
                        to={`/admin/verify-contractors/${contractorId}/documents`}
                        target="_blank"
                        rel="noopener noreferrer"
-                       className="w-full md:w-auto px-10 py-5 bg-white text-slate-900 rounded-full font-black uppercase tracking-[0.2em] text-[10px] hover:bg-indigo-500 hover:text-white transition-all flex items-center justify-center gap-3 shadow-2xl group text-center"
+                       className="w-full md:w-auto px-10 py-5 bg-slate-900 text-slate-100 rounded-full font-black uppercase tracking-[0.2em] text-[10px] hover:bg-indigo-500 hover:text-white transition-all flex items-center justify-center gap-3 shadow-2xl group text-center"
                      >
                        <ExternalLink className="w-4 h-4 shrink-0" aria-hidden />
                        Document review page
@@ -386,7 +386,7 @@ const AdminVerifyContractorDetail = () => {
           <div className="sticky top-32 space-y-8">
             
             {/* Audit Control Module */}
-            <div className="bg-white rounded-[3.5rem] border-2 border-slate-100 p-10 shadow-2xl shadow-slate-200/50">
+            <div className="bg-slate-900 rounded-[3.5rem] border-2 border-slate-800 p-10 shadow-2xl shadow-slate-200/50">
               <div className="flex items-center justify-between mb-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Audit Terminal</span>
                 <div className="flex items-center gap-2">
@@ -400,11 +400,11 @@ const AdminVerifyContractorDetail = () => {
                 <div className="space-y-4">
                    <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">NTN #</span>
-                      <span className="text-xs font-black italic text-slate-900 tracking-tight">{contractor.ntn_number || 'NULL'}</span>
+                      <span className="text-xs font-black italic text-slate-100 tracking-tight">{contractor.ntn_number || 'NULL'}</span>
                    </div>
                    <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">SECP #</span>
-                      <span className="text-xs font-black italic text-slate-900 tracking-tight">{contractor.secp_number || 'NULL'}</span>
+                      <span className="text-xs font-black italic text-slate-100 tracking-tight">{contractor.secp_number || 'NULL'}</span>
                    </div>
                 </div>
               </div>
@@ -423,7 +423,7 @@ const AdminVerifyContractorDetail = () => {
                   type="button"
                   onClick={() => setConfirm({ isOpen: true, type: 'reject', rejectionReason: '' })}
                   disabled={processing}
-                  className="w-full py-5 bg-white text-red-500 border-2 border-slate-100 rounded-full font-black uppercase tracking-[0.2em] text-[10px] hover:bg-red-50 hover:border-red-100 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="w-full py-5 bg-slate-900 text-red-500 border-2 border-slate-800 rounded-full font-black uppercase tracking-[0.2em] text-[10px] hover:bg-rose-500/10 hover:border-red-500/30 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                 >
                   <X className="w-4 h-4" />
                   Reject Protocol
@@ -432,7 +432,7 @@ const AdminVerifyContractorDetail = () => {
             </div>
 
             {/* Audit Intelligence Widget */}
-            <div className="bg-slate-50 rounded-[3rem] p-10 border border-slate-100">
+            <div className="bg-slate-800 rounded-[3rem] p-10 border border-slate-800">
                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                  <ShieldCheck className="w-4 h-4" /> Audit Directives
                </h4>
@@ -443,7 +443,7 @@ const AdminVerifyContractorDetail = () => {
                    'Audit Original NTN Records',
                    'Cross-reference Physical Location'
                  ].map((item, i) => (
-                   <li key={i} className="flex items-start gap-4 text-[11px] font-black uppercase italic text-slate-600 tracking-tight leading-relaxed">
+                   <li key={i} className="flex items-start gap-4 text-[11px] font-black uppercase italic text-slate-400 tracking-tight leading-relaxed">
                      <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0 mt-1" />
                      {item}
                    </li>
@@ -458,18 +458,18 @@ const AdminVerifyContractorDetail = () => {
       {/* Premium Confirm Dialog */}
       {confirm.isOpen && confirm.type === 'approve' && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center z-[100] p-6 animate-in fade-in duration-500">
-          <div className="bg-white rounded-[4rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] max-w-md w-full p-12 text-center relative overflow-hidden border border-white">
-            <div className="w-24 h-24 bg-emerald-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 border border-emerald-100">
+          <div className="bg-slate-900 rounded-[4rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] max-w-md w-full p-12 text-center relative overflow-hidden border border-white">
+            <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 border border-emerald-500/30">
               <ShieldCheck className="w-12 h-12 text-emerald-500" />
             </div>
-            <h3 className="text-3xl font-black text-slate-900 italic uppercase tracking-tighter mb-4 leading-none">
+            <h3 className="text-3xl font-black text-slate-100 italic uppercase tracking-tighter mb-4 leading-none">
               Verify <br/><span className="text-emerald-500">Identity?</span>
             </h3>
             <p className="text-slate-500 text-sm font-medium mb-6 leading-relaxed max-w-xs mx-auto italic">
-              Synchronizing <span className="font-bold text-slate-900 uppercase">"{contractor.company_name || u?.full_name}"</span> into the authorized contractor registry.
+              Synchronizing <span className="font-bold text-slate-100 uppercase">"{contractor.company_name || u?.full_name}"</span> into the authorized contractor registry.
             </p>
             {contractor.verification_document && (
-              <div className="mb-8 mx-auto max-w-sm rounded-2xl border border-emerald-100 bg-emerald-50/90 px-4 py-3 text-left">
+              <div className="mb-8 mx-auto max-w-sm rounded-2xl border border-emerald-500/30 bg-emerald-500/10/90 px-4 py-3 text-left">
                 <p className="text-[11px] font-bold text-emerald-900 leading-relaxed">
                   A separate tab was opened with the uploaded verification document. Review it there, then confirm below.
                 </p>
@@ -477,7 +477,7 @@ const AdminVerifyContractorDetail = () => {
                   to={`/admin/verify-contractors/${contractor.contractor_id}/documents`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-800"
+                  className="mt-2 inline-flex text-[10px] font-black uppercase tracking-widest text-indigo-300 hover:text-indigo-300"
                 >
                   Open document review again
                 </Link>
@@ -493,7 +493,7 @@ const AdminVerifyContractorDetail = () => {
               </button>
               <button
                 onClick={() => setConfirm({ isOpen: false, type: null, rejectionReason: '' })}
-                className="w-full py-4 text-slate-400 font-black uppercase tracking-widest text-[10px] hover:text-slate-900 transition-colors"
+                className="w-full py-4 text-slate-400 font-black uppercase tracking-widest text-[10px] hover:text-slate-100 transition-colors"
               >
                 Cancel Protocol
               </button>
@@ -505,17 +505,17 @@ const AdminVerifyContractorDetail = () => {
       {/* Premium Reject Dialog */}
       {confirm.isOpen && confirm.type === 'reject' && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center z-[100] p-6 animate-in fade-in duration-500">
-          <div className="bg-white rounded-[4rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] max-w-xl w-full p-12 relative border border-white">
+          <div className="bg-slate-900 rounded-[4rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] max-w-xl w-full p-12 relative border border-white">
             <div className="flex items-center justify-between mb-10">
               <div>
                  <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Audit Rejection</p>
-                 <h3 className="text-3xl font-black text-slate-900 italic uppercase tracking-tighter leading-none">
+                 <h3 className="text-3xl font-black text-slate-100 italic uppercase tracking-tighter leading-none">
                    Establish <br/><span className="text-red-500">Fault Protocol</span>
                  </h3>
               </div>
               <button 
                 onClick={() => setConfirm({ isOpen: false, type: null, rejectionReason: '' })}
-                className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all shadow-inner"
+                className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-rose-500/10 hover:text-red-500 transition-all shadow-inner"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -528,7 +528,7 @@ const AdminVerifyContractorDetail = () => {
                 onChange={(e) => setConfirm((prev) => ({ ...prev, rejectionReason: e.target.value }))}
                 placeholder="Outline the reasons for application denial (minimum 10 characters)..."
                 rows={5}
-                className="w-full px-8 py-6 bg-slate-50 border-2 border-slate-50 rounded-[2.5rem] text-sm focus:ring-8 focus:ring-red-50 focus:border-red-100 focus:bg-white outline-none transition-all placeholder:text-slate-300 font-medium italic"
+                className="w-full px-8 py-6 bg-slate-800 border-2 border-slate-50 rounded-[2.5rem] text-sm focus:ring-8 focus:ring-red-50 focus:border-red-500/30 focus:bg-slate-900 outline-none transition-all placeholder:text-slate-300 font-medium italic"
               />
               <div className="flex justify-between mt-4 px-6">
                 <span className={`text-[10px] font-black uppercase tracking-widest ${confirm.rejectionReason.length < 10 ? 'text-amber-500' : 'text-emerald-500'}`}>

@@ -156,21 +156,21 @@ export default function AdminUsers() {
 
   const getRoleColor = (role: string) => {
     const colors: Record<string, string> = {
-      client: 'bg-blue-100 text-blue-700',
-      architect: 'bg-purple-100 text-purple-700',
-      contractor: 'bg-orange-100 text-orange-700',
-      admin: 'bg-red-100 text-red-700',
+      client: 'bg-blue-500/15 text-blue-300',
+      architect: 'bg-purple-500/15 text-purple-300',
+      contractor: 'bg-orange-500/15 text-orange-300',
+      admin: 'bg-rose-500/15 text-rose-300',
     };
-    return colors[role] || 'bg-gray-100 text-gray-700';
+    return colors[role] || 'bg-slate-800 text-slate-300';
   };
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      active: 'bg-green-100 text-green-700',
-      pending: 'bg-yellow-100 text-yellow-700',
-      suspended: 'bg-red-100 text-red-700',
+      active: 'bg-emerald-500/15 text-emerald-300',
+      pending: 'bg-amber-500/15 text-amber-300',
+      suspended: 'bg-rose-500/15 text-rose-300',
     };
-    return colors[status] || 'bg-gray-100 text-gray-700';
+    return colors[status] || 'bg-slate-800 text-slate-300';
   };
 
   const getInitials = (name: string) => {
@@ -276,29 +276,29 @@ export default function AdminUsers() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600 mt-1">Manage all platform users</p>
+          <h1 className="text-3xl font-bold text-slate-100">User Management</h1>
+          <p className="text-slate-400 mt-1">Manage all platform users</p>
         </div>
-        <Users className="w-8 h-8 text-gray-400" />
+        <Users className="w-8 h-8 text-slate-500" />
       </div>
 
       {/* Error Alert */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+        <div className="bg-rose-500/10 border border-rose-500/30 rounded-lg p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="font-semibold text-red-900">Error</h3>
-            <p className="text-red-700 text-sm">{error}</p>
+            <p className="text-rose-300 text-sm">{error}</p>
           </div>
         </div>
       )}
 
       {/* Filter Bar */}
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
+      <div className="bg-slate-900 rounded-lg shadow p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
             <input
               type="text"
               placeholder="Search by email or name..."
@@ -306,7 +306,7 @@ export default function AdminUsers() {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, search: e.target.value }))
               }
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -316,7 +316,7 @@ export default function AdminUsers() {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, role: e.target.value }))
             }
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Roles</option>
             <option value="client">Client</option>
@@ -331,7 +331,7 @@ export default function AdminUsers() {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, status: e.target.value }))
             }
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -355,41 +355,41 @@ export default function AdminUsers() {
       {loading && (
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading users...</p>
+            <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-400">Loading users...</p>
           </div>
         </div>
       )}
 
       {/* Users Table */}
       {!loading && users.length > 0 && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-slate-900 rounded-lg shadow overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-100 uppercase tracking-wider">
                   User
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-100 uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-100 uppercase tracking-wider">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-100 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-slate-100 uppercase tracking-wider">
                   Joined
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-900 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-semibold text-slate-100 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-slate-700">
               {users.map((user) => (
-                <tr key={user.user_id} className="hover:bg-gray-50 transition">
+                <tr key={user.user_id} className="hover:bg-slate-800 transition">
                   {/* Avatar + Name */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
@@ -404,13 +404,13 @@ export default function AdminUsers() {
                           {getInitials(user.full_name)}
                         </div>
                       )}
-                      <span className="font-medium text-gray-900">{user.full_name}</span>
+                      <span className="font-medium text-slate-100">{user.full_name}</span>
                     </div>
                   </td>
 
                   {/* Email */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-gray-600 text-sm">{user.email}</span>
+                    <span className="text-slate-400 text-sm">{user.email}</span>
                   </td>
 
                   {/* Role Badge */}
@@ -437,7 +437,7 @@ export default function AdminUsers() {
 
                   {/* Joined Date */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-gray-600 text-sm">
+                    <span className="text-slate-400 text-sm">
                       {new Date(user.created_at).toLocaleDateString()}
                     </span>
                   </td>
@@ -451,17 +451,17 @@ export default function AdminUsers() {
                             dropdownOpen === user.user_id ? null : user.user_id
                           )
                         }
-                        className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                        className="inline-flex items-center px-3 py-2 border border-slate-700 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 transition"
                       >
                         Actions
                         <ChevronDown className="w-4 h-4 ml-2" />
                       </button>
 
                       {dropdownOpen === user.user_id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                        <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-lg z-10">
                           <button
                             onClick={() => handleViewProfile(user)}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 border-b border-gray-200"
+                            className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 flex items-center gap-2 border-b border-slate-700"
                           >
                             <Eye className="w-4 h-4" />
                             View Profile
@@ -477,7 +477,7 @@ export default function AdminUsers() {
                                   deleteConfirmEmail: '',
                                 })
                               }
-                              className="w-full text-left px-4 py-2 text-sm text-orange-600 hover:bg-orange-50 flex items-center gap-2 border-b border-gray-200"
+                              className="w-full text-left px-4 py-2 text-sm text-orange-600 hover:bg-orange-500/10 flex items-center gap-2 border-b border-slate-700"
                             >
                               <Lock className="w-4 h-4" />
                               Suspend
@@ -488,7 +488,7 @@ export default function AdminUsers() {
                             user.role !== 'admin' && (
                               <button
                                 onClick={() => handleActivate(user)}
-                                className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 flex items-center gap-2 border-b border-gray-200"
+                                className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-emerald-500/10 flex items-center gap-2 border-b border-slate-700"
                               >
                                 <Unlock className="w-4 h-4" />
                                 Activate
@@ -505,7 +505,7 @@ export default function AdminUsers() {
                                   deleteConfirmEmail: '',
                                 })
                               }
-                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-rose-500/10 flex items-center gap-2"
                             >
                               <Trash2 className="w-4 h-4" />
                               Delete
@@ -521,8 +521,8 @@ export default function AdminUsers() {
           </table>
 
           {/* Pagination */}
-          <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 flex items-center justify-between">
-            <span className="text-sm text-gray-600">
+          <div className="bg-slate-800 border-t border-slate-700 px-6 py-4 flex items-center justify-between">
+            <span className="text-sm text-slate-400">
               Showing {startIndex} to {endIndex} of {pagination.total} users
             </span>
             <div className="flex items-center gap-2">
@@ -534,12 +534,12 @@ export default function AdminUsers() {
                   }))
                 }
                 disabled={pagination.current_page === 1}
-                className="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50"
+                className="p-2 border border-slate-700 rounded-lg hover:bg-slate-700 disabled:opacity-50"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
 
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-slate-400">
                 Page {pagination.current_page} of {pagination.last_page}
               </span>
 
@@ -554,7 +554,7 @@ export default function AdminUsers() {
                   }))
                 }
                 disabled={pagination.current_page >= pagination.last_page}
-                className="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50"
+                className="p-2 border border-slate-700 rounded-lg hover:bg-slate-700 disabled:opacity-50"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -565,32 +565,32 @@ export default function AdminUsers() {
 
       {/* Empty State */}
       {!loading && users.length === 0 && (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No users found</h3>
-          <p className="text-gray-600 mt-1">Try adjusting your filters</p>
+        <div className="bg-slate-900 rounded-lg shadow p-12 text-center">
+          <Users className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-slate-100">No users found</h3>
+          <p className="text-slate-400 mt-1">Try adjusting your filters</p>
         </div>
       )}
 
       {/* Confirmation Dialog */}
       {confirmDialog.isOpen && confirmDialog.user && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-          <div className="bg-white w-full md:w-96 rounded-t-lg shadow-lg p-6 space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">
+          <div className="bg-slate-900 w-full md:w-96 rounded-t-lg shadow-lg p-6 space-y-4">
+            <h3 className="text-lg font-bold text-slate-100">
               {confirmDialog.type === 'suspend'
                 ? `Suspend ${confirmDialog.user.full_name}?`
                 : `Delete ${confirmDialog.user.full_name}?`}
             </h3>
 
             {confirmDialog.type === 'suspend' && (
-              <p className="text-gray-600">
+              <p className="text-slate-400">
                 They will not be able to login until their account is reactivated.
               </p>
             )}
 
             {confirmDialog.type === 'delete' && (
               <div className="space-y-3">
-                <p className="text-gray-600">
+                <p className="text-slate-400">
                   This action cannot be undone. Type their email address to confirm:
                 </p>
                 <input
@@ -603,7 +603,7 @@ export default function AdminUsers() {
                       deleteConfirmEmail: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
             )}
@@ -618,7 +618,7 @@ export default function AdminUsers() {
                     deleteConfirmEmail: '',
                   })
                 }
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+                className="flex-1 px-4 py-2 border border-slate-700 text-slate-300 rounded-lg hover:bg-slate-800 font-medium"
               >
                 Cancel
               </button>
@@ -660,13 +660,13 @@ export default function AdminUsers() {
           />
 
           {/* Panel */}
-          <div className="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-xl overflow-y-auto">
+          <div className="absolute inset-y-0 right-0 max-w-md w-full bg-slate-900 shadow-xl overflow-y-auto">
             {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">User Profile</h2>
+            <div className="sticky top-0 bg-slate-900 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-100">User Profile</h2>
               <button
                 onClick={() => setSelectedUser(null)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-slate-500 hover:text-slate-300"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -676,14 +676,14 @@ export default function AdminUsers() {
             {panelLoading ? (
               <div className="p-6 flex items-center justify-center min-h-96">
                 <div className="text-center">
-                  <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-2"></div>
-                  <p className="text-gray-600 text-sm">Loading...</p>
+                  <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-600 rounded-full animate-spin mx-auto mb-2"></div>
+                  <p className="text-slate-400 text-sm">Loading...</p>
                 </div>
               </div>
             ) : (
               <div className="p-6 space-y-6">
                 {/* User Info */}
-                <div className="text-center pb-4 border-b border-gray-200">
+                <div className="text-center pb-4 border-b border-slate-700">
                   {selectedUser.details.profile_image ? (
                     <img
                       src={resolveImageUrl(selectedUser.details.profile_image)}
@@ -695,25 +695,25 @@ export default function AdminUsers() {
                       {getInitials(selectedUser.details.full_name)}
                     </div>
                   )}
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-slate-100">
                     {selectedUser.details.full_name}
                   </h3>
-                  <p className="text-gray-600 text-sm">{selectedUser.details.email}</p>
+                  <p className="text-slate-400 text-sm">{selectedUser.details.email}</p>
                 </div>
 
                 {/* Details Grid */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Phone
                     </label>
-                    <p className="text-gray-900 mt-1">
+                    <p className="text-slate-100 mt-1">
                       {selectedUser.details.phone || 'N/A'}
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Role
                     </label>
                     <span
@@ -727,7 +727,7 @@ export default function AdminUsers() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Status
                     </label>
                     <span
@@ -741,10 +741,10 @@ export default function AdminUsers() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Joined Date
                     </label>
-                    <p className="text-gray-900 mt-1">
+                    <p className="text-slate-100 mt-1">
                       {new Date(selectedUser.details.created_at).toLocaleDateString(
                         'en-US',
                         {
@@ -759,21 +759,21 @@ export default function AdminUsers() {
                   {/* Architect Specific */}
                   {selectedUser.details.role === 'architect' && (
                     <>
-                      <div className="pt-4 border-t border-gray-200">
-                        <h4 className="font-bold text-gray-900 mb-4">
+                      <div className="pt-4 border-t border-slate-700">
+                        <h4 className="font-bold text-slate-100 mb-4">
                           Architect Details
                         </h4>
                       </div>
                       {selectedUser.details.verification_status && (
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                             Verification Status
                           </label>
                           <span
                             className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold ${
                               selectedUser.details.verification_status === 'verified'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-yellow-100 text-yellow-700'
+                                ? 'bg-emerald-500/15 text-emerald-300'
+                                : 'bg-amber-500/15 text-amber-300'
                             }`}
                           >
                             {selectedUser.details.verification_status}
@@ -782,20 +782,20 @@ export default function AdminUsers() {
                       )}
                       {selectedUser.details.specialization && (
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                             Specialization
                           </label>
-                          <p className="text-gray-900 mt-1">
+                          <p className="text-slate-100 mt-1">
                             {selectedUser.details.specialization}
                           </p>
                         </div>
                       )}
                       {selectedUser.details.experience && (
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                             Experience
                           </label>
-                          <p className="text-gray-900 mt-1">
+                          <p className="text-slate-100 mt-1">
                             {selectedUser.details.experience}
                           </p>
                         </div>
@@ -806,41 +806,41 @@ export default function AdminUsers() {
                   {/* Contractor Specific */}
                   {selectedUser.details.role === 'contractor' && (
                     <>
-                      <div className="pt-4 border-t border-gray-200">
-                        <h4 className="font-bold text-gray-900 mb-4">
+                      <div className="pt-4 border-t border-slate-700">
+                        <h4 className="font-bold text-slate-100 mb-4">
                           Contractor Details
                         </h4>
                       </div>
                       {selectedUser.details.company_name && (
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                             Company Name
                           </label>
-                          <p className="text-gray-900 mt-1">
+                          <p className="text-slate-100 mt-1">
                             {selectedUser.details.company_name}
                           </p>
                         </div>
                       )}
                       {selectedUser.details.company_registration && (
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                             Registration
                           </label>
-                          <p className="text-gray-900 mt-1">
+                          <p className="text-slate-100 mt-1">
                             {selectedUser.details.company_registration}
                           </p>
                         </div>
                       )}
                       {selectedUser.details.verification_status && (
                         <div>
-                          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                             Verification Status
                           </label>
                           <span
                             className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold ${
                               selectedUser.details.verification_status === 'verified'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-yellow-100 text-yellow-700'
+                                ? 'bg-emerald-500/15 text-emerald-300'
+                                : 'bg-amber-500/15 text-amber-300'
                             }`}
                           >
                             {selectedUser.details.verification_status}
@@ -852,7 +852,7 @@ export default function AdminUsers() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="pt-6 border-t border-gray-200 space-y-3">
+                <div className="pt-6 border-t border-slate-700 space-y-3">
                   <button
                     onClick={() => {
                       handleViewProfile(selectedUser.user);
@@ -875,7 +875,7 @@ export default function AdminUsers() {
                           });
                           setSelectedUser(null);
                         }}
-                        className="w-full px-4 py-2 border-2 border-orange-600 text-orange-600 rounded-lg hover:bg-orange-50 transition font-medium"
+                        className="w-full px-4 py-2 border-2 border-orange-600 text-orange-600 rounded-lg hover:bg-orange-500/10 transition font-medium"
                       >
                         Suspend
                       </button>
@@ -889,7 +889,7 @@ export default function AdminUsers() {
                           handleActivate(selectedUser.details);
                           setSelectedUser(null);
                         }}
-                        className="w-full px-4 py-2 border-2 border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition font-medium"
+                        className="w-full px-4 py-2 border-2 border-green-600 text-green-600 rounded-lg hover:bg-emerald-500/10 transition font-medium"
                       >
                         Activate
                       </button>
@@ -906,7 +906,7 @@ export default function AdminUsers() {
                         });
                         setSelectedUser(null);
                       }}
-                      className="w-full px-4 py-2 border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition font-medium"
+                      className="w-full px-4 py-2 border-2 border-red-600 text-red-600 rounded-lg hover:bg-rose-500/10 transition font-medium"
                     >
                       Delete
                     </button>

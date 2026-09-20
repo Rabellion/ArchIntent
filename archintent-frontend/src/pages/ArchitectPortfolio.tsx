@@ -184,7 +184,7 @@ const ArchitectPortfolio: React.FC = () => {
           <div className="flex flex-col items-stretch justify-between gap-8 md:flex-row md:items-center md:gap-10">
             <div className="min-w-0 flex-1 space-y-5 sm:space-y-6">
               <div className="flex items-center gap-3">
-                <div className="h-[2px] w-10 shrink-0 bg-white sm:w-12" />
+                <div className="h-[2px] w-10 shrink-0 bg-slate-900 sm:w-12" />
                 <p className="text-[10px] font-black uppercase tracking-[0.35em] text-white/60 sm:tracking-[0.4em]">
                   IDENTITY PROTOCOL
                 </p>
@@ -198,7 +198,7 @@ const ArchitectPortfolio: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="group flex w-full shrink-0 items-center justify-center gap-4 self-start rounded-full bg-slate-100 py-4 pl-8 pr-4 text-slate-900 transition-all duration-500 hover:pr-8 active:scale-95 sm:w-auto md:self-center"
+              className="group flex w-full shrink-0 items-center justify-center gap-4 self-start rounded-full bg-slate-800 py-4 pl-8 pr-4 text-slate-100 transition-all duration-500 hover:pr-8 active:scale-95 sm:w-auto md:self-center"
             >
               <span className="text-[10px] font-black uppercase tracking-[0.2em]">Add New Entry</span>
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-white transition-transform group-hover:rotate-90">
@@ -339,7 +339,7 @@ const ArchitectPortfolio: React.FC = () => {
                           >
                             Delete Entry
                           </button>
-                          <button type="button" className="w-12 h-12 bg-white/20 hover:bg-slate-100 text-white hover:text-slate-900 border border-white/30 backdrop-blur-md rounded-xl flex items-center justify-center transition-all">
+                          <button type="button" className="w-12 h-12 bg-white/20 hover:bg-slate-700 text-white hover:text-slate-100 border border-white/30 backdrop-blur-md rounded-xl flex items-center justify-center transition-all">
                             <Eye size={20} />
                           </button>
                         </div>
@@ -427,16 +427,16 @@ const ArchitectPortfolio: React.FC = () => {
                     onChange={(e) => setProjectForm({ ...projectForm, project_type: e.target.value as any })} 
                     className="w-full bg-slate-800 border-2 border-slate-600 rounded-2xl p-4 font-bold italic text-slate-100 focus:border-indigo-500 transition-all appearance-none"
                   >
-                    <option value="residential" className="text-slate-900">
+                    <option value="residential" className="text-slate-100">
                       RESIDENTIAL
                     </option>
-                    <option value="commercial" className="text-slate-900">
+                    <option value="commercial" className="text-slate-100">
                       COMMERCIAL
                     </option>
-                    <option value="industrial" className="text-slate-900">
+                    <option value="industrial" className="text-slate-100">
                       INDUSTRIAL
                     </option>
-                    <option value="landscape" className="text-slate-900">
+                    <option value="landscape" className="text-slate-100">
                       LANDSCAPE
                     </option>
                   </select>

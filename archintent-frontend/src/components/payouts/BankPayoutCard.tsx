@@ -333,7 +333,7 @@ export default function BankPayoutCard() {
         </div>
       )}
 
-      <p className="text-[9px] text-slate-600 font-bold mt-6 leading-relaxed">
+      <p className="text-[9px] text-slate-400 font-bold mt-6 leading-relaxed">
         Demo payout path. Requests are recorded for manual settlement and do not transfer funds
         automatically. Use Stripe Connect for automated payouts.
       </p>

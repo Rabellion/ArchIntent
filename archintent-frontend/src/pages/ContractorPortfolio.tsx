@@ -178,7 +178,7 @@ const ContractorPortfolio: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-[2px] bg-white" />
+                <div className="w-12 h-[2px] bg-slate-900" />
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">CONSTRUCTION FLEET</p>
               </div>
               <h1 className="text-7xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.8] mb-4">
@@ -189,7 +189,7 @@ const ContractorPortfolio: React.FC = () => {
 
             <button 
               onClick={() => setShowModal(true)}
-              className="group flex items-center gap-4 bg-slate-100 text-slate-900 pl-8 pr-4 py-4 rounded-full transition-all duration-500 hover:pr-8 active:scale-95"
+              className="group flex items-center gap-4 bg-slate-800 text-slate-100 pl-8 pr-4 py-4 rounded-full transition-all duration-500 hover:pr-8 active:scale-95"
             >
               <span className="text-[10px] font-black uppercase tracking-[0.2em]">Log New Mission</span>
               <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center group-hover:rotate-90 transition-transform">

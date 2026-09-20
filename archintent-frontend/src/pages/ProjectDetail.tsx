@@ -561,10 +561,10 @@ const ProjectDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-slate-950 p-8">
         <div className="max-w-6xl mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 mb-8 font-semibold">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-indigo-300 hover:text-indigo-300 mb-8 font-semibold">
             <ArrowLeft size={20} /> Go Back
           </button>
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-2">
+          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 px-4 py-3 rounded-lg flex items-start gap-2">
             <AlertCircle size={20} className="flex-shrink-0 mt-0.5" />
             <div>{error || 'Project not found'}</div>
           </div>
@@ -599,7 +599,7 @@ const ProjectDetail: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button 
           onClick={() => navigate(-1)} 
-          className="group flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors"
+          className="group flex items-center gap-2 text-slate-400 hover:text-indigo-300 transition-colors"
         >
           <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center group-hover:bg-indigo-950 transition-colors">
             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -873,7 +873,7 @@ const ProjectDetail: React.FC = () => {
                               {bid.contractor.company_name.charAt(0)}
                             </div>
                             <div>
-                              <h4 className="text-lg font-black text-slate-100 group-hover:text-indigo-600 transition-colors cursor-pointer" 
+                              <h4 className="text-lg font-black text-slate-100 group-hover:text-indigo-300 transition-colors cursor-pointer" 
                                   onClick={() => navigate(`/contractor/${bid.contractor.contractor_id}`)}>
                                 {bid.contractor.company_name}
                               </h4>
@@ -885,7 +885,7 @@ const ProjectDetail: React.FC = () => {
                           </div>
                           <div className="flex items-center gap-2">
                             {idx < 3 && (
-                              <div className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                              <div className="px-3 py-1 bg-amber-500/15 text-amber-300 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
                                 <span className="material-symbols-outlined text-[12px] font-fill">bolt</span>
                                 Boosted
                               </div>
@@ -1095,7 +1095,7 @@ const ProjectDetail: React.FC = () => {
                         </div>
                         <label className="block">
                           <div className="p-8 border-2 border-dashed border-slate-700 rounded-[1.5rem] text-center hover:border-indigo-400 transition-colors cursor-pointer group">
-                            <span className="material-symbols-outlined text-4xl text-slate-300 group-hover:text-indigo-600 mb-4 transition-colors">cloud_upload</span>
+                            <span className="material-symbols-outlined text-4xl text-slate-300 group-hover:text-indigo-300 mb-4 transition-colors">cloud_upload</span>
                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Upload Final Package</p>
                             <input type="file" className="hidden" onChange={handleDesignUpload} />
                           </div>
@@ -1111,7 +1111,7 @@ const ProjectDetail: React.FC = () => {
             <div className="p-6 bg-slate-800/60 rounded-[1.5rem] border border-slate-800">
               <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Concierge Support</h5>
               <p className="text-[11px] text-slate-500 mb-4">Need help with this phase?</p>
-              <button className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all">
+              <button className="text-[10px] font-black text-indigo-300 uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all">
                 Contact Agent
                 <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
               </button>
@@ -1167,7 +1167,7 @@ const ProjectDetail: React.FC = () => {
                 <div className="bg-slate-900 rounded-[2rem] border border-slate-700 overflow-hidden shadow-sm">
                    <div className="p-6 border-b border-slate-800 flex items-center justify-between">
                      <div className="flex items-center gap-3">
-                       <span className="material-symbols-outlined text-indigo-600">architecture</span>
+                       <span className="material-symbols-outlined text-indigo-300">architecture</span>
                        <h3 className="text-sm font-black text-slate-100 uppercase tracking-widest">Architectural Service Review</h3>
                      </div>
                    </div>
