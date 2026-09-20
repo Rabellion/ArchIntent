@@ -168,12 +168,29 @@ class AuthController extends Controller
      */
     private function sendOtpEmail(string $toEmail, string $toName, string $otp): bool
     {
+        return $this->deliverOtpEmail($toEmail, $toName, $otp)['sent'];
+    }
+
+    /**
+     * @return array{sent: bool, reason: string|null}
+     *
+     * Returns the reason alongside the outcome because the caller used to
+     * report every failure as "set MAILTRAP_API_TOKEN", which is actively
+     * misleading when the token is set and Mailtrap rejected the request
+     * for some other reason -- most commonly a demo sending domain, which
+     * is only permitted to deliver to the account owner's own address.
+     */
+    private function deliverOtpEmail(string $toEmail, string $toName, string $otp): array
+    {
         $token = config('services.mailtrap.api_token');
 
         if (!$token) {
             \Log::warning('MAILTRAP_API_TOKEN not set — OTP not sent by email', ['email' => $toEmail]);
 
-            return (bool) config('app.debug');
+            return [
+                'sent' => (bool) config('app.debug'),
+                'reason' => 'Email delivery is not configured on this server.',
+            ];
         }
 
         try {
@@ -191,17 +208,64 @@ class AuthController extends Controller
                 ->html($htmlBody)
                 ->category('OTP');
 
-            $mailtrap = MailtrapClient::initSendingEmails(apiKey: $token);
+            // config/services.php has always declared a mode and an inbox
+            // id, but this call hardcoded live sending and ignored both, so
+            // 'sandbox' silently behaved as 'send'. Sandbox matters: a demo
+            // sending domain can only deliver to the account owner, whereas
+            // sandbox captures mail for any recipient in a Mailtrap inbox,
+            // which is what makes a multi-user demo possible at all.
+            $isSandbox = config('services.mailtrap.mode') === 'sandbox';
+            $inboxId = config('services.mailtrap.inbox_id');
+
+            if ($isSandbox && !$inboxId) {
+                \Log::error('MAILTRAP_MODE=sandbox but MAILTRAP_INBOX_ID is not set');
+
+                return [
+                    'sent' => false,
+                    'reason' => 'Email delivery is misconfigured on this server.',
+                ];
+            }
+
+            $mailtrap = MailtrapClient::initSendingEmails(
+                apiKey: $token,
+                isSandbox: $isSandbox,
+                inboxId: $isSandbox ? (int) $inboxId : null,
+            );
             $mailtrap->send($email);
 
-            \Log::info('OTP email sent via Mailtrap', ['email' => $toEmail]);
+            \Log::info('OTP email sent via Mailtrap', [
+                'email' => $toEmail,
+                'mode' => $isSandbox ? 'sandbox' : 'send',
+            ]);
 
-            return true;
+            return ['sent' => true, 'reason' => null];
         } catch (\Throwable $e) {
             \Log::error('Mailtrap OTP send failed', ['error' => $e->getMessage(), 'email' => $toEmail]);
 
-            return false;
+            return [
+                'sent' => false,
+                'reason' => $this->describeMailtrapFailure($e->getMessage()),
+            ];
         }
+    }
+
+    /**
+     * Turn a Mailtrap API error into something a user can act on.
+     */
+    private function describeMailtrapFailure(string $error): string
+    {
+        if (stripos($error, 'demo domain') !== false
+            || stripos($error, 'account owner') !== false) {
+            return 'This server can currently only email the address that owns '
+                . 'its mail account. Ask the administrator to verify a sending '
+                . 'domain or switch mail to sandbox mode.';
+        }
+
+        if (stripos($error, 'unauthor') !== false || stripos($error, '401') !== false) {
+            return 'Email delivery is not configured correctly on this server.';
+        }
+
+        return 'Could not send the verification email. Please try again shortly.';
     }
 
     /**
@@ -227,12 +291,13 @@ class AuthController extends Controller
         }
 
         $otp = $this->issueEmailOtpForUser($user);
-        $sent = $this->sendOtpEmail($user->email, $user->full_name, $otp);
+        $result = $this->deliverOtpEmail($user->email, $user->full_name, $otp);
+        $sent = $result['sent'];
 
         $payload = [
             'message' => $sent
                 ? 'A new verification code was sent to your email.'
-                : 'Could not send email. Set MAILTRAP_API_TOKEN and MAILTRAP_FROM_EMAIL, or try again later.',
+                : ($result['reason'] ?? 'Could not send the verification email. Please try again shortly.'),
             'data' => [
                 'user_id' => $user->user_id,
                 'email_delivered' => $sent,
