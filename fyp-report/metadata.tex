@@ -1,0 +1,75 @@
+% =====================================================================
+%  metadata.tex  --  every personalization value, defined once.
+%
+%  The values below were taken from your FYP proposal (Fyp_Proposal.pdf).
+%  VERIFY each one against your department's records before submission --
+%  a proposal is not always the final word on titles and sessions.
+%  Anything still shown as [PLACEHOLDER IN CAPS] must be filled in.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+% PROJECT
+% ---------------------------------------------------------------------
+\newcommand{\fypProjectTitle}{ArchIntent}
+% VERIFY: your proposal uses the bare product name "ArchIntent" as the
+% title. Final reports normally carry a descriptive title as well. If
+% your department expects one, use something like:
+% \newcommand{\fypProjectTitle}{ArchIntent: An AI-Augmented Marketplace
+%   for Pre-Construction Collaboration}
+
+\newcommand{\fypSession}{2022--2026}
+% Derived from the FA22 registration prefix and the June 2026 completion
+% date in your proposal. VERIFY the exact format your department wants.
+
+% ---------------------------------------------------------------------
+% STUDENTS  (from the proposal's group members table)
+% For a solo submission, comment out student two in \fypStudentBlock.
+% ---------------------------------------------------------------------
+\newcommand{\fypStudentOneName}{Muhammad Dawood Khan}
+\newcommand{\fypStudentOneReg}{FA22-BSE-067}
+
+\newcommand{\fypStudentTwoName}{Huzaifa Imran}
+\newcommand{\fypStudentTwoReg}{FA22-BSE-075}
+
+\newcommand{\fypStudentThreeName}{[STUDENT NAME 3]}
+\newcommand{\fypStudentThreeReg}{[REGISTRATION NUMBER 3]}
+
+% How one student is printed on the title pages: name, then reg. no.
+\newcommand{\fypStudentLine}[2]{%
+  {\fontsize{14}{17}\selectfont\bfseries #1}\\[2pt]
+  {\fontsize{14}{17}\selectfont\bfseries #2}\\[10pt]
+}
+
+% The student list used on BOTH title pages.
+% >>> Uncomment student three's line here if a third member joins. <<<
+\newcommand{\fypStudentBlock}{%
+  \fypStudentLine{\fypStudentOneName}{\fypStudentOneReg}%
+  \fypStudentLine{\fypStudentTwoName}{\fypStudentTwoReg}%
+  % \fypStudentLine{\fypStudentThreeName}{\fypStudentThreeReg}%
+}
+
+% ---------------------------------------------------------------------
+% SUPERVISION  (from the proposal's cover sheet)
+% ---------------------------------------------------------------------
+\newcommand{\fypSupervisor}{Dr. Shamila}
+% VERIFY: your proposal gives the supervisor as "Dr. Shamila" with no
+% surname. Use the full name as it should appear on a signed page.
+
+\newcommand{\fypCoSupervisor}{Engr. Asim Javed}
+% If the co-supervisor is dropped, delete the co-supervisor block in
+% frontmatter/certification.tex (it is marked there with a TODO).
+
+% ---------------------------------------------------------------------
+% DEPARTMENT / UNIVERSITY  (normally no need to change these)
+% ---------------------------------------------------------------------
+\newcommand{\fypDepartment}{Department of Software Engineering}
+\newcommand{\fypFaculty}{Faculty of Engineering \& Technology}
+\newcommand{\fypUniversity}{Mirpur University of Science and Technology (MUST), Mirpur, AJK Pakistan}
+\newcommand{\fypDegreeStatement}{A Project Report is submitted in partial fulfillment of the requirement for the degree of Bachelor of Science in SOFTWARE ENGINEERING}
+
+% ---------------------------------------------------------------------
+% LOGO
+% Place your file at:  fyp-report/images/must_logo.jpg
+% ---------------------------------------------------------------------
+\newcommand{\fypLogoFile}{must_logo.jpg}
+\newcommand{\fypLogoWidth}{3.5cm}

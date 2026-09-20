@@ -1,0 +1,266 @@
+% =====================================================================
+%  fypstyle.sty  --  MUST Mirpur / Dept. of Software Engineering
+%  FYP report style file.  ALL formatting rules live here.
+%  Nothing in this file needs editing for a normal submission.
+% =====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{style/fypstyle}[2026/09/19 MUST FYP report style]
+
+% ---------------------------------------------------------------------
+% 1. ENGINE + FONT
+%    PRIMARY ENGINE: XeLaTeX (real "Times New Roman" via fontspec).
+%    Automatic fallback: if you compile with pdfLaTeX instead, this file
+%    switches to the mathptmx package (Times clone) so it still builds.
+%    ---> See README.md, section "Which engine did we pick?"
+% ---------------------------------------------------------------------
+\RequirePackage{iftex}
+
+\ifPDFTeX
+  % ---- pdfLaTeX fallback branch -------------------------------------
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage[utf8]{inputenc}
+  \RequirePackage{mathptmx}      % closest pdfLaTeX match to Times New Roman
+  \RequirePackage[protrusion=true,expansion=true]{microtype}
+\else
+  % ---- XeLaTeX / LuaLaTeX branch (RECOMMENDED) ----------------------
+  \RequirePackage{fontspec}
+  %
+  % FONT SELECTION IS AUTOMATIC -- do not edit this block.
+  %
+  % "Times New Roman" is a Microsoft font. It is present on Windows and
+  % on most Macs, but it is NOT installed on Overleaf's servers or on a
+  % typical Linux TeX Live box. Compiling there with a hard-coded
+  % \setmainfont{Times New Roman} fails with "font cannot be found".
+  %
+  % So we test for it first and fall back to TeX Gyre Termes, which is
+  % a free, METRICALLY IDENTICAL clone of Times New Roman that ships
+  % with every TeX distribution including Overleaf's. Same character
+  % widths, same line breaks, same page count -- the PDF is
+  % indistinguishable to an examiner.
+  \IfFontExistsTF{Times New Roman}{%
+    \setmainfont{Times New Roman}[Ligatures=TeX]%
+  }{%
+    \setmainfont{TeX Gyre Termes}[Ligatures=TeX]%
+    \PackageWarningNoLine{style/fypstyle}{%
+      Times New Roman not found on this system.\MessageBreak
+      Falling back to TeX Gyre Termes (metrically identical).\MessageBreak
+      This is expected and correct on Overleaf/Linux%
+    }%
+  }
+  % Font expansion is unreliable with system fonts -> protrusion only.
+  \RequirePackage[protrusion=true,expansion=false]{microtype}
+  % OPTIONAL: matching math font. Uncomment only if you use heavy maths.
+  % \RequirePackage{unicode-math}
+  % \setmathfont{TeX Gyre Termes Math}
+\fi
+
+% ---------------------------------------------------------------------
+% 2. PAGE GEOMETRY
+%    A4.  Top / bottom / right = 3 cm (1.2 in).
+%    Left = 3.8 cm (1.5 in) -- the extra width is the binding gutter.
+% ---------------------------------------------------------------------
+\RequirePackage[
+  a4paper,
+  top=3cm,
+  bottom=3cm,
+  right=3cm,
+  left=3.8cm,
+  headheight=15pt,      % silences the fancyhdr "headheight too small" warning
+  headsep=12pt,
+  footskip=1.2cm
+]{geometry}
+
+% ---------------------------------------------------------------------
+% 3. LINE SPACING, JUSTIFICATION, PARAGRAPHS
+% ---------------------------------------------------------------------
+\RequirePackage{setspace}
+\onehalfspacing                        % 1.5 line spacing everywhere
+
+\setlength{\parindent}{0.5in}          % indented paragraphs ...
+\setlength{\parskip}{0pt plus 1pt}     % ... and NO extra gap between them
+
+% ---------------------------------------------------------------------
+% 4. NO HYPHENATION ANYWHERE  (+ overflow control so lines still fit)
+% ---------------------------------------------------------------------
+\RequirePackage[none]{hyphenat}        % hard-disable hyphenation
+
+% Because words can no longer be broken, LaTeX needs permission to
+% stretch the inter-word spaces instead. These settings stop words from
+% visibly sticking out past the right margin.
+\sloppy
+\tolerance=9999
+\emergencystretch=3em
+\hbadness=10000                        % stop "Underfull hbox" log spam
+\hfuzz=2pt
+
+% No orphan / widow lines.
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\brokenpenalty=10000
+
+% ---------------------------------------------------------------------
+% 5. GRAPHICS, TABLES, MISC
+% ---------------------------------------------------------------------
+\RequirePackage{graphicx}
+\graphicspath{{images/}}               % put must_logo.jpg in images/
+\RequirePackage{tikz}                  % used for the dashed diagram boxes
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{longtable}
+\RequirePackage{multirow}
+\RequirePackage{float}
+\RequirePackage{xcolor}
+\RequirePackage{enumitem}
+\RequirePackage{ragged2e}
+
+% ---------------------------------------------------------------------
+% 6. HEADING STYLES  (department-specific -- NOT the LaTeX defaults)
+%      \chapter     ->  "1. INTRODUCTION"       14pt BOLD ALLCAPS centered
+%      \section     ->  "1.1 PROBLEM STATEMENT" 14pt ALLCAPS, NOT bold
+%      \subsection  ->  "1.1.1 Something"       12pt bold, Sentence case
+%
+%    HOW TO WRITE HEADINGS IN THE CHAPTER FILES:
+%      Type chapter and section titles in CAPITALS in the source, e.g.
+%          \chapter{INTRODUCTION}
+%          \section{PROBLEM STATEMENT}
+%      ...so that the Table of Contents shows them in capitals too.
+%      Type sub-sub headings in Sentence case, e.g.
+%          \subsection{System overview}
+%    (The \MakeUppercase below is only a safety net -- it does not change
+%     the ToC entry, which is why the source itself is written in caps.)
+% ---------------------------------------------------------------------
+\RequirePackage{titlesec}
+
+% -- Chapter: 14pt, bold, ALL CAPS, centered, number followed by a dot --
+\titleformat{\chapter}[hang]
+  {\normalfont\fontsize{14}{17}\selectfont\bfseries\centering}
+  {\thechapter.}{0.6em}{\MakeUppercase}
+% Starred chapters (\chapter*) reuse the same look: used by DEDICATION,
+% ACKNOWLEDGMENTS, ABSTRACT, TABLE OF CONTENTS, REFERENCES, etc.
+\titleformat{name=\chapter,numberless}[hang]
+  {\normalfont\fontsize{14}{17}\selectfont\bfseries\centering}
+  {}{0pt}{\MakeUppercase}
+
+% Chapters start at the top of the page, not a third of the way down.
+\titlespacing*{\chapter}{0pt}{-12pt}{24pt}
+\titlespacing*{name=\chapter,numberless}{0pt}{-12pt}{24pt}
+
+% -- Section: 14pt, ALL CAPS, NOT bold --
+\titleformat{\section}[hang]
+  {\normalfont\fontsize{14}{17}\selectfont\mdseries}
+  {\thesection}{0.8em}{\MakeUppercase}
+\titlespacing*{\section}{0pt}{18pt plus 4pt}{8pt}
+
+% -- Subsection: 12pt, bold, Sentence case (no case change applied) --
+\titleformat{\subsection}[hang]
+  {\normalfont\fontsize{12}{14.4}\selectfont\bfseries}
+  {\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{14pt plus 3pt}{6pt}
+
+% -- Subsubsection: 12pt, bold italic, Sentence case (rarely needed) --
+\titleformat{\subsubsection}[hang]
+  {\normalfont\fontsize{12}{14.4}\selectfont\bfseries\itshape}
+  {\thesubsubsection}{0.8em}{}
+\titlespacing*{\subsubsection}{0pt}{12pt plus 2pt}{6pt}
+
+\setcounter{secnumdepth}{3}   % number down to 1.1.1.1
+\setcounter{tocdepth}{2}      % list down to 1.1.1 in the ToC
+
+% ---------------------------------------------------------------------
+% 7. CAPTIONS
+%    Bold label ("Figure 4.1:" / "Table 5.1:") + normal-weight text.
+%    Numbered per chapter (the report class does this automatically).
+%    Figures: caption BELOW.   Tables: caption ABOVE.
+% ---------------------------------------------------------------------
+\RequirePackage[
+  labelfont=bf,
+  textfont=normalfont,
+  labelsep=colon,
+  font=normalsize,
+  justification=centering,
+  singlelinecheck=true
+]{caption}
+\captionsetup[figure]{position=below}
+\captionsetup[table]{position=above}
+
+% ---------------------------------------------------------------------
+% 8. HEADERS AND FOOTERS
+%    Body chapters: running header with "N. CHAPTER NAME", centered
+%    page number in the footer.  Front matter: footer number only.
+% ---------------------------------------------------------------------
+\RequirePackage{fancyhdr}
+
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+
+\fancypagestyle{fypbody}{%
+  \fancyhf{}%
+  \fancyhead[C]{\footnotesize\nouppercase{\leftmark}}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
+% The "plain" style is used automatically on the first page of every
+% chapter and by \tableofcontents etc. Keep the centered page number.
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
+% ---------------------------------------------------------------------
+% 9. FRONT-MATTER HELPERS
+% ---------------------------------------------------------------------
+% An unnumbered front-matter page that still appears in the Table of
+% Contents.  Usage:  \fypfrontpage{ACKNOWLEDGMENTS}
+\newcommand{\fypfrontpage}[1]{%
+  \chapter*{#1}%
+  \addcontentsline{toc}{chapter}{#1}%
+  \markboth{}{}%
+}
+
+% Centered, 14pt bold all-caps heading used on the title / certification
+% pages, where we do NOT want a Table of Contents entry.
+\newcommand{\fypplainheading}[1]{%
+  \begin{center}
+    {\fontsize{14}{17}\selectfont\bfseries\MakeUppercase{#1}}
+  \end{center}
+  \vspace{1em}
+}
+
+% A signature rule for the certification page.
+\newcommand{\fypsigline}[1][6cm]{\rule{#1}{0.5pt}}
+
+% ---------------------------------------------------------------------
+% 10. DIAGRAM PLACEHOLDER BOX  (used seven times in Chapter 4)
+%     Dashed box, 0.8\textwidth wide, height adjustable (default 8cm).
+%     Usage:   \fypdiagram{[INSERT ER DIAGRAM HERE]}
+%              \fypdiagram[9cm]{[INSERT CLASS DIAGRAM HERE]}
+%     To drop a real image in later, replace the whole \fypdiagram{...}
+%     line with:  \includegraphics[width=0.8\textwidth]{er-diagram.png}
+% ---------------------------------------------------------------------
+\newcommand{\fypdiagram}[2][8cm]{%
+  \begin{tikzpicture}
+    \node[
+      draw,
+      dashed,
+      line width=1pt,
+      minimum width=0.8\textwidth,
+      minimum height=#1,
+      align=center,
+      inner sep=8pt,
+      text width=0.72\textwidth
+    ] {\normalfont\bfseries #2};
+  \end{tikzpicture}%
+}
+
+% ---------------------------------------------------------------------
+% 11. HYPERLINKS  (loaded late, on purpose)
+%     "hidelinks" keeps the printed report clean and black-and-white,
+%     while \ref and \cite stay clickable in the PDF.
+% ---------------------------------------------------------------------
+\RequirePackage[hidelinks,bookmarksnumbered]{hyperref}
+
+\endinput

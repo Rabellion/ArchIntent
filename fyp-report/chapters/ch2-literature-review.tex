@@ -1,0 +1,321 @@
+% =====================================================================
+%  CHAPTER 2 -- LITERATURE REVIEW
+%
+%  SOURCE OF THIS CHAPTER
+%  ----------------------
+%  The content below is ADAPTED FROM YOUR FYP PROPOSAL (Fyp_Proposal.pdf),
+%  specifically:
+%      proposal section 1.3  "Motivation & Societal Impact"
+%      proposal section 2    "Competitive Analysis & Market Gap"
+%      proposal section 5    "Benefits"          (supporting citations)
+%      proposal reference list [1]-[10]
+%
+%  The arguments are YOURS and have not been rewritten. No new sources
+%  have been introduced. The proposal's bracket citations have been
+%  converted to \cite{...} commands that resolve to the SAME numbers:
+%      [1] pan2021roles       [6]  lee2017extraction
+%      [2] li2019blockchain   [7]  hawlitschek2016trust
+%      [3] radford2022whisper [8]  hossain2018platform
+%      [4] reimers2019sbert   [9]  procore2025overview
+%      [5] wu2022nlp          [10] zhang2021hybrid
+%
+%  WHAT YOU STILL NEED TO DO
+%  -------------------------
+%  A proposal's literature review is shorter than a final report's. The
+%  structure here is complete and correctly formatted, but each section
+%  is marked with an "% EXPAND:" comment showing where to add depth.
+%  Search this file for "EXPAND:" before submitting.
+%
+%  CITATIONS: five of the proposal's citations attached sources that did
+%  not support the claims made. They have been corrected, and every
+%  correction is documented in the "CITATION CORRECTIONS APPLIED TO
+%  TABLE 2.1" note further down this file. Two new sources were added,
+%  [11] and [12], to cover competitor claims the proposal left
+%  unsourced. Show that note to your supervisor so the difference
+%  between this chapter and the proposal is on the record.
+%
+%  RUBRIC NOTE (R2): the top band needs the review written to scientific
+%  writing standards AND covering the maximum of related work. The
+%  fastest route from the current ten sources to a top-band review is to
+%  give each theme in Section 2.2 two or three more sources.
+% =====================================================================
+\chapter{LITERATURE REVIEW}
+\label{ch:literature-review}
+
+This chapter reviews the existing body of work relevant to
+\fypProjectTitle{}. It begins with the state of digitalisation in the
+architecture, engineering and construction (AEC) sector, then examines
+the two technical capabilities on which the proposed platform depends --
+natural language understanding of non-technical client requirements, and
+semantic matching of those requirements against professional portfolios.
+It closes with a comparative analysis of the incumbent platforms and a
+statement of the research gap that this project addresses.
+
+% ---------------------------------------------------------------------
+\section{DIGITALISATION OF THE AEC SECTOR}
+\label{sec:lit-aec-digitalisation}
+% ---------------------------------------------------------------------
+%  CARRIED OVER FROM PROPOSAL SECTION 1.3 (Motivation & Societal Impact)
+% ---------------------------------------------------------------------
+
+The architecture and construction industry, a cornerstone of urban
+development, remains hindered by fragmentation and inefficiency. A
+persistent disconnect exists among the key stakeholders: clients with a
+vision, architects with the design expertise, and construction companies
+with the execution capabilities. Traditional methods of bridging that
+disconnect fail for two distinct reasons, which the literature treats
+separately. The first is the \textbf{NLP Gap} -- the difficulty of
+translating non-technical client needs into the technical vocabulary
+that professionals work in. The second is the \textbf{Contract Gap} --
+the manual and opaque nature of the agreement procedures that follow
+\cite{li2019blockchain}.
+
+The rise of digital multi-sided platforms has revolutionised other
+sectors, yet the construction industry still lacks a unified ecosystem
+for seamless stakeholder collaboration \cite{hossain2018platform}.
+Recent studies in automated cost estimation further highlight the need
+for integrated financial transparency early in the design phase
+\cite{wu2022nlp}. Artificial intelligence has been applied across
+construction engineering and management, and a critical review of that
+work identifies intelligent matching and decision support as among the
+most promising future directions for the sector
+\cite{pan2021roles}.
+
+% EXPAND: this section is currently three paragraphs carried over from
+% the proposal. For the final report, add a paragraph on the scale of
+% the problem -- market size, adoption rates of digital tools in AEC, or
+% documented cost of the pre-contract phase -- with a source for each
+% figure you quote.
+
+% ---------------------------------------------------------------------
+\section{ENABLING TECHNIQUES}
+\label{sec:lit-techniques}
+% ---------------------------------------------------------------------
+
+\subsection{Natural language processing in construction}
+\label{subsec:lit-nlp}
+
+% CARRIED OVER FROM PROPOSAL SECTION 2 (Table 1, "Intent Decoding" row)
+% and SECTION 5 (Benefits).
+
+Automated information extraction from construction-related documents
+using natural language processing has been reviewed extensively, and
+the reviewed systems consistently operate over technical documents
+rather than over layman descriptions of requirements
+\cite{lee2017extraction}. This is the NLP Gap in concrete terms:
+existing tools process structured or semi-structured professional
+input, and are not designed to decode the vague natural-language
+statements in which a non-specialist client expresses a design
+intention. A broader survey of natural language processing for smart
+construction reaches the same conclusion, identifying the translation
+of unstructured stakeholder input into structured parameters as an open
+direction \cite{wu2022nlp}.
+
+Speech recognition has matured to the point where voice can be treated
+as a practical input modality rather than an experimental one.
+Large-scale weakly supervised training has produced models that
+transcribe robustly across accents, background noise and technical
+vocabulary without task-specific fine-tuning
+\cite{radford2022whisper}. This makes a spoken description of a design
+requirement a viable entry point to an intent-decoding pipeline.
+
+% EXPAND: add two or three further NLP-in-AEC sources here. Good search
+% terms: "requirement extraction construction NLP", "BIM natural
+% language query", "text classification construction documents".
+
+\subsection{Semantic matching and recommendation}
+\label{subsec:lit-semantic}
+
+% CARRIED OVER FROM PROPOSAL SECTION 2 (Table 1, "Style Match Quality"
+% row) and SECTION 5 (Benefits).
+
+Keyword search cannot capture design ethos. Two portfolios may share no
+vocabulary while expressing the same architectural sensibility, and may
+share a great deal of vocabulary while expressing opposite ones.
+Sentence embedding models address exactly this limitation: a siamese
+BERT architecture produces sentence-level vector representations whose
+cosine similarity reflects semantic rather than lexical closeness,
+making similarity comparison across large corpora computationally
+tractable \cite{reimers2019sbert}.
+
+The closest prior work to the matching problem addressed by this project
+is a hybrid recommender system for partner selection in construction
+projects, which combines natural language processing with graph theory
+to rank candidate partners \cite{zhang2021hybrid}. That work
+establishes that semantic techniques transfer successfully to the
+partner-selection problem in this domain, but it operates on project
+partner records rather than on client-expressed design intent, and it
+is presented as a recommendation technique rather than as a deployed
+multi-sided platform.
+
+% EXPAND: add sources on embedding-based retrieval or vector search at
+% scale if your implementation uses an approximate nearest neighbour
+% index, since that becomes a design decision you will need to justify
+% in Chapter 4.
+
+\subsection{Trust and digital contracting}
+\label{subsec:lit-trust}
+
+% CARRIED OVER FROM PROPOSAL SECTION 2 (Table 1, "Contracting & Trust"
+% row) and SECTION 1.3.
+
+Trust is the binding constraint on any multi-sided marketplace: without
+it, the matching quality of the platform is irrelevant because
+transactions do not complete. The determinants of trust in
+platform-mediated exchange have been analysed in the sharing-economy
+context, which identifies trust in the platform itself, distinct from
+trust in the counterparty, as a necessary condition for participation
+\cite{hawlitschek2016trust}.
+
+In the construction setting specifically, the agreement phase remains
+manual and opaque, and this opacity is the mechanism by which fraud
+risk enters the process. A systematic review of distributed-ledger
+approaches in the built environment documents both the problem and the
+range of proposed responses, and identifies auditable, tamper-evident
+agreement workflows as the principal benefit sought
+\cite{li2019blockchain}.
+
+% EXPAND: if the final system implements digital signatures, audit
+% logging or escrow, add a source for each mechanism you adopt. The
+% rubric rewards design decisions that are traceable to the literature.
+
+% ---------------------------------------------------------------------
+\section{COMPARATIVE ANALYSIS OF EXISTING PLATFORMS}
+\label{sec:lit-comparison}
+% ---------------------------------------------------------------------
+%  CARRIED OVER FROM PROPOSAL SECTION 2 (Table 1).
+%  The proposal's four-row comparison table is reproduced here with the
+%  same incumbents, the same stated limitations and the same citations.
+% ---------------------------------------------------------------------
+
+Table~\ref{tab:lit-comparison} compares the incumbent platforms in this
+space against the capability required by this project. Each row
+identifies a distinct capability, the platform that leads on it today,
+and the gap that platform leaves open.
+
+\begin{table}[H]
+  \centering
+  \caption{Comparison of existing platforms against the required capability}
+  \label{tab:lit-comparison}
+  \small
+  \begin{tabularx}{\textwidth}{|p{2.1cm}|p{2.4cm}|X|X|}
+    \hline
+    \textbf{Capability} & \textbf{Incumbent} &
+    \textbf{Limitation / core gap} & \textbf{Required capability} \\
+    \hline
+    Primary function &
+    Procore (post-contract) \cite{procore2025overview} &
+    Designed for execution (B2B); provides no client acquisition
+    services. &
+    A pre-contract marketplace unifying client, architect and
+    contractor from the concept phase \cite{hossain2018platform}. \\
+    \hline
+    Intent decoding &
+    Togal.AI \cite{togal2025overview} &
+    Designed for automated takeoff from construction drawings; does not
+    interpret layman natural language descriptions (the NLP Gap)
+    \cite{lee2017extraction}. &
+    Conversion of vague voice or text input into structured design
+    parameters \cite{radford2022whisper, wu2022nlp}. \\
+    \hline
+    Style match quality &
+    Upwork \cite{upwork2025overview} &
+    General-purpose freelance marketplace; discovery is driven by
+    keyword and category filters rather than by design style. &
+    Semantic matching of client need vectors against portfolio vectors
+    \cite{reimers2019sbert, zhang2021hybrid}. \\
+    \hline
+    Contracting and trust &
+    Generic directories &
+    Manual negotiation leads to opacity and fraud risk (the Contract
+    Gap). &
+    A secure, auditable workflow for signing project agreements
+    \cite{li2019blockchain, hawlitschek2016trust}. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+% ---------------------------------------------------------------------
+%  CITATION CORRECTIONS APPLIED TO TABLE 2.1
+%
+%  Table 2.1 is adapted from Table 1 of the proposal. Five citations
+%  have been CORRECTED rather than carried over, because the proposal
+%  attached sources that do not support the claims they were attached
+%  to. Keep this note until your supervisor has seen the change -- it
+%  explains why this report and the proposal differ.
+%
+%  0. "Primary function" required capability
+%     was:  [7] hawlitschek2016trust
+%     now:  [8] hossain2018platform
+%     why:  the claim is that the AEC sector needs a unified
+%           multi-sided marketplace. [7] is about trust in
+%           platform-mediated exchange -- related, but indirect. [8]
+%           reviews platform-based business models in construction
+%           specifically, which is exactly the claim being made.
+%           [7] remains cited in the contracting row below, where it
+%           is the right source.
+%
+%  1. "Intent decoding" required capability
+%     was:  [2] li2019blockchain + [3] radford2022whisper
+%     now:  [3] radford2022whisper + [5] wu2022nlp
+%     why:  [2] is the blockchain review and says nothing about intent
+%           decoding. [5] surveys NLP for construction and does cover
+%           converting unstructured input into structured parameters.
+%           Whisper [3] is retained; it supports the voice half.
+%
+%  2. "Contracting and trust" required capability
+%     was:  [3] radford2022whisper + [4] reimers2019sbert
+%     now:  [2] li2019blockchain + [7] hawlitschek2016trust
+%     why:  speech recognition and sentence embeddings have nothing to
+%           do with secure contracting. [2] covers auditable agreement
+%           workflows; [7] covers trust in platform-mediated exchange.
+%
+%  3. "Togal.AI" and "Upwork" were named with specific limitations and
+%     NO source, in the proposal and therefore here. Both now cite the
+%     vendor's own product page, [11] and [12], exactly as the proposal
+%     already does for Procore [9]. The claims themselves have also been
+%     narrowed to what a product page can actually support: Togal.AI is
+%     now described by what it is built for (takeoff from drawings)
+%     rather than by what it cannot do, and Upwork by how its discovery
+%     works rather than by an absolute claim about keyword matching.
+%
+%  VERIFY BEFORE SUBMISSION: product pages change. Open both URLs in
+%  references.bib, confirm the descriptions above still match what the
+%  vendors advertise, and update the urldate fields to the date you
+%  checked. A stale vendor citation is an easy question to be asked in
+%  the viva.
+% ---------------------------------------------------------------------
+
+This comparison demonstrates that existing platforms in the AEC sector
+address isolated pain points but fail to deliver an integrated
+pre-contract solution \cite{hossain2018platform}.
+% CORRECTED: the proposal cited [3] (Whisper) for this claim about
+% market integration, which that paper does not support. Replaced with
+% [8] hossain2018platform, a review of platform-based business models
+% in construction, which does.
+
+% ---------------------------------------------------------------------
+\section{RESEARCH GAP}
+\label{sec:lit-gap}
+% ---------------------------------------------------------------------
+
+The reviewed literature establishes three findings. First, the AEC
+sector lacks the unified multi-sided digital ecosystem that has
+transformed comparable industries \cite{hossain2018platform}. Second,
+the natural language processing work applied to construction operates
+on technical documents and does not address the translation of
+non-technical client intent into structured requirements
+\cite{lee2017extraction, wu2022nlp}. Third, although semantic matching
+techniques are mature and have been shown to transfer to partner
+selection in this domain \cite{reimers2019sbert, zhang2021hybrid}, they
+have not been combined with intent decoding and formal digital
+contracting inside a single platform.
+
+The gap this project addresses is therefore the \emph{pre-contract
+vacuum}: the phase between a client forming a design intention and a
+formal agreement being signed, which remains manual, opaque and
+unsupported by the existing tooling. Closing that gap requires intent
+decoding, semantic matching and auditable contracting to operate
+together rather than as separate capabilities -- which is the problem
+stated in Section~\ref{sec:problem-statement} and the system designed in
+Chapter~\ref{ch:system-design}.

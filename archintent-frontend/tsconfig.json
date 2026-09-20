@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    // "bundler" requires TypeScript >= 5.0, but this project installs
+    // TypeScript 4.9.5 (package.json pins ^4.0.0). The mismatch made
+    // `tsc --noEmit` fail immediately with TS6046, so the codebase was
+    // never type-checked -- Vite builds regardless, because esbuild
+    // transpiles without checking types. That hid six references to
+    // undefined identifiers that crashed at runtime.
+    //
+    // "node" resolves correctly under 4.9 and matches how Vite resolves
+    // these imports in practice. If TypeScript is upgraded to 5.x, set
+    // this back to "bundler".
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "types": ["vite/client"]
+  },
+  "include": ["src"]
+}

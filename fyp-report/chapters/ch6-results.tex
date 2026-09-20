@@ -1,0 +1,103 @@
+% =====================================================================
+%  CHAPTER 6 -- RESULTS AND DISCUSSION
+%
+%  RUBRIC NOTE (R8): results must be "presented with supporting figures
+%  and graphics". A results chapter with no figure cannot reach the top
+%  band, however good the prose is. Figure and table slots are reserved
+%  below -- fill at least two of them.
+% =====================================================================
+\chapter{RESULTS AND DISCUSSION}
+\label{ch:results}
+
+% TODO: one orientation paragraph.
+[CHAPTER OPENING: state what was evaluated, against what criteria, and
+how the results are organised in this chapter.]
+
+% ---------------------------------------------------------------------
+\section{EVALUATION CRITERIA}
+\label{sec:evaluation-criteria}
+% ---------------------------------------------------------------------
+
+% TODO: state what you measured and how, BEFORE showing numbers. A
+% reader has to know the measurement method to trust the measurement.
+[CRITERIA: the metrics used to evaluate the system, how each was
+measured, the conditions under which measurements were taken, and how
+many times each measurement was repeated.]
+
+% ---------------------------------------------------------------------
+\section{RESULTS}
+\label{sec:results}
+% ---------------------------------------------------------------------
+
+% TODO: present the results. Numbers first, interpretation after.
+[RESULTS NARRATIVE: present what the system achieved against each
+criterion from Section~\ref{sec:evaluation-criteria}. Report the
+measured values plainly here; save the interpretation for
+Section~\ref{sec:discussion}.]
+
+% ---- Results table ---------------------------------------------------
+\begin{table}[H]
+  \centering
+  \caption{Summary of evaluation results}
+  \label{tab:results-summary}
+  \small
+  \begin{tabularx}{\textwidth}{|l|X|l|l|}
+    \hline
+    \textbf{Metric} & \textbf{Description} & \textbf{Target} & \textbf{Achieved} \\
+    \hline
+    [METRIC 1] & [WHAT IT MEASURES] & [TARGET] & [RESULT] \\
+    \hline
+    [METRIC 2] & [WHAT IT MEASURES] & [TARGET] & [RESULT] \\
+    \hline
+    [METRIC 3] & [WHAT IT MEASURES] & [TARGET] & [RESULT] \\
+    \hline
+    % TODO: one row per metric.
+  \end{tabularx}
+\end{table}
+
+% ---- Supporting figure slots (fill at least two) ---------------------
+\begin{figure}[H]
+  \centering
+  \fypdiagram[7cm]{[INSERT RESULTS GRAPH 1 HERE -- e.g. accuracy, response time or throughput chart]}
+  \caption{[Describe what this graph shows]}
+  \label{fig:results-graph-1}
+\end{figure}
+
+% TODO: every figure needs a sentence in the body text that REFERS to
+% it. A figure nobody points at does not earn its marks.
+[Refer to the figure here, e.g.: As shown in
+Figure~\ref{fig:results-graph-1}, ...]
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram[7cm]{[INSERT RESULTS GRAPH 2 HERE -- e.g. comparison against a baseline or against existing systems]}
+  \caption{[Describe what this graph shows]}
+  \label{fig:results-graph-2}
+\end{figure}
+
+[Refer to Figure~\ref{fig:results-graph-2} here.]
+
+% ---------------------------------------------------------------------
+\section{DISCUSSION}
+\label{sec:discussion}
+% ---------------------------------------------------------------------
+
+% TODO: interpret the numbers. What do they mean?
+[INTERPRETATION: explain what the results mean. Did the system meet the
+objectives set out in Section~\ref{sec:objectives}? Answer objective by
+objective.]
+
+% TODO: compare against the literature. This is what ties the report
+% back to Chapter 2 and lifts the discussion above a lab report.
+[COMPARISON: compare these results against the existing approaches
+reviewed in Chapter~\ref{ch:literature-review}. The most direct
+comparison available to you is the hybrid recommender for partner
+selection \cite{zhang2021hybrid}, which solves a related matching
+problem in the same domain. Where does this system do better, where
+does it do worse, and why?]
+
+% TODO: be honest about limitations. Examiners reward this.
+[LIMITATIONS: state the limitations of the system and of the evaluation
+itself -- small sample size, restricted test environment, untested edge
+cases. An objective account of limitations is explicitly rewarded by
+the grading rubric.]

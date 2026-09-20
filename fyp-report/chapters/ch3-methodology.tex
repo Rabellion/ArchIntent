@@ -1,0 +1,549 @@
+% =====================================================================
+%  CHAPTER 3 -- METHODOLOGY / REQUIREMENTS ANALYSIS
+%
+%  RUBRIC NOTE (R4): the top band requires the methods, approaches,
+%  tools, techniques and algorithms to be "sufficiently discussed with
+%  sufficient details and supporting figures". Two things follow:
+%    (a) write it so another student could REPRODUCE the work;
+%    (b) include at least one figure in this chapter (a process model
+%        diagram is the obvious candidate -- a slot is reserved below).
+% =====================================================================
+\chapter{METHODOLOGY}
+\label{ch:methodology}
+
+This chapter presents the approach taken to build \fypProjectTitle{}:
+the software process model followed, the requirements gathered and
+analysed, and the tools, technologies and techniques used to implement
+the system.
+
+% ---------------------------------------------------------------------
+\section{DEVELOPMENT APPROACH}
+\label{sec:dev-approach}
+% ---------------------------------------------------------------------
+%  CARRIED OVER FROM PROPOSAL SECTIONS 4.1 and 4.3.
+% ---------------------------------------------------------------------
+
+This project follows the \textbf{Incremental Model}, in which the system
+is developed and delivered in multiple functional increments. Each
+increment adds features to, and improves upon, the previous version.
+This approach permits early testing, easier debugging, and faster
+delivery of working modules \cite{pan2021roles}.
+
+The model suits this project specifically because the AI module carries
+the highest technical risk and the least certain requirements. Building
+a core functional system first -- registration, login and basic design
+browsing -- allowed the platform to be tested end to end before the
+speech recognition and semantic matching components were introduced, so
+that failures in those components could be isolated from failures in the
+surrounding application.
+
+% EXPAND: add two or three sentences on how the increments actually ran
+% in practice, including anything that had to be resequenced. Examiners
+% value an honest account of a plan that changed over a tidy account of
+% one that did not.
+
+\subsection{Incremental development phases}
+\label{subsec:increments}
+
+\begin{enumerate}[label=\textbf{Increment \arabic*:}, itemsep=2pt,
+                  labelwidth=2.8cm, labelsep=0.4em, align=left,
+                  leftmargin=3.2cm]
+  \item User registration, login and portfolio viewing.
+  \item Design upload and management by architects, with semantic
+        tagging.
+  \item Construction company integration and collaboration features,
+        real-time communication, and admin controls with verification.
+  \item AI-based semantic and voice search functionality, and payment
+        integration.
+  \item Final testing, optimisation and deployment.
+\end{enumerate}
+
+\subsection{Major modules}
+\label{subsec:major-modules}
+
+% CARRIED OVER FROM PROPOSAL SECTION 4.2.
+The system is decomposed into five modules, which are carried forward
+into the subsystem architecture in Section~\ref{subsec:arch-subsystem}:
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \textbf{User Module} -- user registration, authentication,
+        browsing of architectural designs, and initiating contact with
+        architects.
+  \item \textbf{Architect Module} -- design uploads, portfolio
+        management, and direct communication with clients using semantic
+        tagging.
+  \item \textbf{Construction Module} -- allows construction companies to
+        list services and connect with clients through verified
+        credentials.
+  \item \textbf{Admin Module} -- administrative control for user
+        verification, data moderation and analytics.
+  \item \textbf{AI Module} -- a separate FastAPI service that embeds
+        project briefs and architect portfolios using a Sentence-BERT
+        model and ranks architects by cosine similarity
+        \cite{reimers2019sbert}.
+\end{itemize}
+
+% =====================================================================
+%  !!! DISCREPANCY BETWEEN PROPOSAL AND DELIVERED SYSTEM !!!
+%  DECIDE WHAT TO DO ABOUT THIS BEFORE YOU SUBMIT.
+%
+%  Your proposal states that the AI Module integrates THREE components:
+%      WhisperASR  -- speech-to-text for voice queries
+%      SpaCy       -- keyword and entity extraction
+%      S-BERT      -- semantic search
+%
+%  Only S-BERT is actually implemented. As of this review of the
+%  repository:
+%    - nlp-service/requirements.txt contains fastapi, uvicorn,
+%      sentence-transformers, scikit-learn, httpx, python-dotenv and
+%      pydantic. There is no whisper package and no spacy package.
+%    - Searching the whole codebase (backend app/ and routes/, frontend
+%      src/, nlp-service/) for "whisper" or "spacy" returns NO matches.
+%    - nlp-service/matcher.py implements S-BERT embedding plus cosine
+%      similarity only.
+%
+%  YOU HAVE THREE HONEST OPTIONS:
+%
+%  (a) IMPLEMENT THEM before submission, then this section is correct
+%      as your proposal wrote it. Whisper is the larger job; SpaCy
+%      keyword extraction is comparatively small.
+%
+%  (b) DESCRIBE THE SYSTEM AS BUILT -- which is what this report now
+%      does -- and move voice input and keyword extraction into
+%      Section~\ref{sec:future-work} as planned work. Then say so
+%      plainly in the scope section and in the conclusion. This is
+%      completely acceptable; FYP scope changes between proposal and
+%      delivery all the time, and examiners respect it being stated.
+%
+%  (c) If a voice or SpaCy feature EXISTS but lives outside this
+%      repository, add it to the repo or document where it lives.
+%
+%  WHAT YOU MUST NOT DO is leave the report claiming Whisper and SpaCy
+%  are part of the delivered system while the code says otherwise. That
+%  is the single most dangerous thing in this document: a demo or viva
+%  question about voice input would expose it immediately.
+%
+%  Every place this affects is marked "DISCREPANCY" -- search for it.
+% =====================================================================
+
+% ---- Optional process-model figure (recommended for R4) --------------
+\begin{figure}[H]
+  \centering
+  \fypdiagram[6cm]{[INSERT PROCESS MODEL DIAGRAM HERE]}
+  \caption{Development process model followed in this project}
+  \label{fig:process-model}
+\end{figure}
+
+% ---------------------------------------------------------------------
+\section{REQUIREMENTS ANALYSIS}
+\label{sec:requirements-analysis}
+% ---------------------------------------------------------------------
+
+\subsection{Requirements elicitation}
+\label{subsec:elicitation}
+
+% TODO: say HOW you gathered requirements -- interviews, questionnaires,
+% observation, document analysis, competitor study. Give numbers where
+% you have them (how many people, over what period).
+[ELICITATION: the techniques used to gather requirements, who was
+consulted, and over what period. Quantify wherever possible.]
+
+\subsection{Functional requirements}
+\label{subsec:functional-requirements}
+
+% DERIVED FROM THE DELIVERED SYSTEM -- these are reverse-engineered
+% from the 114 endpoints in archintent-backend/routes/api.php, grouped
+% by module. Every row below corresponds to shipped functionality, so
+% you can defend each one in the viva by pointing at a route.
+%
+% TODO: check the Priority column. It is set to a sensible default based
+% on whether the feature is core to the main workflow, but priority is
+% your judgement, not something the code can tell us.
+{\small
+\begin{longtable}{|l|p{9.2cm}|l|}
+  \caption{Functional requirements of the system}
+  \label{tab:functional-requirements} \\
+  \hline
+  \textbf{ID} & \textbf{Requirement} & \textbf{Priority} \\
+  \hline
+  \endfirsthead
+  \hline
+  \textbf{ID} & \textbf{Requirement} & \textbf{Priority} \\
+  \hline
+  \endhead
+  \hline
+  \endfoot
+
+  \multicolumn{3}{|l|}{\textbf{Authentication and account management}} \\
+  \hline
+  FR-01 & The system shall allow a user to register as a client,
+          architect or contractor. & High \\
+  \hline
+  FR-02 & The system shall verify a user's email address by one-time
+          password before granting full access. & High \\
+  \hline
+  FR-03 & The system shall verify a user's phone number by one-time
+          password. & Medium \\
+  \hline
+  FR-04 & The system shall authenticate users by email and password and
+          issue an API token. & High \\
+  \hline
+  FR-05 & The system shall allow users to view and update their profile,
+          including a profile image. & Medium \\
+  \hline
+
+  \multicolumn{3}{|l|}{\textbf{Client and project management}} \\
+  \hline
+  FR-06 & The system shall allow a client to create a project specifying
+          project type, location and a written brief. & High \\
+  \hline
+  FR-07 & The system shall allow a client to view, update and delete
+          their own projects. & High \\
+  \hline
+  FR-08 & The system shall generate a ranked list of matching architects
+          for a project brief. & High \\
+  \hline
+  FR-09 & The system shall allow a client to select an architect for a
+          project. & High \\
+  \hline
+
+  \multicolumn{3}{|l|}{\textbf{Architect module}} \\
+  \hline
+  FR-10 & The system shall allow an architect to create a portfolio and
+          add portfolio projects with images and style tags. & High \\
+  \hline
+  FR-11 & The system shall allow an architect to set a cover image for
+          and delete a portfolio project. & Medium \\
+  \hline
+  FR-12 & The system shall allow an architect to deliver a design and to
+          receive revision requests against it. & High \\
+  \hline
+  FR-13 & The system shall allow an architect to onboard to Stripe
+          Connect to receive payouts. & High \\
+  \hline
+
+  \multicolumn{3}{|l|}{\textbf{Contractor module}} \\
+  \hline
+  FR-14 & The system shall allow a contractor to create a portfolio with
+          projects and images. & High \\
+  \hline
+  FR-15 & The system shall allow a client to post a project for
+          construction bidding. & High \\
+  \hline
+  FR-16 & The system shall allow a contractor to submit a bid against a
+          posted construction job. & High \\
+  \hline
+  FR-17 & The system shall allow a client to accept or reject a bid. & High \\
+  \hline
+
+  \multicolumn{3}{|l|}{\textbf{Agreements and payments}} \\
+  \hline
+  FR-18 & The system shall generate a digital agreement for a project. & High \\
+  \hline
+  FR-19 & The system shall allow parties to sign and finalise an
+          agreement. & High \\
+  \hline
+  FR-20 & The system shall process project payments through Stripe and
+          record them. & High \\
+  \hline
+  FR-21 & The system shall support refunding a recorded payment. & Medium \\
+  \hline
+  FR-22 & The system shall maintain a credit wallet, allow purchase of
+          credit packages, and record credit transactions. & Medium \\
+  \hline
+
+  \multicolumn{3}{|l|}{\textbf{Communication}} \\
+  \hline
+  FR-23 & The system shall allow users to start a conversation and
+          exchange messages in real time. & High \\
+  \hline
+  FR-24 & The system shall report unread message counts and allow a
+          conversation to be marked as read. & Medium \\
+  \hline
+
+  \multicolumn{3}{|l|}{\textbf{Reviews}} \\
+  \hline
+  FR-25 & The system shall allow a client to review an architect or
+          contractor after an eligible project. & Medium \\
+  \hline
+  FR-26 & The system shall display reviews on architect and contractor
+          profiles. & Medium \\
+  \hline
+
+  \multicolumn{3}{|l|}{\textbf{Administration}} \\
+  \hline
+  FR-27 & The system shall allow an administrator to review the identity
+          documents of pending architects and contractors and to verify
+          or reject them. & High \\
+  \hline
+  FR-28 & The system shall allow an administrator to suspend, activate
+          or delete a user account. & High \\
+  \hline
+  FR-29 & The system shall record administrative actions in an audit
+          log. & Medium \\
+  \hline
+  FR-30 & The system shall present platform analytics on an
+          administrative dashboard. & Low \\
+  \hline
+\end{longtable}
+}
+
+\subsection{Non-functional requirements}
+\label{subsec:nonfunctional-requirements}
+
+% Rows marked (implemented) were read out of the codebase and are
+% defensible today. Rows marked [TARGET] are the ones only you can
+% set -- they are the measurable goals Chapter 6 has to report against,
+% so fill them in BEFORE you run your evaluation, not after.
+\begin{table}[H]
+  \centering
+  \caption{Non-functional requirements of the system}
+  \label{tab:nonfunctional-requirements}
+  \small
+  \begin{tabularx}{\textwidth}{|l|l|X|}
+    \hline
+    \textbf{ID} & \textbf{Attribute} & \textbf{Requirement} \\
+    \hline
+    NFR-01 & Security &
+      The system shall authenticate API requests using Laravel Sanctum
+      bearer tokens, and shall store passwords only as hashes
+      (implemented). \\
+    \hline
+    NFR-02 & Security &
+      The system shall rate-limit authentication endpoints to mitigate
+      brute-force attacks: 5 login attempts, 6 registrations and 6
+      one-time password requests per minute per client
+      (implemented). \\
+    \hline
+    NFR-03 & Security &
+      The system shall enforce role-based authorisation across the four
+      roles client, architect, contractor and administrator
+      (implemented). \\
+    \hline
+    NFR-04 & Security &
+      The system shall not activate an architect or contractor account
+      for public listing until an administrator has reviewed the
+      submitted identity document (implemented). \\
+    \hline
+    NFR-05 & Auditability &
+      The system shall record administrative actions in an audit log,
+      and shall soft-delete user records rather than removing them
+      (implemented). \\
+    \hline
+    NFR-06 & Performance &
+      A semantic match request shall return a ranked architect list
+      within [TARGET, e.g. 3] seconds for a catalogue of
+      [TARGET, e.g. 500] portfolio projects. \\
+    \hline
+    NFR-07 & Performance &
+      Chat messages shall be delivered to a connected recipient within
+      [TARGET, e.g. 1] second over the WebSocket connection. \\
+    \hline
+    NFR-08 & Usability &
+      The interface shall be responsive and usable on viewport widths
+      from [TARGET, e.g. 360] px upward, without horizontal
+      scrolling. \\
+    \hline
+    NFR-09 & Reliability &
+      The platform shall remain available when the NLP service is
+      unreachable, degrading search rather than failing the request.
+      [VERIFY: confirm this is the actual behaviour, then keep or drop
+      this row.] \\
+    \hline
+    NFR-10 & Maintainability &
+      The NLP capability shall be deployable independently of the main
+      application (implemented as a separate FastAPI service). \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\subsection{Feasibility study}
+\label{subsec:feasibility}
+
+% TODO: keep this short -- one paragraph per feasibility type.
+[TECHNICAL FEASIBILITY: were the required technologies available and
+within the team's competence?]
+
+[OPERATIONAL FEASIBILITY: would the intended users actually adopt the
+system in their existing workflow?]
+
+[ECONOMIC FEASIBILITY: the cost of building and running the system
+against the benefit it delivers.]
+
+% ---------------------------------------------------------------------
+\section{TOOLS AND TECHNOLOGIES}
+\label{sec:tools}
+% ---------------------------------------------------------------------
+
+% VERSIONS READ FROM THE REPOSITORY, not from the proposal:
+%   archintent-backend/composer.json + composer.lock  (locked versions)
+%   archintent-frontend/package.json                  (semver ranges)
+%   nlp-service/requirements.txt                      (pinned ==)
+%
+% Backend versions are the LOCKED ones from composer.lock, which is what
+% actually ran. Frontend entries are the semver ranges from
+% package.json -- if you want the exact resolved versions, read them out
+% of package-lock.json and replace the carets.
+\begin{table}[H]
+  \centering
+  \caption{Tools and technologies used in the project}
+  \label{tab:tools}
+  \small
+  \begin{tabularx}{\textwidth}{|l|l|l|X|}
+    \hline
+    \textbf{Category} & \textbf{Technology} & \textbf{Version} &
+    \textbf{Purpose} \\
+    \hline
+    Language & PHP & 8.2 & Backend runtime \\
+    \hline
+    Backend & Laravel & 12.57.0 & Application logic and REST API \\
+    \hline
+    Backend & Laravel Sanctum & 4.3.1 & Token-based API authentication \\
+    \hline
+    Backend & Laravel Reverb & 1.10.0 & WebSocket server for real-time chat \\
+    \hline
+    Database & MySQL & [VERSION] & Persistent relational storage \\
+    \hline
+    Frontend & React & 18.x & Component-based user interface \\
+    \hline
+    Frontend & TypeScript & 4.x & Static typing for the frontend \\
+    \hline
+    Frontend & Vite & 8.x & Build tool and development server \\
+    \hline
+    Frontend & Tailwind CSS & 3.x & Styling and responsive layout \\
+    \hline
+    Frontend & React Router & 6.x & Client-side routing \\
+    \hline
+    Frontend & Axios & 0.21.1 & HTTP client for API calls \\
+    \hline
+    Frontend & Laravel Echo / Pusher-js & 2.3.4 / 8.5.0 & Real-time event subscription \\
+    \hline
+    Frontend & Recharts & 3.8.1 & Dashboard data visualisation \\
+    \hline
+    AI service & Python + FastAPI & 0.115.0 & NLP microservice \\
+    \hline
+    AI service & sentence-transformers & 3.3.1 & S-BERT embeddings \\
+    \hline
+    AI service & scikit-learn & 1.5.2 & Cosine similarity scoring \\
+    \hline
+    AI service & Uvicorn & 0.30.6 & ASGI server for the NLP service \\
+    \hline
+    Payments & stripe-php & 20.1.0 & Server-side payment processing \\
+    \hline
+    Payments & @stripe/react-stripe-js & 6.1.0 & Client-side payment elements \\
+    \hline
+    Testing & PHPUnit & 11.5.3 & Backend unit and feature tests \\
+    \hline
+    Version control & Git and GitHub & --- & Source control and collaboration \\
+    \hline
+    Development & Visual Studio Code & --- & Primary IDE \\
+    \hline
+    Design & Figma & --- & UI/UX design and prototyping \\
+    \hline
+    Hosting & Vercel and Render & --- & Frontend and backend deployment \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+% DISCREPANCY: WhisperASR and SpaCy appeared in the proposal's stack
+% table but are NOT in any dependency file, so they are not listed here.
+% See the discrepancy note in Section~\ref{subsec:major-modules}.
+%
+% TODO: MySQL version is the one value not recoverable from the repo --
+% run  SELECT VERSION();  in your database and fill it in.
+
+% TODO: justify the non-obvious choices. Your proposal lists the stack
+% but does not defend it, and an unjustified stack reads as an accident
+% rather than a decision. The three worth defending explicitly:
+[JUSTIFICATION: explain (a) why Laravel was chosen for the backend over
+the alternatives available to the team, (b) why S-BERT was chosen for
+semantic matching rather than a keyword or TF-IDF approach -- Chapter 2
+already supplies the argument and the citation, so refer back to
+Section~\ref{subsec:lit-semantic} -- and (c) why the NLP components run
+as a separate service rather than inside the Laravel application.]
+
+% ---------------------------------------------------------------------
+\section{TECHNIQUES AND ALGORITHMS}
+\label{sec:techniques}
+% ---------------------------------------------------------------------
+%  DELETE THIS SECTION if your project does not involve a distinctive
+%  algorithm or technique. Keep it if it does -- R4 names "algorithms"
+%  explicitly, and a described algorithm is easy marks.
+% ---------------------------------------------------------------------
+
+% WRITTEN FROM THE ACTUAL IMPLEMENTATION in nlp-service/matcher.py.
+% This section is where your project earns its "complex engineering
+% problem" marks, so it is worth getting exactly right.
+
+The matching engine is the central technique of this project. It is
+implemented as a standalone FastAPI service that ranks architects
+against a client's project brief by semantic similarity rather than by
+keyword overlap \cite{reimers2019sbert}.
+
+\subsection{Text representation}
+\label{subsec:text-representation}
+
+Two text representations are constructed. A \emph{project text} is
+assembled from the project type, the location and the client's written
+brief. An \emph{architect text} is assembled from the architect's
+specialisation and biography, concatenated with the description and
+style tags of one of their portfolio projects.
+
+Crucially, one architect text is built for \emph{each} portfolio project
+an architect owns, rather than one per architect. This lets the system
+score an architect by their single best-matching work instead of by an
+average over an uneven portfolio, or by whichever project happened to be
+uploaded first. An architect with no portfolio projects is still
+represented, by their base specialisation and biography text alone.
+
+\subsection{Similarity scoring}
+\label{subsec:similarity-scoring}
+
+All texts -- the project text and every architect-project text -- are
+encoded in a single batch using a Sentence-BERT model, by default
+\texttt{all-MiniLM-L6-v2}, with the embeddings L2-normalised at encoding
+time. Cosine similarity is then computed between the project vector and
+every candidate vector.
+
+% TODO: state the embedding dimensionality of the model you finally
+% shipped with, and say why MiniLM was chosen over a larger model --
+% the honest answer is usually the speed/accuracy trade-off, which is a
+% perfectly good engineering justification.
+[MODEL JUSTIFICATION: state the embedding dimensionality and why this
+model was selected over larger alternatives.]
+
+Each candidate score is collapsed to the best score per architect, then
+converted to an integer in the range 0--100 by multiplying by one
+hundred and rounding, clamped at both ends. Results below a configurable
+minimum similarity, default 0.20, are discarded, and the top $k$
+architects, default 10, are returned.
+
+% TODO: both thresholds below are configuration you chose. Justify them,
+% ideally with a sentence about what you observed when you tuned them.
+[THRESHOLD JUSTIFICATION: explain how the minimum score of 0.20 and the
+top-$k$ value of 10 were arrived at.]
+
+\subsection{Integration with the main application}
+\label{subsec:nlp-integration}
+
+% TODO: describe the call path. The backend exposes an internal endpoint
+% (POST /internal/project-matches) that receives the ranked results, so
+% describe which side initiates, how the two services authenticate to
+% each other, and whether the call is synchronous or deferred.
+[INTEGRATION: describe how the Laravel application and the FastAPI
+service exchange data, how they authenticate to one another, whether
+matching happens synchronously on project creation or asynchronously,
+and where the resulting matches are persisted -- the
+\texttt{project\_matches} table.]
+
+% DISCREPANCY -- SEE THE NOTE IN SECTION~\ref{subsec:major-modules}.
+% The proposal describes this pipeline as three stages: Whisper
+% speech-to-text, then SpaCy keyword extraction, then S-BERT matching.
+% Only the third stage exists in the repository. This section documents
+% what is implemented. If you build the other two before submission,
+% add them back here as Sections 3.4.0 and 3.4.1 and restore the
+% \cite{radford2022whisper} citation for the speech stage.
+
+% EXPAND: a labelled diagram of this pipeline would strengthen R4
+% considerably. A placeholder slot is available above at
+% Figure~\ref{fig:process-model}.

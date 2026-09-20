@@ -1,0 +1,46 @@
+% =====================================================================
+%  1. COVER TITLE PAGE
+%  No page number. Title 16pt bold ALL CAPS; name / reg. no. / session /
+%  department lines 14pt bold. Everything comes from metadata.tex.
+% =====================================================================
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+\begin{spacing}{1.2}   % slightly tighter than 1.5 so the page balances
+
+\vspace*{0.6cm}
+
+% ---- University logo ------------------------------------------------
+% PLACEHOLDER FILE: put must_logo.jpg inside the images/ folder.
+% If the file is missing the build will stop here with a "File not
+% found" error -- that is the fastest way to notice it.
+\includegraphics[width=\fypLogoWidth]{\fypLogoFile}
+
+\vspace{1.0cm}
+
+% ---- Project title, 16pt bold ALL CAPS ------------------------------
+{\fontsize{16}{20}\selectfont\bfseries\MakeUppercase{\fypProjectTitle}}
+
+\vspace{1.6cm}
+
+% ---- Student name(s) and registration number(s), 14pt bold ----------
+% To add a second or third student, edit \fypStudentBlock in metadata.tex
+\fypStudentBlock
+
+\vspace{1.2cm}
+
+% ---- Session, 14pt bold ---------------------------------------------
+{\fontsize{14}{17}\selectfont\bfseries Session: \fypSession}
+
+\vfill
+
+% ---- Department / faculty / university, 14pt bold -------------------
+{\fontsize{14}{17}\selectfont\bfseries \fypDepartment}\\[6pt]
+{\fontsize{14}{17}\selectfont\bfseries \fypFaculty}\\[6pt]
+{\fontsize{14}{17}\selectfont\bfseries \fypUniversity}
+
+\vspace{1.0cm}
+
+\end{spacing}
+\end{center}
+\end{titlepage}

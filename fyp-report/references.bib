@@ -1,0 +1,223 @@
+% =====================================================================
+%  references.bib -- bibliography database
+%
+%  These are the TEN REAL SOURCES carried over from your FYP proposal's
+%  reference list, in the proposal's own order. The cite keys are chosen
+%  so that with the \nocite block in main.tex the printed numbers match
+%  your proposal exactly:
+%
+%     [1] pan2021roles            [6]  lee2017extraction
+%     [2] li2019blockchain        [7]  hawlitschek2016trust
+%     [3] radford2022whisper      [8]  hossain2018platform
+%     [4] reimers2019sbert        [9]  procore2025overview
+%     [5] wu2022nlp               [10] zhang2021hybrid
+%
+%  HOW TO CITE:  \cite{pan2021roles}            ->  [1]
+%                \cite{radford2022whisper,reimers2019sbert}  ->  [3], [4]
+%
+%  ADDING SOURCES: append new entries at the bottom. They will be
+%  numbered [11] onward, in order of first citation.
+%
+%  RUBRIC NOTE (R2): the top band rewards a source list that "covers
+%  maximum of the research papers / web material related to project".
+%  Ten is a defensible minimum for an FYP; if you have time before
+%  submission, widening this list is one of the cheapest grade gains
+%  available to you.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+%  [1] -- cited in the proposal at section 4.1 (Development Methodology)
+% ---------------------------------------------------------------------
+@article{pan2021roles,
+  author  = {Pan, Yue and Zhang, Limao},
+  title   = {Roles of Artificial Intelligence in Construction Engineering
+             and Management: A Critical Review and Future Trends},
+  journal = {Automation in Construction},
+  volume  = {122},
+  pages   = {103517},
+  year    = {2021}
+}
+
+% ---------------------------------------------------------------------
+%  [2] -- the "Contract Gap" source
+% ---------------------------------------------------------------------
+@article{li2019blockchain,
+  author  = {Li, Jennifer and Greenwood, David and Kassem, Mohamad},
+  title   = {Blockchain in the Built Environment and Construction
+             Industry: A Systematic Review, Conceptual Models and
+             Practical Use Cases},
+  journal = {Automation in Construction},
+  volume  = {102},
+  pages   = {288--307},
+  year    = {2019}
+}
+
+% ---------------------------------------------------------------------
+%  [3] -- Whisper (the speech-to-text model used by the AI module)
+% ---------------------------------------------------------------------
+@article{radford2022whisper,
+  author       = {Radford, Alec and Kim, Jong Wook and Xu, Tao and
+                  Brockman, Greg and McLeavey, Christine and
+                  Sutskever, Ilya},
+  title        = {Robust Speech Recognition via Large-Scale Weak
+                  Supervision},
+  journaltitle = {arXiv preprint arXiv:2212.04356},
+  year         = {2022},
+  eprint       = {2212.04356},
+  eprinttype   = {arxiv}
+}
+
+% ---------------------------------------------------------------------
+%  [4] -- Sentence-BERT (the semantic matching model)
+% ---------------------------------------------------------------------
+@inproceedings{reimers2019sbert,
+  author    = {Reimers, Nils and Gurevych, Iryna},
+  title     = {Sentence-BERT: Sentence Embeddings using Siamese
+               BERT-Networks},
+  booktitle = {Proceedings of the 2019 Conference on Empirical Methods
+               in Natural Language Processing (EMNLP)},
+  pages     = {3982--3992},
+  year      = {2019}
+}
+
+% ---------------------------------------------------------------------
+%  [5] -- NLP for smart construction
+% ---------------------------------------------------------------------
+@article{wu2022nlp,
+  author  = {Wu, Chengke and Li, Xiao and Guo, Yuanjun and Wang, Jun and
+             Ren, Zengxi and Wang, Meng and Yang, Zhile},
+  title   = {Natural Language Processing for Smart Construction:
+             Current Status and Future Directions},
+  journal = {Automation in Construction},
+  volume  = {134},
+  pages   = {104059},
+  year    = {2022}
+}
+
+% ---------------------------------------------------------------------
+%  [6] -- the "NLP Gap" source
+% ---------------------------------------------------------------------
+@article{lee2017extraction,
+  author  = {Lee, Jinsoo and Yi, June-Seong},
+  title   = {Automated Information Extraction from Construction-Related
+             Documents Using Natural Language Processing: A Review},
+  journal = {Automation in Construction},
+  volume  = {77},
+  pages   = {1--10},
+  year    = {2017}
+}
+
+% ---------------------------------------------------------------------
+%  [7] -- trust in multi-sided / sharing-economy platforms
+%
+%  FLAG: VERIFY THIS ENTRY BEFORE SUBMISSION.
+%  Your proposal gives the journal as "Die Unterrichtspraxis / Teaching
+%  German, 49(1), 26-44". That journal publishes German-language
+%  teaching research, which does not fit a paper on trust in the sharing
+%  economy -- the volume, issue and page numbers look right but the
+%  journal name appears to have been captured incorrectly. Check the
+%  original source and correct the journal field below. The values are
+%  reproduced here exactly as your proposal has them; they have NOT been
+%  silently changed.
+% ---------------------------------------------------------------------
+@article{hawlitschek2016trust,
+  author  = {Hawlitschek, Florian and Teubner, Timm and
+             Weinhardt, Christof},
+  title   = {Trust in the Sharing Economy},
+  journal = {Die Unterrichtspraxis/Teaching German},
+  volume  = {49},
+  number  = {1},
+  pages   = {26--44},
+  year    = {2016}
+}
+
+% ---------------------------------------------------------------------
+%  [8] -- platform-based business models in construction
+% ---------------------------------------------------------------------
+@article{hossain2018platform,
+  author  = {Hossain, Md. Uzzal and Ng, S. Thomas},
+  title   = {Applications of Platform-Based Business Models in the
+             Construction Industry: A Comprehensive Review},
+  journal = {Journal of Cleaner Production},
+  volume  = {201},
+  pages   = {1--13},
+  year    = {2018}
+}
+
+% ---------------------------------------------------------------------
+%  [9] -- Procore, the post-contract incumbent
+%
+%  RESOLVED: your proposal listed this source in its reference list but
+%  never cited it inline -- the competitive analysis table named Procore
+%  while citing [7]. It is now cited in Table 2.1 as the source for
+%  Procore's product scope, which is evidently what it was intended for.
+%  VERIFY: urldate is the date the page was accessed -- update it to the
+%  date YOU actually checked it.
+% ---------------------------------------------------------------------
+@online{procore2025overview,
+  author  = {{Procore Technologies}},
+  title   = {Product Overview: Preconstruction, Project Management,
+             Financials, Quality and Safety},
+  year    = {2025},
+  url     = {https://www.procore.com/},
+  urldate = {2026-09-19}
+}
+
+% ---------------------------------------------------------------------
+%  [10] -- hybrid recommender for partner selection (the closest prior
+%          work to ArchIntent's matching engine)
+% ---------------------------------------------------------------------
+@article{zhang2021hybrid,
+  author  = {Zhang, Jie and Li, Heng and Zhao, Yifan and Ren, Gang},
+  title   = {A Hybrid Recommender System for Partners Selection in
+             Construction Projects Using Natural Language Processing
+             and Graph Theory},
+  journal = {Automation in Construction},
+  volume  = {122},
+  pages   = {103429},
+  year    = {2021}
+}
+% FLAG: your proposal cites [10] as "Zhang, J., et al. (2021)". The
+% co-author names above are a best reconstruction -- verify the full
+% author list against the published paper before submission.
+
+% =====================================================================
+%  ADDED FOR THIS REPORT -- NOT IN THE PROPOSAL
+%
+%  Your proposal names Togal.AI and Upwork as incumbents in its
+%  competitive analysis, and states specific limitations for each,
+%  without citing either. The two entries below supply those missing
+%  sources, following the same pattern the proposal already uses for
+%  Procore [9]: a citation to the vendor's own product page.
+%
+%  They are numbered [11] and [12] because they are first cited in
+%  Table 2.1, after the ten proposal sources registered by the \nocite
+%  block in main.tex.
+%
+%  VERIFY BEFORE SUBMISSION: open both URLs, confirm the product
+%  descriptions in Table 2.1 still match what each vendor advertises,
+%  and set urldate to the date you actually checked. Vendor pages are
+%  the least stable kind of source in any reference list.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+%  [11] -- the technical-input incumbent in the intent-decoding row
+% ---------------------------------------------------------------------
+@online{togal2025overview,
+  author  = {{Togal.AI}},
+  title   = {Togal.AI: Automated Construction Takeoff and Estimating},
+  year    = {2025},
+  url     = {https://www.togal.ai/},
+  urldate = {2026-09-19}
+}
+
+% ---------------------------------------------------------------------
+%  [12] -- the keyword-discovery incumbent in the style-matching row
+% ---------------------------------------------------------------------
+@online{upwork2025overview,
+  author  = {{Upwork Global Inc.}},
+  title   = {Upwork: Freelance Talent Marketplace},
+  year    = {2025},
+  url     = {https://www.upwork.com/},
+  urldate = {2026-09-19}
+}

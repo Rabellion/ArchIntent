@@ -1,0 +1,177 @@
+% =====================================================================
+%  CHAPTER 5 -- IMPLEMENTATION AND TESTING
+%
+%  RUBRIC NOTE (R7): the top band requires implementation detail
+%  sufficient "for the reader", plus testing performed "in very good
+%  way" with enough test cases that "no further improvements are
+%  required regarding the number and quality of test cases". In
+%  practice: aim for a test-case table with real breadth -- happy paths,
+%  boundary values, invalid input and security cases -- not four rows
+%  that all pass.
+% =====================================================================
+\chapter{IMPLEMENTATION AND TESTING}
+\label{ch:implementation-testing}
+
+% TODO: one orientation paragraph.
+[CHAPTER OPENING: state that this chapter describes how the design of
+Chapter~\ref{ch:system-design} was implemented, and how the resulting
+system was tested.]
+
+% ---------------------------------------------------------------------
+\section{IMPLEMENTATION}
+\label{sec:implementation}
+% ---------------------------------------------------------------------
+
+\subsection{Development environment}
+\label{subsec:dev-environment}
+
+% Partly filled from the repository. The remaining bracketed values are
+% facts about YOUR machines that no file records.
+The system is composed of three independently runnable services. The
+backend is a Laravel 12.57 application running on PHP 8.2. The frontend
+is a React 18 and TypeScript application built with Vite. The NLP
+service is a Python FastAPI application served by Uvicorn. Persistent
+data is held in MySQL, and real-time messaging is carried over
+WebSockets by Laravel Reverb. The full dependency set and versions are
+listed in Table~\ref{tab:tools}.
+
+% TODO: fill in the values below -- they cannot be read from the
+% repository, and rubric R4 grades reproducibility.
+The development environment used was
+[OPERATING SYSTEM AND VERSION], with
+[PYTHON VERSION] for the NLP service,
+[NODE.JS VERSION] for the frontend toolchain, and
+MySQL [VERSION] as the database server. Development hardware was
+[BRIEF HARDWARE SPECIFICATION -- processor, RAM]. Visual Studio Code was
+used as the primary IDE, and Git with GitHub for version control.
+
+\subsection{Deployment architecture}
+\label{subsec:deployment}
+
+% TODO: your proposal names Vercel and Render. Confirm which service
+% hosts which component, and whether the NLP service is deployed at all
+% or only run locally -- that is a fair viva question.
+[DEPLOYMENT: state which platform hosts the frontend, which hosts the
+backend, where the MySQL database is hosted, and how the NLP service is
+deployed. Note any environment variables or secrets that must be
+configured, without listing their values.]
+
+\subsection{Module implementation}
+\label{subsec:module-implementation}
+
+% TODO: one subsection or one paragraph per major module. For each
+% module say what it does, which design component it realises, and the
+% one genuinely non-obvious thing about how it was built.
+[MODULE 1: name the module, state which component of
+Section~\ref{sec:detailed-design} it implements, and describe how it
+was built. Highlight the non-trivial part -- the piece that a reader
+could not have guessed from the design chapter.]
+
+[MODULE 2: as above.]
+
+[MODULE 3: as above. Add one block per major module.]
+
+\subsection{Key implementation details}
+\label{subsec:key-details}
+
+% TODO: cover the genuinely interesting engineering decisions -- the
+% algorithm that needed optimising, the integration that was awkward,
+% the security control you implemented, the migration you had to write.
+[KEY DETAILS: describe the most significant implementation decisions
+and any notable problems encountered and how they were resolved. If a
+short code listing genuinely clarifies something, include it -- but
+keep listings short and never paste whole files.]
+
+% ---- Optional screenshot slots ---------------------------------------
+% Screenshots of the working system count as supporting figures and are
+% cheap marks under R10. Duplicate this block per screen.
+\begin{figure}[H]
+  \centering
+  \fypdiagram[7cm]{[INSERT SCREENSHOT OF [SCREEN NAME] HERE]}
+  \caption{[Describe what this screen does]}
+  \label{fig:screenshot-1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram[7cm]{[INSERT SCREENSHOT OF [SCREEN NAME] HERE]}
+  \caption{[Describe what this screen does]}
+  \label{fig:screenshot-2}
+\end{figure}
+
+% ---------------------------------------------------------------------
+\section{TESTING}
+\label{sec:testing}
+% ---------------------------------------------------------------------
+
+\subsection{Testing strategy}
+\label{subsec:testing-strategy}
+
+% TODO: name the levels of testing performed and the technique used at
+% each level (black box, white box, boundary value analysis,
+% equivalence partitioning).
+[STRATEGY: state which levels of testing were carried out -- unit,
+integration, system and user acceptance testing -- and the technique
+applied at each level. State the tools used to run the tests.]
+
+\subsection{Test cases}
+\label{subsec:test-cases}
+
+% ---------------------------------------------------------------------
+%  TEST CASE TABLE
+%  Uses longtable so it can run across several pages -- a table that
+%  fills a page and stops is a common cause of lost marks here.
+%  \small is used because six columns will not fit at 12pt on A4.
+%  Only the first page of the table carries a caption, which is correct:
+%  it means the List of Tables gets a single clean entry.
+% ---------------------------------------------------------------------
+{\small
+\begin{longtable}{|l|p{2.6cm}|p{2.2cm}|p{2.4cm}|p{2.4cm}|l|}
+  \caption{System test cases and their results}
+  \label{tab:test-cases} \\
+  \hline
+  \textbf{Test ID} & \textbf{Description} & \textbf{Input} &
+  \textbf{Expected Output} & \textbf{Actual Output} & \textbf{Status} \\
+  \hline
+  \endfirsthead
+
+  % ---- header repeated at the top of every continuation page --------
+  \hline
+  \textbf{Test ID} & \textbf{Description} & \textbf{Input} &
+  \textbf{Expected Output} & \textbf{Actual Output} & \textbf{Status} \\
+  \hline
+  \endhead
+
+  \hline
+  \endfoot
+
+  % ---- TODO: replace these rows with your real test cases -----------
+  TC-01 & [WHAT IS BEING TESTED] & [INPUT VALUES] &
+         [EXPECTED RESULT] & [OBSERVED RESULT] & [Pass/Fail] \\
+  \hline
+  TC-02 & [WHAT IS BEING TESTED] & [INPUT VALUES] &
+         [EXPECTED RESULT] & [OBSERVED RESULT] & [Pass/Fail] \\
+  \hline
+  TC-03 & [BOUNDARY VALUE CASE] & [INPUT VALUES] &
+         [EXPECTED RESULT] & [OBSERVED RESULT] & [Pass/Fail] \\
+  \hline
+  TC-04 & [INVALID INPUT CASE] & [INPUT VALUES] &
+         [EXPECTED RESULT] & [OBSERVED RESULT] & [Pass/Fail] \\
+  \hline
+  TC-05 & [SECURITY OR AUTHORISATION CASE] & [INPUT VALUES] &
+         [EXPECTED RESULT] & [OBSERVED RESULT] & [Pass/Fail] \\
+  \hline
+  % TODO: keep adding rows. Cover every functional requirement in
+  % Table 3.1, and include boundary, invalid-input and security cases --
+  % a table of happy paths only will not reach the top band.
+\end{longtable}
+}
+
+\subsection{Test summary}
+\label{subsec:test-summary}
+
+% TODO: summarise the outcome numerically.
+[SUMMARY: how many test cases were executed, how many passed, how many
+failed, and what was done about the failures. If any defect remains
+open, say so honestly and state its severity -- an acknowledged known
+issue reads far better than a silently omitted one.]

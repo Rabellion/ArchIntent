@@ -1,0 +1,33 @@
+{
+  "info": {
+    "_postman_id": "archintent-collection",
+    "name": "ArchIntent",
+    "description": "API collection for ArchIntent backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string",
+      "description": "Base URL for ArchIntent API"
+    },
+    {
+      "key": "TOKEN",
+      "value": "",
+      "type": "string",
+      "description": "Authentication token (obtained from login)"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{TOKEN}}",
+        "type": "string"
+      }
+    ]
+  }
+}

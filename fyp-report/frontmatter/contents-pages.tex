@@ -1,0 +1,42 @@
+% =====================================================================
+%  5. TABLE OF CONTENTS
+%  6. TABLE OF FIGURES
+%  7. LIST OF TABLES
+%
+%  IMPORTANT / UNUSUAL (this is deliberate, do not "fix" it):
+%  The department template wants the Table of Contents to ALSO list
+%  "Table of Figures", "List of Tables" and "Abstract" above the chapter
+%  list, each with a roman-numeral page reference. That is achieved with
+%  the \addcontentsline commands below and the one in abstract.tex.
+%
+%  Those entries appear in the ToC only AFTER the second LaTeX run,
+%  because LaTeX has to write the .toc file first. Always compile twice.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+%  TABLE OF CONTENTS
+%  The heading is "TABLE OF CONTENTS" (set via \contentsname in main.tex)
+%  and is formatted 14pt bold ALL CAPS centered, like every chapter head.
+% ---------------------------------------------------------------------
+\clearpage
+\tableofcontents
+\clearpage
+
+% ---------------------------------------------------------------------
+%  TABLE OF FIGURES  (auto-generated from every \caption in a figure)
+%  \phantomsection makes the hyperref link point at the right page.
+% ---------------------------------------------------------------------
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{TABLE OF FIGURES}
+\listoffigures
+\clearpage
+
+% ---------------------------------------------------------------------
+%  LIST OF TABLES  (auto-generated from every \caption in a table)
+% ---------------------------------------------------------------------
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{LIST OF TABLES}
+\listoftables
+\clearpage

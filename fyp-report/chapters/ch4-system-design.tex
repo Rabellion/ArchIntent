@@ -1,0 +1,431 @@
+% =====================================================================
+%  CHAPTER 4 -- SYSTEM DESIGN
+%
+%  RUBRIC NOTES:
+%   R5 (System Architecture): the top band needs the architecture design
+%      APPROACH stated, the SUBSYSTEM architecture described, and a
+%      functional or object-oriented description -- all with diagrams.
+%   R6 (Detailed System Design): the top band needs low-level components
+%      and subcomponents described against the TEN software component
+%      attributes, and the class diagram and ER diagram drawn
+%      "according to UML standards". Both are called out explicitly in
+%      Sections 4.2.1 and 4.2.2 below.
+%
+%  ALL SEVEN DIAGRAM PLACEHOLDERS LIVE IN THIS CHAPTER.
+%  To insert a real diagram, replace the \fypdiagram{...} line with:
+%      \includegraphics[width=0.8\textwidth]{your-file.png}
+%  ...and put your-file.png in the images/ folder. Nothing around it
+%  needs to change -- the caption and label stay as they are.
+% =====================================================================
+\chapter{SYSTEM DESIGN}
+\label{ch:system-design}
+
+% TODO: one orientation paragraph.
+[CHAPTER OPENING: state that this chapter presents the architecture of
+the system and then its detailed design, and name the modelling
+standard used (UML 2.x).]
+
+% ---------------------------------------------------------------------
+\section{SYSTEM ARCHITECTURE}
+\label{sec:system-architecture}
+% ---------------------------------------------------------------------
+
+\subsection{Architecture design approach}
+\label{subsec:arch-approach}
+
+% TODO: name the architectural style and justify it. R5 asks for the
+% "architecture design approach" to be "stated and clear" -- so state it
+% in the first sentence, do not leave it implicit.
+[ARCHITECTURE APPROACH: name the architectural style adopted -- for
+example layered, client-server, three-tier, microservices, MVC, or
+event-driven -- and justify why it suits this system's quality
+requirements.]
+
+\subsection{Overall architecture}
+\label{subsec:arch-overall}
+
+% TODO: describe the top-level structure: the tiers or major blocks,
+% what each is responsible for, and how they communicate.
+[OVERALL ARCHITECTURE: describe the top-level structure of the system.
+Name each tier or major block, state its responsibility, and state how
+the blocks communicate -- protocol, data format, synchronous or
+asynchronous.]
+
+% ---- Architecture diagram (NOT one of the seven UML placeholders) ----
+\begin{figure}[H]
+  \centering
+  \fypdiagram[7cm]{[INSERT SYSTEM ARCHITECTURE DIAGRAM HERE]}
+  \caption{Overall system architecture}
+  \label{fig:system-architecture}
+\end{figure}
+
+\subsection{Subsystem architecture}
+\label{subsec:arch-subsystem}
+
+% TODO: break the architecture down one level. R5 explicitly grades
+% whether the SUBSYSTEM architecture is clear, so give each subsystem
+% its own short paragraph rather than one undifferentiated block.
+[SUBSYSTEM ARCHITECTURE: decompose each major block into its
+subsystems. For every subsystem give its name, its responsibility, the
+services it exposes, and the subsystems it depends on.]
+
+% The five subsystems are carried over from the module decomposition in
+% Section~\ref{subsec:major-modules} (proposal section 4.2). Fill in the
+% responsibility and dependency columns from your actual codebase.
+\begin{table}[H]
+  \centering
+  \caption{Subsystems and their responsibilities}
+  \label{tab:subsystems}
+  \small
+  \begin{tabularx}{\textwidth}{|l|X|X|}
+    \hline
+    \textbf{Subsystem} & \textbf{Responsibility} & \textbf{Depends on} \\
+    \hline
+    User Module & [REGISTRATION, AUTHENTICATION, DESIGN BROWSING,
+      INITIATING CONTACT] & [WHICH SUBSYSTEMS IT CALLS] \\
+    \hline
+    Architect Module & [DESIGN UPLOAD, PORTFOLIO MANAGEMENT, SEMANTIC
+      TAGGING, CLIENT COMMUNICATION] & [WHICH SUBSYSTEMS IT CALLS] \\
+    \hline
+    Construction Module & [SERVICE LISTING, CREDENTIAL VERIFICATION,
+      CLIENT CONNECTION] & [WHICH SUBSYSTEMS IT CALLS] \\
+    \hline
+    Admin Module & [USER VERIFICATION, DATA MODERATION, ANALYTICS] &
+      [WHICH SUBSYSTEMS IT CALLS] \\
+    \hline
+    AI Module & [SPEECH-TO-TEXT, KEYWORD EXTRACTION, SEMANTIC SEARCH] &
+      [WHICH SUBSYSTEMS IT CALLS] \\
+    \hline
+    % TODO: add a row if you split any module further during
+    % implementation -- for example a separate Payment or Chat subsystem.
+  \end{tabularx}
+\end{table}
+
+% TODO: the AI Module runs as a separate Python service while the rest
+% of the system runs on Laravel. That service boundary is the single
+% most interesting architectural decision in this project -- describe
+% how the two communicate (REST, message queue, synchronous or not) and
+% what happens when the AI service is unavailable.
+[SERVICE BOUNDARY: describe the interface between the Laravel
+application and the NLP service, and the failure behaviour when the
+latter is unreachable.]
+
+% ---------------------------------------------------------------------
+\section{DETAILED SYSTEM DESIGN}
+\label{sec:detailed-design}
+% ---------------------------------------------------------------------
+
+% TODO: one lead-in paragraph.
+[SECTION OPENING: state that this section presents the low-level design
+of the system through the UML models and the entity relationship model
+that follow.]
+
+% ---------------------------------------------------------------------
+%  COMPONENT ATTRIBUTE TABLE
+%  R6's top band requires each subcomponent to be described against all
+%  TEN software component attributes. Copy this table once per major
+%  component. Do not delete it -- it is the single highest-value table
+%  in the whole report for the design rubric.
+% ---------------------------------------------------------------------
+\subsection{Component description}
+\label{subsec:component-description}
+
+Each low-level component of the system is described below against the
+ten standard software component attributes.
+
+\begin{table}[H]
+  \centering
+  \caption{Description of component [COMPONENT NAME]}
+  \label{tab:component-attributes}
+  \small
+  \begin{tabularx}{\textwidth}{|l|X|}
+    \hline
+    \textbf{Attribute} & \textbf{Description} \\
+    \hline
+    1. Identification & [UNIQUE NAME OR ID OF THE COMPONENT] \\
+    \hline
+    2. Type & [CLASS, MODULE, PACKAGE, SUBPROGRAM, DATA STORE, ...] \\
+    \hline
+    3. Purpose & [WHICH REQUIREMENT FROM TABLE 3.1 IT SATISFIES] \\
+    \hline
+    4. Function & [WHAT THE COMPONENT DOES] \\
+    \hline
+    5. Subordinates & [COMPONENTS THIS ONE IS COMPOSED OF] \\
+    \hline
+    6. Dependencies & [COMPONENTS THIS ONE USES OR IS USED BY] \\
+    \hline
+    7. Interfaces & [METHOD SIGNATURES, ENDPOINTS OR SCREENS EXPOSED] \\
+    \hline
+    8. Resources & [FILES, CONNECTIONS, MEMORY OR DEVICES REQUIRED] \\
+    \hline
+    9. Processing & [THE ALGORITHM OR LOGIC THE COMPONENT PERFORMS] \\
+    \hline
+    10. Data & [DATA STRUCTURES OWNED OR MANIPULATED] \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+% TODO: DUPLICATE the table above for every major component of the
+% system. Give each one its own \caption and a unique \label.
+
+% =====================================================================
+%  THE SEVEN DIAGRAM PLACEHOLDERS
+%  Each is its own subsection so the surrounding text never has to move
+%  when you swap the box for a real image.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+\subsection{Entity relationship diagram}
+\label{subsec:er-diagram}
+% ---------------------------------------------------------------------
+%  R6 calls out the ER diagram specifically. Draw it to standard
+%  notation: entities as rectangles, attributes as ellipses or listed
+%  inside the entity, relationships as diamonds, with cardinality
+%  (1:1, 1:M, M:N) marked on every relationship line.
+% ---------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram{[INSERT ER DIAGRAM HERE]}
+  \caption{Entity relationship diagram of the system}
+  \label{fig:er-diagram}
+\end{figure}
+
+% ENTITY LIST READ FROM archintent.sql -- 34 tables, 38 foreign keys.
+% Framework tables (migrations, cache, cache_locks, jobs, job_batches,
+% failed_jobs, personal_access_tokens) are infrastructure, not domain
+% entities, and are deliberately NOT listed below. Neither are the four
+% tables suffixed "_old", which are superseded.
+%
+% ACTION REQUIRED: your schema still contains portfolios_old,
+% portfolio_images_old, contractor_portfolios_old and
+% contractor_portfolio_images_old. Drop them before you export the
+% schema for your ER diagram, or an examiner will ask why there are two
+% portfolio designs in the same database.
+
+The data model comprises the following domain entities.
+
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+  \item \textbf{users} -- the single account table for all four roles.
+        Primary key \texttt{user\_id}; holds \texttt{full\_name},
+        \texttt{email}, \texttt{password\_hash}, a \texttt{role}
+        enumeration of client, architect, contractor and admin,
+        \texttt{account\_status}, identity document fields, and a
+        \texttt{deleted\_at} timestamp for soft deletion.
+  \item \textbf{architects} and \textbf{contractors} -- role-specific
+        professional profiles, each extending a \texttt{users} row.
+  \item \textbf{architect\_portfolios} and \textbf{architect\_projects}
+        (with \textbf{architect\_project\_images}) -- an architect's
+        portfolio and the individual works within it, including the
+        style tags used by the matching engine.
+  \item \textbf{contractor\_portfolios}, \textbf{contractor\_projects}
+        and \textbf{contractor\_project\_images} -- the equivalent
+        structures for contractors.
+  \item \textbf{projects} -- a client's project, referencing the client
+        and, once chosen, a \texttt{selected\_architect\_id} and
+        \texttt{selected\_contractor\_id}.
+  \item \textbf{project\_matches} -- the persisted output of the
+        semantic matching engine, linking a project to an architect and
+        a specific portfolio project with a match score.
+  \item \textbf{design\_revisions} -- revision requests raised against a
+        delivered design.
+  \item \textbf{bids} -- contractor bids against a posted construction
+        job.
+  \item \textbf{agreements} and \textbf{agreement\_signatures} -- the
+        digital agreement for a project and the signature of each party
+        to it.
+  \item \textbf{payments} -- payment records, referencing a
+        \texttt{payer\_id} and a \texttt{payee\_id}.
+  \item \textbf{budz\_wallets}, \textbf{budz\_packages} and
+        \textbf{budz\_transactions} -- the platform credit system.
+  \item \textbf{conversations} and \textbf{messages} -- the messaging
+        subsystem; a conversation links
+        \texttt{participant\_one\_id} and
+        \texttt{participant\_two\_id}.
+  \item \textbf{reviews} -- ratings, referencing a
+        \texttt{reviewer\_id} and a \texttt{reviewee\_id}.
+  \item \textbf{admin\_logs} -- the administrative audit trail.
+\end{itemize}
+
+% TODO: describe the RELATIONSHIPS and their cardinalities.
+% The non-obvious ones, worth calling out explicitly because an examiner
+% will look for them:
+%   - users participates in SEVERAL relationships under different roles
+%     (client, reviewer/reviewee, payer/payee, conversation participant
+%     one/two). Each is a separate role-named foreign key to the same
+%     table -- explain that, it shows you understood the modelling
+%     choice rather than duplicating user tables.
+%   - projects -> architects is optional (nullable until selection).
+%   - project_matches is effectively a resolved many-to-many between
+%     projects and architects, carrying a score as an attribute.
+[PARAGRAPH 2: describe each relationship and state its cardinality and
+participation constraints. Cover the role-named self-referencing links
+to \texttt{users} noted above, and explain which normal form the schema
+reaches and whether any denormalisation was accepted deliberately.]
+
+% TIP: you do not need to draw the ER diagram by hand. MySQL Workbench
+% can reverse-engineer archintent.sql into an EER diagram
+% (Database > Reverse Engineer), which you can then tidy and export as
+% PNG or PDF. dbdiagram.io will also import a schema dump. Either route
+% gives you a standards-conformant diagram in minutes.
+
+% ---------------------------------------------------------------------
+\subsection{Class diagram}
+\label{subsec:class-diagram}
+% ---------------------------------------------------------------------
+%  R6 calls out the class diagram specifically and requires UML
+%  standards. That means: three-compartment class boxes (name /
+%  attributes / operations), visibility markers (+ public, - private,
+%  # protected), typed attributes and return types, and correctly drawn
+%  association, aggregation, composition, inheritance and dependency
+%  arrows with multiplicities.
+% ---------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram{[INSERT CLASS DIAGRAM HERE]}
+  \caption{Class diagram of the system}
+  \label{fig:class-diagram}
+\end{figure}
+
+% TODO: describe the CLASSES, their attributes and their operations.
+[PARAGRAPH 1: name each class in Figure~\ref{fig:class-diagram} and
+describe its responsibility, its key attributes with their types, and
+its principal operations with their parameters and return types.]
+
+% TODO: describe the RELATIONSHIPS between classes.
+[PARAGRAPH 2: describe the associations, aggregations, compositions and
+inheritance hierarchies between the classes, stating the multiplicity
+at each end. Note any design pattern applied and why.]
+
+% ---------------------------------------------------------------------
+\subsection{Use case diagram}
+\label{subsec:use-case-diagram}
+% ---------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram{[INSERT USE CASE DIAGRAM HERE]}
+  \caption{Use case diagram of the system}
+  \label{fig:use-case-diagram}
+\end{figure}
+
+% TODO: describe the ACTORS.
+[PARAGRAPH 1: identify each actor in
+Figure~\ref{fig:use-case-diagram}, state whether it is a primary or
+secondary actor, and describe its goal in using the system.]
+
+% TODO: describe the USE CASES and their relationships.
+[PARAGRAPH 2: describe each use case, which actor initiates it, and any
+include, extend or generalisation relationships between use cases.
+Consider adding an expanded use case description table for the two or
+three most important use cases.]
+
+% ---------------------------------------------------------------------
+\subsection{Sequence diagram}
+\label{subsec:sequence-diagram}
+% ---------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram{[INSERT SEQUENCE DIAGRAM HERE]}
+  \caption{Sequence diagram for [NAME THE SCENARIO]}
+  \label{fig:sequence-diagram}
+\end{figure}
+
+% TODO: name the scenario and walk through the message flow.
+[PARAGRAPH 1: state which scenario Figure~\ref{fig:sequence-diagram}
+models, name the participating objects and their lifelines, and walk
+through the messages in order.]
+
+% TODO: describe activations, returns and any alternative flows.
+[PARAGRAPH 2: describe the activation bars, synchronous versus
+asynchronous messages, return values, and any alt / opt / loop fragments
+covering error or alternative paths.]
+
+% ---------------------------------------------------------------------
+\subsection{Activity diagram}
+\label{subsec:activity-diagram}
+% ---------------------------------------------------------------------
+
+% REAL DIAGRAM -- extracted from Figure 1 of your FYP proposal (page 8).
+% It is sized by HEIGHT, not width: the image is roughly twice as tall
+% as it is wide, so width=0.8\textwidth would overflow the page. The
+% height below leaves room for the caption. Adjust if you redraw it.
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.82\textheight,
+                   keepaspectratio]{activity-diagram.png}
+  \caption{Activity diagram of the \fypProjectTitle{} core workflow}
+  \label{fig:activity-diagram}
+\end{figure}
+
+% TODO: describe the flow of activities.
+% The diagram already shows four swimlanes -- Client/User, AI & Backend,
+% Architect, and Construction Company -- so your description should walk
+% each lane's responsibilities and the hand-offs between them.
+[PARAGRAPH 1: describe the flow in Figure~\ref{fig:activity-diagram}
+from the initial node to the final node. The main path runs: login,
+enter project intent by text or voice, AI validates and processes the
+query, a ranked architect list is generated, the client selects an
+architect and requests service, the architect submits a proposal, a
+digital agreement is generated, payment is submitted and verified, the
+contract starts, the project map is released, and the job is then
+posted for bidding by construction companies.]
+
+% TODO: describe decisions, forks, joins and swimlanes.
+% The diagram contains two decision nodes you must cover: "Interested?"
+% (Yes / No, where No reaches a final node) and "Terms Accepted?"
+% (Yes -> Submit Payment / Revision -> Request Agreement Revision,
+% which merges back). Name their guard conditions explicitly.
+[PARAGRAPH 2: describe the two decision nodes and their guard
+conditions, the merge node that rejoins the agreement-revision path,
+and what each of the four swimlanes represents. Note that the architect
+declining a request terminates that flow at a final node rather than
+returning the client to the ranked results -- if that is not the
+intended behaviour, correct the diagram before submission.]
+
+% ---------------------------------------------------------------------
+\subsection{State machine diagram}
+\label{subsec:state-diagram}
+% ---------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram{[INSERT STATE MACHINE DIAGRAM HERE]}
+  \caption{State machine diagram for [NAME THE OBJECT]}
+  \label{fig:state-diagram}
+\end{figure}
+
+% TODO: describe the states.
+[PARAGRAPH 1: state which object's lifecycle
+Figure~\ref{fig:state-diagram} models, and describe each state --
+including the initial and final states -- and what the object is doing
+while in it.]
+
+% TODO: describe the transitions.
+[PARAGRAPH 2: describe each transition in terms of its triggering
+event, its guard condition and its effect, and note any entry, exit or
+do activities attached to a state.]
+
+% ---------------------------------------------------------------------
+\subsection{Component diagram}
+\label{subsec:component-diagram}
+% ---------------------------------------------------------------------
+
+\begin{figure}[H]
+  \centering
+  \fypdiagram{[INSERT COMPONENT DIAGRAM HERE]}
+  \caption{Component diagram of the system}
+  \label{fig:component-diagram}
+\end{figure}
+
+% TODO: describe the components.
+[PARAGRAPH 1: name each component in
+Figure~\ref{fig:component-diagram}, state what it encapsulates, and map
+it back to the subsystems listed in Table~\ref{tab:subsystems}.]
+
+% TODO: describe the interfaces between components.
+[PARAGRAPH 2: describe the provided and required interfaces connecting
+the components, the assembly connectors between them, and any external
+systems or third-party services the components depend on.]

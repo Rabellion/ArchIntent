@@ -1,0 +1,160 @@
+% =====================================================================
+%  FINAL YEAR PROJECT REPORT  --  MASTER FILE
+%  Department of Software Engineering
+%  Faculty of Engineering & Technology
+%  Mirpur University of Science and Technology (MUST), Mirpur, AJK
+% ---------------------------------------------------------------------
+%  HOW TO BUILD (recommended engine: XeLaTeX)
+%      xelatex  main
+%      biber    main
+%      xelatex  main
+%      xelatex  main
+%  or simply:   latexmk -xelatex main.tex
+%  or run:      .\compile.ps1        (Windows PowerShell)
+%               ./compile.sh         (Git Bash / Linux / macOS)
+%
+%  WHERE TO EDIT WHAT
+%      metadata.tex ........ your name, reg. no., title, supervisor
+%      style/fypstyle.sty .. all formatting rules (rarely needs editing)
+%      frontmatter/*.tex ... title pages, certification, abstract, etc.
+%      chapters/*.tex ...... the actual report content
+%      references.bib ...... your bibliography entries
+% =====================================================================
+
+% 12pt body text, A4, single-sided, chapters may open on any page.
+\documentclass[12pt,a4paper,oneside]{report}
+
+% ---- All formatting rules live in the style file --------------------
+\usepackage{style/fypstyle}
+
+% ---- Your personal details ------------------------------------------
+\input{metadata}
+
+% ---------------------------------------------------------------------
+%  BIBLIOGRAPHY SETUP
+%
+%  !!! NOTE TO SELF -- CONFIRM WITH SUPERVISOR !!!
+%  The department template is internally inconsistent: one line asks for
+%  Chicago style, but the only worked example it shows is IEEE-numeric,
+%  i.e.  [1] A. Author, "Title," Journal, vol. X, no. Y, pp. XX-XX, 2024.
+%  We are defaulting to IEEE-numeric. If the supervisor insists on
+%  Chicago, change  style=numeric  to  style=chicago-authordate  below
+%  (and remove sorting=none).
+%
+%  SUPPORTING EVIDENCE FOR THE IEEE CHOICE: your own FYP proposal
+%  already uses numbered bracket citations [1]-[10]. Staying numeric
+%  keeps the report consistent with the proposal the supervisor has
+%  already seen and approved.
+%
+%  sorting=none  ==  references are numbered in order of first citation,
+%                    which is what IEEE requires.
+% ---------------------------------------------------------------------
+\usepackage[
+  backend=biber,
+  style=numeric,
+  sorting=none,
+  maxbibnames=99,
+  giveninits=true
+]{biblatex}
+% For a closer IEEE match you may instead use  style=ieee  -- that needs
+% the biblatex-ieee package installed (it ships with full TeX Live/MiKTeX).
+\addbibresource{references.bib}
+
+% ---- Rename the "List of Figures" page to "Table of Figures" ---------
+%  The department template calls it "Table of Figures" in the contents
+%  listing. To revert to the standard LaTeX name, change the line below
+%  back to:  \renewcommand{\listfigurename}{LIST OF FIGURES}
+\renewcommand{\contentsname}{TABLE OF CONTENTS}
+\renewcommand{\listfigurename}{TABLE OF FIGURES}
+\renewcommand{\listtablename}{LIST OF TABLES}
+\renewcommand{\bibname}{REFERENCES}
+
+% ---- PDF metadata ---------------------------------------------------
+\hypersetup{
+  pdftitle={\fypProjectTitle},
+  pdfauthor={\fypStudentOneName},
+  pdfsubject={BS Software Engineering Final Year Project Report}
+}
+
+% =====================================================================
+\begin{document}
+
+% ---------------------------------------------------------------------
+%  REFERENCE NUMBERING LOCK
+%
+%  With sorting=none, biblatex numbers references in order of first
+%  citation. The \nocite below registers all ten sources up front, in
+%  your PROPOSAL's order, so the printed numbers match your proposal
+%  exactly: pan2021roles is [1], li2019blockchain is [2], and so on.
+%  That makes cross-checking this report against the proposal trivial.
+%
+%  SIDE EFFECT: all ten appear in the reference list even if a source
+%  ends up uncited in the final text. That is usually what you want for
+%  an FYP. DELETE this \nocite line if you would rather have references
+%  numbered purely by the order they appear in your text, and have
+%  uncited sources dropped automatically.
+% ---------------------------------------------------------------------
+\nocite{pan2021roles}          % [1]
+\nocite{li2019blockchain}      % [2]
+\nocite{radford2022whisper}    % [3]
+\nocite{reimers2019sbert}      % [4]
+\nocite{wu2022nlp}             % [5]
+\nocite{lee2017extraction}     % [6]
+\nocite{hawlitschek2016trust}  % [7]
+\nocite{hossain2018platform}   % [8]
+\nocite{procore2025overview}   % [9]
+\nocite{zhang2021hybrid}       % [10]
+
+% =====================================================================
+%  FRONT MATTER
+%  Page numbering: lowercase roman. The two title pages carry NO number;
+%  the count restarts at "i" on the Certification page, exactly as the
+%  department template requires.
+% =====================================================================
+\pagenumbering{roman}
+\pagestyle{plain}
+
+\input{frontmatter/cover-title}       % 1. Cover title page      (no number)
+\input{frontmatter/inner-title}       % 2. Inner title page      (no number)
+
+% Roman numbering starts counting HERE, at the Certification page = i.
+\setcounter{page}{1}
+
+\input{frontmatter/certification}     % 3. Certification         (i)
+\input{frontmatter/dedication}        % 4. Dedication
+\input{frontmatter/contents-pages}    % 5-7. ToC, Table of Figures, List of Tables
+\input{frontmatter/acknowledgments}   % 8. Acknowledgments
+\input{frontmatter/abstract}          % 9. Abstract (max 2 pages)
+
+% =====================================================================
+%  MAIN BODY
+%  Page numbering restarts at Arabic "1" on the first page of Chapter 1.
+%  Running header shows the chapter number and name.
+% =====================================================================
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\pagestyle{fypbody}
+
+\include{chapters/ch1-introduction}            % 10. Chapter 1
+\include{chapters/ch2-literature-review}       % 11. Chapter 2
+\include{chapters/ch3-methodology}             % 12. Chapter 3
+\include{chapters/ch4-system-design}           % 13. Chapter 4
+\include{chapters/ch5-implementation-testing}  % 14. Chapter 5
+\include{chapters/ch6-results}                 % 15. Chapter 6
+\include{chapters/ch7-conclusion}              % 16. Chapter 7
+
+% =====================================================================
+%  REFERENCES  (numbered bracket style -- see the note at the top)
+% =====================================================================
+% "heading=bibintoc" adds REFERENCES to the Table of Contents.
+% titlesec formats the heading exactly like every other chapter title:
+% 14pt, bold, ALL CAPS, centered.
+\printbibliography[heading=bibintoc,title={REFERENCES}]
+
+% =====================================================================
+%  APPENDICES  (optional -- delete this \include if not required)
+% =====================================================================
+\include{chapters/appendices}
+
+\end{document}

@@ -1,0 +1,57 @@
+% =====================================================================
+%  2. INNER TITLE PAGE
+%  Same information as the cover, plus the word "By" and the degree
+%  statement. No page number.
+% =====================================================================
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+\begin{spacing}{1.2}
+
+\vspace*{0.6cm}
+
+% ---- University logo ------------------------------------------------
+\includegraphics[width=\fypLogoWidth]{\fypLogoFile}
+
+\vspace{1.0cm}
+
+% ---- Project title, 16pt bold ALL CAPS ------------------------------
+{\fontsize{16}{20}\selectfont\bfseries\MakeUppercase{\fypProjectTitle}}
+
+\vspace{1.4cm}
+
+% ---- "By" ------------------------------------------------------------
+{\fontsize{14}{17}\selectfont\bfseries By}
+
+\vspace{0.8cm}
+
+% ---- Student name(s) and registration number(s) ---------------------
+\fypStudentBlock
+
+\vspace{1.2cm}
+
+% ---- Degree statement ------------------------------------------------
+% 12pt, normal weight, centred, one-and-a-half spacing.
+\begin{minipage}{0.82\textwidth}
+  \centering
+  \fontsize{12}{18}\selectfont
+  \fypDegreeStatement
+\end{minipage}
+
+\vspace{1.2cm}
+
+% ---- Session ---------------------------------------------------------
+{\fontsize{14}{17}\selectfont\bfseries Session: \fypSession}
+
+\vfill
+
+% ---- Department / faculty / university repeated ----------------------
+{\fontsize{14}{17}\selectfont\bfseries \fypDepartment}\\[6pt]
+{\fontsize{14}{17}\selectfont\bfseries \fypFaculty}\\[6pt]
+{\fontsize{14}{17}\selectfont\bfseries \fypUniversity}
+
+\vspace{1.0cm}
+
+\end{spacing}
+\end{center}
+\end{titlepage}
