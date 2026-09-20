@@ -1,0 +1,18 @@
+# The Dockerfile ends with `COPY . .`, so anything not excluded here is
+# baked into the image that gets pushed to Heroku's container registry.
+# Real credentials must come from config vars at runtime, never from a
+# layer in the image.
+.env
+.env.*
+!.env.example
+*_keys.txt
+groq_keys.txt
+
+# Not needed at runtime, and they bloat the image / slow the build.
+tests/
+__pycache__/
+*.pyc
+.ruff_cache/
+.pytest_cache/
+.venv/
+venv/

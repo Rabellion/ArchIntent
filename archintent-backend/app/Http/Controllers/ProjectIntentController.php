@@ -130,12 +130,29 @@ class ProjectIntentController extends Controller
             // for both "not configured" and genuine Whisper failures;
             // fall back to a generic one only if that is missing.
             $detail = $response->json('detail');
+            $message = is_string($detail) && $detail !== ''
+                ? $detail
+                : 'Could not transcribe the recording right now.';
+
+            // 429 means the Groq key pool is momentarily out of headroom,
+            // not that anything is broken. Passing the status and
+            // Retry-After straight through lets the client say "try again
+            // in N seconds" instead of showing a generic failure.
+            if ($response->status() === 429) {
+                $retryAfter = $response->header('Retry-After');
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                    'retry_after' => is_numeric($retryAfter) ? (int) $retryAfter : null,
+                ], 429)->withHeaders(
+                    is_numeric($retryAfter) ? ['Retry-After' => (string) (int) $retryAfter] : []
+                );
+            }
 
             return response()->json([
                 'success' => false,
-                'message' => is_string($detail) && $detail !== ''
-                    ? $detail
-                    : 'Could not transcribe the recording right now.',
+                'message' => $message,
             ], 502);
         }
 

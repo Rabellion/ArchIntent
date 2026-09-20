@@ -189,6 +189,20 @@ export default function VoiceIntentBrief({
       // clip to add detail to what they already typed/said.
       onChange(value.trim() ? `${value.trim()} ${transcript}` : transcript);
     } catch (e: any) {
+      // 429 means the transcription key pool is momentarily saturated, not
+      // that the recording failed. Telling the client how long to wait is
+      // far more useful than a flat error, and the audio is still in the
+      // textarea-adjacent state so nothing is lost by retrying.
+      if (e.response?.status === 429) {
+        const retryAfter =
+          e.response?.data?.retry_after ?? Number(e.response?.headers?.['retry-after']);
+        setVoiceError(
+          Number.isFinite(retryAfter) && retryAfter > 0
+            ? `Transcription is busy. Try again in about ${Math.ceil(retryAfter)}s, or type your brief.`
+            : 'Transcription is busy right now. Try again shortly, or type your brief.'
+        );
+        return;
+      }
       setVoiceError(e.response?.data?.message || 'Could not transcribe the recording.');
     } finally {
       setTranscribing(false);

@@ -11,7 +11,12 @@ from pydantic import BaseModel, Field
 
 from keyword_extractor import extract_intent, warm_up as warm_up_spacy
 from matcher import get_model, rank_architects
-from transcriber import TranscriptionError, transcribe
+from transcriber import (
+    TranscriptionError,
+    pool_stats,
+    transcribe,
+    warm_up as warm_up_transcriber,
+)
 
 load_dotenv()
 
@@ -36,6 +41,10 @@ async def lifespan(app: FastAPI):
     get_model()
     logger.info("Loading spaCy pipeline...")
     warm_up_spacy()
+    # Builds the Groq key pool so a missing/incomplete GROQ_API_KEYS
+    # shows up in the boot log, not on a client's first recording.
+    logger.info("Building Groq key pool...")
+    warm_up_transcriber()
     logger.info("Model ready.")
     yield
 
@@ -85,7 +94,19 @@ class ExtractKeywordsRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "callback_enabled": ENABLE_LARAVEL_CALLBACK}
+    stats = pool_stats()
+    return {
+        "ok": True,
+        "callback_enabled": ENABLE_LARAVEL_CALLBACK,
+        # Masked key labels only -- never the keys themselves.
+        "transcription": {
+            "configured": stats is not None,
+            "model": os.getenv("GROQ_WHISPER_MODEL", "whisper-large-v3"),
+            "total_keys": stats["total_keys"] if stats else 0,
+            "available_keys": stats["available_keys"] if stats else 0,
+            "aggregate_capacity": stats["aggregate_capacity"] if stats else None,
+        },
+    }
 
 
 @app.post("/match", dependencies=[Depends(verify_internal_key)])
@@ -137,6 +158,14 @@ async def transcribe_audio(file: UploadFile = File(...)) -> dict:
     try:
         text = await transcribe(audio_bytes, file.filename or "recording.webm")
     except TranscriptionError as exc:
+        # Pool exhaustion is a 'come back shortly', not a gateway fault,
+        # so it gets 429 + Retry-After and the caller can act on it.
+        if exc.retry_after is not None:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=str(exc),
+                headers={"Retry-After": str(int(exc.retry_after) + 1)},
+            ) from exc
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=str(exc),

@@ -88,7 +88,7 @@ into the subsystem architecture in Section~\ref{subsec:arch-subsystem}:
 % RESOLVED: an earlier draft of this report flagged a discrepancy here
 % -- at that point in development, only the S-BERT stage existed, and
 % this section said so plainly rather than overclaiming. Whisper (via
-% the OpenAI API) and SpaCy keyword extraction were implemented
+% Groq-hosted) and SpaCy keyword extraction were implemented
 % afterwards; see Section~\ref{sec:techniques} for the full pipeline
 % description and the reasoning behind the Whisper hosting decision.
 
@@ -396,7 +396,7 @@ against the benefit it delivers.]
     \hline
     AI service & spaCy (en\_core\_web\_sm) & 3.7.5 & Keyword and intent extraction \\
     \hline
-    AI service & OpenAI SDK & 1.54.4 & Whisper API client for voice transcription \\
+    AI service & Groq Whisper Large V3 & -- & Hosted speech-to-text for voice briefs \\
     \hline
     Payments & stripe-php & 20.1.0 & Server-side payment processing \\
     \hline
@@ -458,19 +458,66 @@ it -- but all three are implemented, not just the final matching stage.
 \label{subsec:voice-transcription}
 
 A client may describe their project brief by voice instead of typing
-it. The recorded audio is transcribed by the OpenAI-hosted Whisper API
-\cite{radford2022whisper} rather than by a Whisper model loaded
-in-process. This is a deliberate infrastructure decision, not a
+it. The recorded audio is transcribed by Whisper Large V3
+\cite{radford2022whisper}, accessed through a hosted inference endpoint
+rather than as a model loaded in-process. This is a deliberate infrastructure decision, not a
 simplification of the technique: the NLP service already loads a
 Sentence-BERT model into a memory-constrained deployment
 (Section~\ref{sec:tools}), and loading a second transformer model for
 speech recognition in the same process would risk the service running
 out of memory under real usage. Delegating transcription to a hosted
-API removes that failure mode entirely, at a marginal per-request cost.
+endpoint removes that failure mode entirely.
 The returned transcript is inserted into the same brief-text field a
 typed submission would use, so every later pipeline stage is identical
 regardless of how the brief was produced, and the client can review and
 edit the transcript before submitting.
+
+\subsubsection*{Key-pool load balancing}
+
+The hosted endpoint is used on its free tier, which imposes four
+separate limits on each account: twenty requests per minute, two
+thousand requests per day, and -- the constraint that actually binds for
+sustained voice use -- seven thousand two hundred seconds of audio per
+hour and twenty-eight thousand eight hundred per day. At a typical
+thirty-second spoken brief, the hourly audio allowance permits roughly
+two hundred and forty transcriptions, well below what the per-minute
+request limit alone would suggest.
+
+Capacity is therefore obtained by distributing requests across a pool of
+independent accounts rather than by purchasing a paid tier. This is only
+sound because the provider applies its limits per organisation: keys
+belonging to one account share a single allowance, and pooling them
+would multiply nothing. That property was confirmed empirically before
+the design was committed to, by issuing one request on each of three
+keys and comparing the returned rate-limit headers; each key reported
+the same remaining count rather than a decreasing sequence, establishing
+that the allowances were genuinely independent.
+
+The pool maintains, for every key, four sliding windows corresponding to
+the four limits. Keys are issued in round-robin order so that load is
+distributed evenly rather than exhausting one key before moving to the
+next, and any key whose windows show insufficient headroom for the
+estimated duration of the clip is skipped. Because the provider returns
+its own authoritative remaining counts on every response, those figures
+are adopted in preference to the locally maintained estimates, which
+keeps the pool accurate even after a restart clears its in-memory state.
+
+Two failure paths are handled explicitly. If a request is nonetheless
+rejected for exceeding a limit -- local and remote window boundaries
+cannot be kept perfectly aligned -- the key is withdrawn for the
+duration advised by the response and the request is immediately retried
+on the next available key, so the client is not exposed to the failure.
+If a key is rejected as invalid, it is withdrawn for an extended period
+rather than retried on every subsequent request. Retries are bounded
+both in number and by an overall time budget, the latter chosen to
+remain inside the hosting platform's own request timeout so that a slow
+sequence of retries cannot itself become the cause of a failure.
+
+% TODO: report the pool size you finally demonstrated with, and the
+% measured distribution from your own load test.
+[POOL MEASUREMENT: state the number of keys used in the final
+demonstration and the observed per-key request distribution under
+concurrent load.]
 
 \subsection{Keyword extraction}
 \label{subsec:keyword-extraction}
@@ -552,9 +599,9 @@ an unauthenticated party.
 
 \begin{itemize}[leftmargin=*, itemsep=2pt]
   \item \texttt{POST /transcribe} -- called when a client submits a
-        voice recording. The audio is streamed through to the OpenAI
-        Whisper API and the resulting transcript is returned; nothing is
-        persisted at this stage.
+        voice recording. The audio is streamed through to the hosted
+        Whisper Large V3 endpoint and the resulting transcript is
+        returned; nothing is persisted at this stage.
   \item \texttt{POST /extract-keywords} -- called live, while a client
         is writing or reviewing their brief, before a project exists.
         Returns the structured terms described in

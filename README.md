@@ -82,6 +82,8 @@ rest of the platform down with it.
 | Styling | Tailwind CSS | 3 |
 | NLP runtime | Python + FastAPI | 3.x / 0.115 |
 | Semantic embeddings | sentence-transformers (S-BERT) | 3.3 |
+| Keyword extraction | spaCy (`en_core_web_sm`) | 3.7 |
+| Speech-to-text | Groq `whisper-large-v3` | — |
 | Similarity scoring | scikit-learn | 1.5 |
 | Payments | Stripe (Payment Intents + Connect) | — |
 | Documentation | LaTeX (XeLaTeX) | — |
@@ -120,8 +122,9 @@ Copy every `.env.example` to `.env` in its own module and fill in real values �
 committed `.env.example` files contain working credentials. At minimum you will need a MySQL
 connection string, a Stripe test secret/publishable key pair, a shared `INTERNAL_API_KEY`
 (same value in the backend and the NLP service — it authenticates the callback between them),
-and an `OPENAI_API_KEY` in `nlp-service/.env` for voice transcription (matching runs fine
-without it; only the microphone feature needs it).
+and `GROQ_API_KEYS` in `nlp-service/.env` for voice transcription — one or more Groq keys,
+newline or comma separated (matching runs fine without them; only the microphone feature
+needs them).
 
 Seeded test accounts (password `Test@1234` for all): `admin@test.com`, `client@test.com`,
 `architect@test.com` / `architect2@test.com`, `contractor@test.com` / `contractor2@test.com`,
@@ -204,7 +207,8 @@ one pipeline in `nlp-service`:
 client's voice or typed brief
         │
         ▼
-  Whisper (OpenAI API)         transcriber.py    -- speech-to-text, only if voice was used
+  Whisper Large V3 (Groq)      transcriber.py    -- speech-to-text, only if voice was used
+        │  round-robin over a pool of free-tier keys (key_pool.py)
         │
         ▼
   SpaCy keyword extraction     keyword_extractor.py
@@ -220,11 +224,20 @@ client's voice or typed brief
 
 Two design choices worth noting:
 
-- **Whisper runs via the OpenAI API, not a locally-loaded model.** The NLP service already
+- **Whisper runs as a hosted API, not a locally-loaded model.** The NLP service already
   carries Sentence-BERT + torch in a 512MB Heroku Eco dyno; a second in-process transformer
   model for speech recognition would risk the dyno running out of memory under real usage.
-  Moving that compute off-dyno costs a few cents per demo and removes that failure mode
-  entirely.
+  Moving that compute off-dyno removes that failure mode entirely.
+- **Capacity comes from a pool of free-tier keys, not a paid plan.** Groq caps
+  `whisper-large-v3` at 20 RPM / 2,000 RPD / 7,200 audio-seconds per hour — but *per
+  organization*, so pooling only multiplies capacity when each key belongs to a separate
+  account. That was verified against the live API rather than assumed: three keys each
+  reported `x-ratelimit-remaining-requests: 1999` after their own single request, instead
+  of 1999/1998/1997. `key_pool.py` hands keys out round-robin, tracks all four limits per
+  key in sliding windows, reconciles against the counts Groq returns on every response,
+  and parks any key that 429s for its Retry-After so the request re-rolls onto the next
+  one instead of failing. Measured: 30 concurrent transcriptions spread across 24 keys at
+  a maximum of 2 requests per key, with none driven into its own limit.
 - **Keyword extraction is visible, not just internal.** Beyond enriching the matching text,
   `POST /projects/preview-intent` lets the frontend show the client a live "we understood:
   modern, minimalist, open-plan" confirmation while they are still writing or reviewing their

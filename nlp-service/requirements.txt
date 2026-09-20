@@ -9,9 +9,9 @@ pydantic==2.9.2
 # separately in the Dockerfile via `spacy download`, not pip -- it is a
 # model artifact, not a Python package on PyPI.
 spacy==3.7.5
-# Voice transcription client. Talks to the OpenAI-hosted Whisper API;
-# no local Whisper model is loaded (see transcriber.py for why).
-openai==1.54.4
+# Voice transcription talks to Groq's hosted whisper-large-v3 over plain
+# HTTP via httpx (already required above), so no vendor SDK is needed.
+# No local Whisper model is loaded -- see transcriber.py for why.
 # Required by python-multipart-backed UploadFile handling in FastAPI
 # for the /transcribe endpoint.
 python-multipart==0.0.12

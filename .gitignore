@@ -111,3 +111,12 @@ Thumbs.db
 # Local scratch / IDE project files some editors drop at the repo root
 .claude/settings.local.json
 .playwright-mcp/
+
+# ---------------------------------------------------------------------
+# Credentials
+# ---------------------------------------------------------------------
+# Raw Groq API keys for the Whisper key pool. These are injected into the
+# NLP service through the GROQ_API_KEYS config var, never committed.
+groq_keys.txt
+groq_keys*.txt
+*_keys.txt
