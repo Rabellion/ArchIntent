@@ -220,12 +220,18 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_SCOPE: ${{ vars.VERCEL_SCOPE }}
         run: |
           npm i -g vercel@latest
-          # The project sits under a TEAM scope (VERCEL_ORG_ID starts with
-          # "team_"). Without --scope the CLI resolves against the personal
-          # account and fails with "Could not retrieve Project Settings".
-          # The token must also be created with access to this team.
-          vercel pull --yes --environment=production             --scope="${{ vars.VERCEL_SCOPE }}" --token="${{ secrets.VERCEL_TOKEN }}"
-          vercel build --prod             --scope="${{ vars.VERCEL_SCOPE }}" --token="${{ secrets.VERCEL_TOKEN }}"
-          vercel deploy --prebuilt --prod             --scope="${{ vars.VERCEL_SCOPE }}" --token="${{ secrets.VERCEL_TOKEN }}"
+          run_vercel() {
+            if [ -n "$VERCEL_SCOPE" ]; then
+              if "$@" --scope="$VERCEL_SCOPE" --token="${{ secrets.VERCEL_TOKEN }}"; then
+                return 0
+              fi
+              echo "::warning::Scoped Vercel command failed for scope '$VERCEL_SCOPE'; retrying without --scope."
+            fi
+            "$@" --token="${{ secrets.VERCEL_TOKEN }}"
+          }
+          run_vercel vercel pull --yes --environment=production
+          run_vercel vercel build --prod
+          run_vercel vercel deploy --prebuilt --prod
