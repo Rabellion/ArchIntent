@@ -7,6 +7,8 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from keyword_extractor import enrich_text_with_keywords
+
 _model: SentenceTransformer | None = None
 
 
@@ -37,11 +39,17 @@ def _join(*parts: str) -> str:
 
 
 def build_project_text(project: dict) -> str:
-    return _join(
+    base = _join(
         project.get("project_type", ""),
         f"in {project['location']}" if project.get("location") else "",
         project.get("brief_text", ""),
     )
+    # spaCy-based intent decoding (see keyword_extractor.py): repeats the
+    # brief's salient design terms so they carry more weight in the
+    # S-BERT embedding than surrounding filler words. This is the point
+    # at which keyword extraction actually affects match quality, rather
+    # than existing only behind the standalone preview endpoint.
+    return enrich_text_with_keywords(base) if base else base
 
 
 def build_architect_base_text(architect: dict) -> str:

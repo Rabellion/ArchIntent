@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axiosInstance from '../api/axios';
+import VoiceIntentBrief from '../components/projects/VoiceIntentBrief';
 
 interface ProjectFormData {
   project_title: string;
@@ -282,30 +283,27 @@ const CreateProject: React.FC = () => {
           </div>
         </div>
 
-        {/* Project Brief */}
+        {/* Project Brief -- type it, speak it, or both. Live keyword
+            chips ("we understood: ...") confirm the AI actually parsed
+            what was written before the client submits. */}
         <div className="space-y-3">
           <label htmlFor="brief_text" className="text-sm font-black text-slate-300 uppercase tracking-widest block">
             Project Description
           </label>
-          <div className="relative">
-            <textarea
-              id="brief_text"
-              name="brief_text"
-              value={formData.brief_text}
-              onChange={handleInputChange}
-              placeholder="Tell us about your requirements, style preferences, and goals..."
-              rows={8}
-              className={`${inputBase} px-5 py-4 pb-12 resize-none ${errors.brief_text ? inputError : inputNormal}`}
-              aria-describedby="brief_char_hint"
-            />
-            <div
-              id="brief_char_hint"
-              className="absolute bottom-4 right-4 bg-slate-950/90 border border-slate-700 px-2 py-1 rounded-lg text-[9px] font-black text-slate-400"
-            >
-              {formData.brief_text.length} / 100 MIN
-            </div>
-          </div>
-          {errors.brief_text && <p className="text-rose-400 text-[10px] font-bold uppercase">{errors.brief_text}</p>}
+          <VoiceIntentBrief
+            id="brief_text"
+            value={formData.brief_text}
+            onChange={(value) => {
+              setFormData((prev) => ({ ...prev, brief_text: value }));
+              if (errors.brief_text) setErrors((prev) => ({ ...prev, brief_text: undefined }));
+            }}
+            placeholder="Tell us about your requirements, style preferences, and goals... or tap the mic to describe it out loud."
+            rows={8}
+            minLength={100}
+            error={errors.brief_text}
+            className={`${inputBase} px-5 py-4 pb-12 pr-16 resize-none ${errors.brief_text ? inputError : inputNormal}`}
+            errorClassName="text-rose-400 text-[10px] font-bold uppercase"
+          />
         </div>
 
         {/* Actions */}

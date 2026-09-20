@@ -5,3 +5,13 @@ scikit-learn==1.5.2
 httpx==0.27.2
 python-dotenv==1.0.1
 pydantic==2.9.2
+# Keyword extraction (intent decoding). en_core_web_sm is installed
+# separately in the Dockerfile via `spacy download`, not pip -- it is a
+# model artifact, not a Python package on PyPI.
+spacy==3.7.5
+# Voice transcription client. Talks to the OpenAI-hosted Whisper API;
+# no local Whisper model is loaded (see transcriber.py for why).
+openai==1.54.4
+# Required by python-multipart-backed UploadFile handling in FastAPI
+# for the /transcribe endpoint.
+python-multipart==0.0.12

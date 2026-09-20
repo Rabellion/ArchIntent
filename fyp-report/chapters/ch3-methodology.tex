@@ -77,54 +77,20 @@ into the subsystem architecture in Section~\ref{subsec:arch-subsystem}:
         credentials.
   \item \textbf{Admin Module} -- administrative control for user
         verification, data moderation and analytics.
-  \item \textbf{AI Module} -- a separate FastAPI service that embeds
-        project briefs and architect portfolios using a Sentence-BERT
-        model and ranks architects by cosine similarity
+  \item \textbf{AI Module} -- a separate FastAPI service implementing
+        the full intent-decoding pipeline: Whisper speech-to-text for
+        voice queries \cite{radford2022whisper}, SpaCy-based keyword
+        extraction, and Sentence-BERT embedding with cosine-similarity
+        ranking against architect portfolios
         \cite{reimers2019sbert}.
 \end{itemize}
 
-% =====================================================================
-%  !!! DISCREPANCY BETWEEN PROPOSAL AND DELIVERED SYSTEM !!!
-%  DECIDE WHAT TO DO ABOUT THIS BEFORE YOU SUBMIT.
-%
-%  Your proposal states that the AI Module integrates THREE components:
-%      WhisperASR  -- speech-to-text for voice queries
-%      SpaCy       -- keyword and entity extraction
-%      S-BERT      -- semantic search
-%
-%  Only S-BERT is actually implemented. As of this review of the
-%  repository:
-%    - nlp-service/requirements.txt contains fastapi, uvicorn,
-%      sentence-transformers, scikit-learn, httpx, python-dotenv and
-%      pydantic. There is no whisper package and no spacy package.
-%    - Searching the whole codebase (backend app/ and routes/, frontend
-%      src/, nlp-service/) for "whisper" or "spacy" returns NO matches.
-%    - nlp-service/matcher.py implements S-BERT embedding plus cosine
-%      similarity only.
-%
-%  YOU HAVE THREE HONEST OPTIONS:
-%
-%  (a) IMPLEMENT THEM before submission, then this section is correct
-%      as your proposal wrote it. Whisper is the larger job; SpaCy
-%      keyword extraction is comparatively small.
-%
-%  (b) DESCRIBE THE SYSTEM AS BUILT -- which is what this report now
-%      does -- and move voice input and keyword extraction into
-%      Section~\ref{sec:future-work} as planned work. Then say so
-%      plainly in the scope section and in the conclusion. This is
-%      completely acceptable; FYP scope changes between proposal and
-%      delivery all the time, and examiners respect it being stated.
-%
-%  (c) If a voice or SpaCy feature EXISTS but lives outside this
-%      repository, add it to the repo or document where it lives.
-%
-%  WHAT YOU MUST NOT DO is leave the report claiming Whisper and SpaCy
-%  are part of the delivered system while the code says otherwise. That
-%  is the single most dangerous thing in this document: a demo or viva
-%  question about voice input would expose it immediately.
-%
-%  Every place this affects is marked "DISCREPANCY" -- search for it.
-% =====================================================================
+% RESOLVED: an earlier draft of this report flagged a discrepancy here
+% -- at that point in development, only the S-BERT stage existed, and
+% this section said so plainly rather than overclaiming. Whisper (via
+% the OpenAI API) and SpaCy keyword extraction were implemented
+% afterwards; see Section~\ref{sec:techniques} for the full pipeline
+% description and the reasoning behind the Whisper hosting decision.
 
 % ---- Optional process-model figure (recommended for R4) --------------
 \begin{figure}[H]
@@ -428,6 +394,10 @@ against the benefit it delivers.]
     \hline
     AI service & Uvicorn & 0.30.6 & ASGI server for the NLP service \\
     \hline
+    AI service & spaCy (en\_core\_web\_sm) & 3.7.5 & Keyword and intent extraction \\
+    \hline
+    AI service & OpenAI SDK & 1.54.4 & Whisper API client for voice transcription \\
+    \hline
     Payments & stripe-php & 20.1.0 & Server-side payment processing \\
     \hline
     Payments & @stripe/react-stripe-js & 6.1.0 & Client-side payment elements \\
@@ -445,12 +415,9 @@ against the benefit it delivers.]
   \end{tabularx}
 \end{table}
 
-% DISCREPANCY: WhisperASR and SpaCy appeared in the proposal's stack
-% table but are NOT in any dependency file, so they are not listed here.
-% See the discrepancy note in Section~\ref{subsec:major-modules}.
-%
 % TODO: MySQL version is the one value not recoverable from the repo --
 % run  SELECT VERSION();  in your database and fill it in.
+%
 
 % TODO: justify the non-obvious choices. Your proposal lists the stack
 % but does not defend it, and an unjustified stack reads as an accident
@@ -471,23 +438,75 @@ as a separate service rather than inside the Laravel application.]
 %  explicitly, and a described algorithm is easy marks.
 % ---------------------------------------------------------------------
 
-% WRITTEN FROM THE ACTUAL IMPLEMENTATION in nlp-service/matcher.py.
-% This section is where your project earns its "complex engineering
-% problem" marks, so it is worth getting exactly right.
+% WRITTEN FROM THE ACTUAL IMPLEMENTATION in nlp-service/main.py,
+% keyword_extractor.py, transcriber.py and matcher.py. This section is
+% where your project earns its "complex engineering problem" marks, so
+% it is worth getting exactly right.
 
-The matching engine is the central technique of this project. It is
-implemented as a standalone FastAPI service that ranks architects
-against a client's project brief by semantic similarity rather than by
-keyword overlap \cite{reimers2019sbert}.
+The AI Module is a three-stage pipeline, run entirely within the
+standalone FastAPI service introduced in
+Section~\ref{subsec:major-modules}: speech-to-text
+(Section~\ref{subsec:voice-transcription}), keyword
+extraction (Section~\ref{subsec:keyword-extraction}), and semantic
+matching (Sections~\ref{subsec:text-representation}
+--\ref{subsec:similarity-scoring}). Each stage is optional in the sense
+that matching works from typed text alone -- voice input is an
+alternative way of producing that text, and keyword extraction enriches
+it -- but all three are implemented, not just the final matching stage.
+
+\subsection{Voice transcription}
+\label{subsec:voice-transcription}
+
+A client may describe their project brief by voice instead of typing
+it. The recorded audio is transcribed by the OpenAI-hosted Whisper API
+\cite{radford2022whisper} rather than by a Whisper model loaded
+in-process. This is a deliberate infrastructure decision, not a
+simplification of the technique: the NLP service already loads a
+Sentence-BERT model into a memory-constrained deployment
+(Section~\ref{sec:tools}), and loading a second transformer model for
+speech recognition in the same process would risk the service running
+out of memory under real usage. Delegating transcription to a hosted
+API removes that failure mode entirely, at a marginal per-request cost.
+The returned transcript is inserted into the same brief-text field a
+typed submission would use, so every later pipeline stage is identical
+regardless of how the brief was produced, and the client can review and
+edit the transcript before submitting.
+
+\subsection{Keyword extraction}
+\label{subsec:keyword-extraction}
+
+Before a brief is embedded, it is passed through a SpaCy-based
+extraction stage that decodes it into four structured categories: style,
+room type, material and feature. This is implemented with two
+complementary techniques. A \texttt{PhraseMatcher} loaded with a curated
+architecture-domain vocabulary catches known multi-word terms as a
+single unit (\emph{"open plan"}, \emph{"natural light"}) rather than as
+unrelated individual words. A fallback pass over SpaCy's noun-chunk and
+adjective annotations catches descriptive terms outside that curated
+vocabulary, with overlap filtering so that a chunk already covered by a
+matched vocabulary term (\emph{"a rooftop terrace"} once
+\emph{"terrace"} is matched) is not repeated.
+
+The extracted terms serve two purposes. They are appended to the brief
+before it is embedded (Section~\ref{subsec:text-representation}),
+increasing their weight in the resulting vector relative to surrounding
+filler words. They are also returned directly to the client through a
+dedicated endpoint, independent of matching, so the interface can show a
+"we understood: modern, minimalist, open-plan" confirmation while the
+brief is still being written -- a visible, checkable instance of the
+intent-decoding claim central to this project, rather than a step that
+only affects an internal score the client never sees.
 
 \subsection{Text representation}
 \label{subsec:text-representation}
 
 Two text representations are constructed. A \emph{project text} is
 assembled from the project type, the location and the client's written
-brief. An \emph{architect text} is assembled from the architect's
-specialisation and biography, concatenated with the description and
-style tags of one of their portfolio projects.
+brief, then enriched with the keywords decoded in
+Section~\ref{subsec:keyword-extraction} before embedding. An
+\emph{architect text} is assembled from the architect's specialisation
+and biography, concatenated with the description and style tags of one
+of their portfolio projects.
 
 Crucially, one architect text is built for \emph{each} portfolio project
 an architect owns, rather than one per architect. This lets the system
@@ -526,23 +545,37 @@ top-$k$ value of 10 were arrived at.]
 \subsection{Integration with the main application}
 \label{subsec:nlp-integration}
 
-% TODO: describe the call path. The backend exposes an internal endpoint
-% (POST /internal/project-matches) that receives the ranked results, so
-% describe which side initiates, how the two services authenticate to
-% each other, and whether the call is synchronous or deferred.
-[INTEGRATION: describe how the Laravel application and the FastAPI
-service exchange data, how they authenticate to one another, whether
-matching happens synchronously on project creation or asynchronously,
-and where the resulting matches are persisted -- the
-\texttt{project\_matches} table.]
+The Laravel application and the FastAPI service communicate over three
+endpoints, all authenticated by a shared key sent as an
+\texttt{X-Internal-Key} header so the NLP service cannot be called by
+an unauthenticated party.
 
-% DISCREPANCY -- SEE THE NOTE IN SECTION~\ref{subsec:major-modules}.
-% The proposal describes this pipeline as three stages: Whisper
-% speech-to-text, then SpaCy keyword extraction, then S-BERT matching.
-% Only the third stage exists in the repository. This section documents
-% what is implemented. If you build the other two before submission,
-% add them back here as Sections 3.4.0 and 3.4.1 and restore the
-% \cite{radford2022whisper} citation for the speech stage.
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+  \item \texttt{POST /transcribe} -- called when a client submits a
+        voice recording. The audio is streamed through to the OpenAI
+        Whisper API and the resulting transcript is returned; nothing is
+        persisted at this stage.
+  \item \texttt{POST /extract-keywords} -- called live, while a client
+        is writing or reviewing their brief, before a project exists.
+        Returns the structured terms described in
+        Section~\ref{subsec:keyword-extraction} for the frontend
+        confirmation chips.
+  \item \texttt{POST /match} -- called asynchronously after a project is
+        created, via a queued job. This is the only one of the three
+        that writes to the database: the returned ranked list is
+        persisted to the \texttt{project\_matches} table, and this
+        endpoint performs its own keyword extraction and enrichment
+        internally, so matching quality does not depend on whether the
+        client's brief was previewed through
+        \texttt{/extract-keywords} beforehand.
+\end{itemize}
+
+% TODO: state whether matching runs on the request thread or via a
+% background worker in your final deployment configuration, and roughly
+% how long a /match call takes end to end for a typical portfolio size.
+[TIMING: state the observed latency of a full matching request, and
+whether it currently runs synchronously or via a queued job in the
+deployed system.]
 
 % EXPAND: a labelled diagram of this pipeline would strengthen R4
 % considerably. A placeholder slot is available above at

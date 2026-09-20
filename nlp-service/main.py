@@ -6,10 +6,12 @@ from contextlib import asynccontextmanager
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Header, HTTPException, status
+from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile, status
 from pydantic import BaseModel, Field
 
+from keyword_extractor import extract_intent, warm_up as warm_up_spacy
 from matcher import get_model, rank_architects
+from transcriber import TranscriptionError, transcribe
 
 load_dotenv()
 
@@ -25,10 +27,15 @@ TOP_K = int(os.getenv("TOP_K", "10"))
 ENABLE_LARAVEL_CALLBACK = os.getenv("ENABLE_LARAVEL_CALLBACK", "0") == "1"
 
 
+MAX_AUDIO_BYTES = int(os.getenv("MAX_AUDIO_BYTES", str(15 * 1024 * 1024)))  # 15 MB
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Loading sentence-transformer model...")
     get_model()
+    logger.info("Loading spaCy pipeline...")
+    warm_up_spacy()
     logger.info("Model ready.")
     yield
 
@@ -72,6 +79,10 @@ class MatchRequest(BaseModel):
     architects: list[ArchitectEntry]
 
 
+class ExtractKeywordsRequest(BaseModel):
+    text: str = Field(..., max_length=5000)
+
+
 @app.get("/health")
 def health() -> dict:
     return {"ok": True, "callback_enabled": ENABLE_LARAVEL_CALLBACK}
@@ -96,6 +107,42 @@ async def match(req: MatchRequest) -> dict:
         await _post_to_laravel(payload)
 
     return {"success": True, "matches_count": len(matches), "matches": matches}
+
+
+@app.post("/extract-keywords", dependencies=[Depends(verify_internal_key)])
+def extract_keywords(req: ExtractKeywordsRequest) -> dict:
+    """Decode a client's free-text brief into structured design terms.
+
+    Standalone from /match on purpose: the frontend calls this live,
+    while the client is still writing/reviewing their brief and before
+    a project (or any architects to match against) exists yet, to show
+    a "we understood: modern, minimalist, open-plan" confirmation.
+    Matching itself gets the same enrichment automatically, inside
+    matcher.build_project_text -- this endpoint does not need to be
+    called for keyword extraction to affect match quality.
+    """
+    intent = extract_intent(req.text)
+    return {"success": True, "intent": intent.to_dict()}
+
+
+@app.post("/transcribe", dependencies=[Depends(verify_internal_key)])
+async def transcribe_audio(file: UploadFile = File(...)) -> dict:
+    audio_bytes = await file.read(MAX_AUDIO_BYTES + 1)
+    if len(audio_bytes) > MAX_AUDIO_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"Audio must be under {MAX_AUDIO_BYTES // (1024 * 1024)} MB.",
+        )
+
+    try:
+        text = await transcribe(audio_bytes, file.filename or "recording.webm")
+    except TranscriptionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(exc),
+        ) from exc
+
+    return {"success": True, "transcript": text}
 
 
 async def _post_to_laravel(payload: dict) -> None:

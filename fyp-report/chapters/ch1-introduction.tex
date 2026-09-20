@@ -113,14 +113,9 @@ specific objectives are as follows:
         contact architects directly, through natural language queries.
   \item To provide construction companies a channel through which to
         connect with potential clients using verified profiles.
-  \item To integrate AI-based semantic search using S-BERT.
-        % DISCREPANCY: the proposal's wording was "AI-based search and
-        % voice query features using WhisperASR and S-BERT". Voice query
-        % is not implemented. An objective may legitimately state intent
-        % that was later descoped -- but if you keep the voice half here,
-        % Chapter 6 must report honestly that it was not met. Cleaner to
-        % state the objective as delivered, as above, and list voice
-        % input under future work.
+  \item To integrate AI-based semantic and voice search functionality
+        using WhisperASR and S-BERT, with SpaCy-based keyword extraction
+        decoding client intent ahead of matching.
   \item To ensure secure authentication, data management and smooth
         communication between all stakeholders.
   \item To provide a real-time communication hub enabling secure
@@ -151,24 +146,19 @@ communication with clients. The \textbf{Construction Module} enables
 construction companies to list services and connect with clients through
 verified credentials. The \textbf{Admin Module} provides user
 verification, data moderation and analytics. The \textbf{AI Module}
-performs semantic matching of project briefs against architect
-portfolios using Sentence-BERT embeddings \cite{reimers2019sbert}.
+decodes a client's spoken or written project brief and matches it
+against architect portfolios: voice input is transcribed via the
+Whisper API \cite{radford2022whisper}, design intent is extracted with
+SpaCy, and the resulting text is embedded with Sentence-BERT for
+cosine-similarity ranking \cite{reimers2019sbert}. The full pipeline is
+described in Section~\ref{sec:techniques} of Chapter~\ref{ch:methodology}.
 
 The delivered product includes interactive dashboards for each of the
 three user types, a real-time chat feature with secure messaging,
-semantic search over architect portfolios, digital agreements with
-signing, and an administrative control panel with identity verification
-workflows. The platform integrates the Stripe API for payment
-processing and payouts.
-
-% DISCREPANCY -- see the full note in Section~\ref{subsec:major-modules}
-% of Chapter 3. The proposal also lists voice query input via WhisperASR
-% and keyword extraction via SpaCy as part of the AI module. Neither is
-% present in the repository, so neither is claimed here. If you
-% implement them before submission, restore them to this paragraph and
-% re-add the \cite{radford2022whisper} citation. If you do not, say so
-% explicitly in the exclusions paragraph below and list them as future
-% work in Section~\ref{sec:future-work}.
+voice and text-based semantic search over architect portfolios, digital
+agreements with signing, and an administrative control panel with
+identity verification workflows. The platform integrates the Stripe API
+for payment processing and payouts.
 
 % TODO: WRITE THE EXCLUSIONS PARAGRAPH. Your proposal does not state
 % what is out of scope, and this is the one part of Section 1.3 that
@@ -183,14 +173,12 @@ existing tools and this project targets the pre-contract gap
 specifically. Handling of 3D or BIM model files, multi-language
 support, and any on-site or IoT integration are also excluded.
 
-% TODO: DECIDE AND THEN STATE IT. If voice query input is not
-% implemented by submission, add a sentence here saying so -- for
-% example: "Voice query input, proposed during the planning phase, was
-% descoped during implementation and is discussed as future work in
-% Section~\ref{sec:future-work}." Declaring a descoped feature costs you
-% nothing; being caught with an undeclared one costs a great deal.
-[VOICE INPUT: keep or delete this line once you have decided -- see the
-discrepancy note in Section~\ref{subsec:major-modules}.]
+Voice transcription is delegated to the OpenAI-hosted Whisper API rather
+than to a locally-loaded model, for the memory-constraint reasons given
+in Section~\ref{subsec:voice-transcription}; the system therefore
+requires network access to that third-party service for the voice input
+path specifically, while text-based project creation and matching have
+no such dependency.
 
 % ---------------------------------------------------------------------
 \section{REPORT ORGANIZATION}

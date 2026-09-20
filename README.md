@@ -39,7 +39,7 @@ This is a monorepo of three independently runnable services plus the FYP documen
 ArchIntent/
 ├── archintent-backend/    Laravel 12 REST API — the system of record
 ├── archintent-frontend/   React 18 + TypeScript + Vite single-page app
-├── nlp-service/           Python FastAPI microservice — semantic matching only
+├── nlp-service/           Python FastAPI microservice — voice, keywords, matching
 ├── fyp-report/            LaTeX source for the final report (XeLaTeX)
 ├── .github/workflows/     CI/CD pipeline (test -> deploy all three services)
 ├── DEPLOYMENT.md          Heroku + Vercel provisioning and deployment
@@ -118,8 +118,10 @@ npm run dev                            # http://localhost:3000
 
 Copy every `.env.example` to `.env` in its own module and fill in real values — none of the
 committed `.env.example` files contain working credentials. At minimum you will need a MySQL
-connection string, a Stripe test secret/publishable key pair, and a shared `INTERNAL_API_KEY`
-(same value in the backend and the NLP service — it authenticates the callback between them).
+connection string, a Stripe test secret/publishable key pair, a shared `INTERNAL_API_KEY`
+(same value in the backend and the NLP service — it authenticates the callback between them),
+and an `OPENAI_API_KEY` in `nlp-service/.env` for voice transcription (matching runs fine
+without it; only the microphone feature needs it).
 
 Seeded test accounts (password `Test@1234` for all): `admin@test.com`, `client@test.com`,
 `architect@test.com` / `architect2@test.com`, `contractor@test.com` / `contractor2@test.com`,
@@ -193,19 +195,41 @@ security/authorization, and the architect payout demo — alongside a static int
 of every route and API call in the codebase. Those documents are kept locally rather than
 committed (`TEST_PLAN.md`, `VERIFICATION_REPORT.md`) and are available on request.
 
-## Known limitations
+## The AI intent-decoding pipeline
 
-Two capabilities described in the original project proposal are **not** implemented in the
-delivered system, and the codebase does not claim otherwise:
+All three components described in the original project proposal are implemented, running as
+one pipeline in `nlp-service`:
 
-- **Voice query input (Whisper)** — the proposal specified speech-to-text as part of the intent
-  pipeline; no speech recognition package or microphone UI exists in this build.
-- **Keyword extraction (SpaCy)** — the proposal specified a keyword-extraction stage ahead of
-  semantic matching; the delivered pipeline embeds and matches the raw brief text directly.
+```
+client's voice or typed brief
+        │
+        ▼
+  Whisper (OpenAI API)         transcriber.py    -- speech-to-text, only if voice was used
+        │
+        ▼
+  SpaCy keyword extraction     keyword_extractor.py
+        │  style / room type / material / feature, via a curated
+        │  PhraseMatcher vocabulary + noun-chunk fallback
+        ▼
+  Sentence-BERT embedding      matcher.py
+        │  the brief is enriched with its own decoded keywords before
+        │  embedding, so matching benefits automatically
+        ▼
+  cosine similarity ranking against architect portfolios
+```
 
-The semantic matching stage itself (Sentence-BERT + cosine similarity) is fully implemented and
-is what the project's AI contribution rests on. See `fyp-report/chapters/ch3-methodology.tex`
-for the full discrepancy note and the reasoning behind the scope decision.
+Two design choices worth noting:
+
+- **Whisper runs via the OpenAI API, not a locally-loaded model.** The NLP service already
+  carries Sentence-BERT + torch in a 512MB Heroku Eco dyno; a second in-process transformer
+  model for speech recognition would risk the dyno running out of memory under real usage.
+  Moving that compute off-dyno costs a few cents per demo and removes that failure mode
+  entirely.
+- **Keyword extraction is visible, not just internal.** Beyond enriching the matching text,
+  `POST /projects/preview-intent` lets the frontend show the client a live "we understood:
+  modern, minimalist, open-plan" confirmation while they are still writing or reviewing their
+  brief — a concrete, demonstrable piece of the intent-decoding claim, not something that only
+  shows up in a log file.
 
 The architect **bank withdrawal** feature is a demo path: it records bank details and
 withdrawal requests for manual settlement but does not move funds automatically. Automated

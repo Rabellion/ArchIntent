@@ -130,7 +130,7 @@ jobs:
 
       - name: Byte-compile sources
         working-directory: nlp-service
-        run: python -m compileall -q main.py matcher.py
+        run: python -m compileall -q main.py matcher.py keyword_extractor.py transcriber.py
 
       # Verifies requirements.txt actually resolves on Linux/py3.11 —
       # which is what the Heroku container build will do — without

@@ -177,7 +177,8 @@ heroku config:set -a archintent-nlp \
   LARAVEL_URL=https://archintent-api.herokuapp.com \
   MIN_SCORE=0.20 \
   TOP_K=10 \
-  ENABLE_LARAVEL_CALLBACK=0
+  ENABLE_LARAVEL_CALLBACK=0 \
+  OPENAI_API_KEY="<your OpenAI key — required only for voice transcription>"
 
 cd ..
 heroku git:remote -a archintent-nlp -r heroku-nlp
@@ -185,7 +186,23 @@ git subtree push --prefix=nlp-service heroku-nlp main
 ```
 
 This triggers a **remote** Docker build on Heroku's servers (no local Docker needed).
-The first build will take several minutes — it's downloading and installing torch.
+The first build will take several minutes — it's downloading and installing torch, and
+now also the `en_core_web_sm` spaCy model (~13MB, negligible next to torch).
+
+### ⚠️ Voice transcription needs `OPENAI_API_KEY`
+
+Without it, `/transcribe` fails gracefully with a clear "not configured" message rather
+than crashing — matching and the "we understood: ..." keyword preview both work fine with
+no key set at all. Get a key at
+[platform.openai.com/api-keys](https://platform.openai.com/api-keys). Cost is
+approximately $0.006/minute of audio — trivial at demo scale. **Never paste a real key into
+a chat session or commit it** — set it directly via `heroku config:set` as shown above, or
+through the Heroku dashboard.
+
+Whisper deliberately runs via the OpenAI API rather than a locally-loaded model: the NLP
+dyno already carries Sentence-BERT + torch on a 512MB Eco dyno, and a second in-process
+transformer model for speech recognition risks the dyno running out of memory under real
+usage. See `nlp-service/transcriber.py` for the full reasoning.
 
 Then tell the backend where to find it:
 ```bash
@@ -228,6 +245,8 @@ deployment, so PR/branch previews aren't blocked by CORS during grading/review.
 - [ ] Frontend loads on the Vercel URL, `/architects` shows verified architects
 - [ ] Register/login works (confirms DB connection via JawsDB)
 - [ ] Create a project → matches appear (confirms backend ↔ NLP service ↔ `INTERNAL_API_KEY` wiring)
+- [ ] On the create-project form, type a brief ≥20 characters → "we understood: ..." chips appear (confirms `/extract-keywords` + spaCy)
+- [ ] Tap the mic, record a short brief, stop → transcript appears in the textarea (confirms `OPENAI_API_KEY` + `/transcribe`; without a key set, expect a clear "not configured" message, not a crash)
 - [ ] Open `/messages` in two browser sessions, send a message → arrives without refresh (confirms the Reverb nginx proxy)
 - [ ] Upload a design file, restart the dyno (`heroku restart -a archintent-api`), confirm the file still downloads — if it disappears, S3 isn't wired up yet
 
@@ -237,10 +256,11 @@ deployment, so PR/branch previews aren't blocked by CORS during grading/review.
 |---|---|
 | Backend dyno (Eco) | ~$5 |
 | NLP service dyno (Eco) | ~$5 |
-| JawsDB (kitefin, smallest tier) | ~$15 |
+| JawsDB (`kitefin` tier) | **$0** — free tier, actually provisioned this way; earlier drafts of this doc incorrectly estimated ~$15 |
 | Bucketeer (hobbyist, smallest tier) | ~$1 |
+| OpenAI Whisper API | ~$0.006/minute of audio transcribed — a handful of demo recordings costs cents, not dollars |
 | Vercel (Hobby plan) | $0 |
-| **Total** | **~$26/mo** |
+| **Total** | **~$11/mo** + trivial per-use Whisper cost |
 
 Eco dynos sleep after 30 minutes of inactivity and take a few seconds to wake on the
 next request — acceptable for an FYP demo, worth knowing before a live viva so a cold

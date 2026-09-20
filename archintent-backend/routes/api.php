@@ -7,6 +7,7 @@ use App\Http\Controllers\ContractorController;
 use App\Http\Controllers\ArchitectPortfolioController;
 use App\Http\Controllers\ContractorPortfolioController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectIntentController;
 use App\Http\Controllers\MatchingController;
 use App\Http\Controllers\BiddingController;
 use App\Http\Controllers\AdminController;
@@ -130,6 +131,15 @@ Route::middleware('auth.api')->group(function () {
     Route::middleware('role:client')->group(function () {
         Route::post('/projects', [ProjectController::class, 'store']);
         Route::get('/projects', [ProjectController::class, 'index']);
+        // Intent decoding for the create-project form: called live,
+        // before a project exists, so these sit ahead of the store()
+        // route rather than nested under /projects/{id}.
+        // preview-intent runs spaCy locally (cheap) -- looser limit.
+        Route::post('/projects/preview-intent', [ProjectIntentController::class, 'previewIntent'])
+            ->middleware('throttle:30,1');
+        // transcribe calls the paid OpenAI Whisper API -- tighter limit.
+        Route::post('/projects/transcribe', [ProjectIntentController::class, 'transcribe'])
+            ->middleware('throttle:10,1');
         Route::put('/projects/{id}', [ProjectController::class, 'update']);
         Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
         Route::post('/projects/{id}/select-architect', [ProjectController::class, 'selectArchitect']);

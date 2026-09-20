@@ -29,6 +29,11 @@ RUN pip install --no-cache-dir --extra-index-url https://download.pytorch.org/wh
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# en_core_web_sm is a model artifact distributed via spaCy's own release
+# pipeline, not a PyPI package -- it has to be fetched with this command
+# rather than listed in requirements.txt. ~13MB, negligible next to torch.
+RUN python -m spacy download en_core_web_sm
+
 COPY . .
 
 # Heroku injects $PORT at runtime and expects the process to bind it.
