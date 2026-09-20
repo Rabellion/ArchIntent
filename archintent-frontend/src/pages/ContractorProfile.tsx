@@ -327,7 +327,7 @@ const ContractorProfile: React.FC = () => {
       {/* Header */}
       <div className="pt-12 pb-16 max-w-5xl mx-auto px-4">
         <nav className="flex items-center gap-3 text-slate-400 mb-8">
-           <Link to="/contractor/dashboard" className="text-[10px] font-black uppercase tracking-widest hover:text-indigo-300 transition-colors">Workspace</Link>
+           <Link to="/dashboard/contractor" className="text-[10px] font-black uppercase tracking-widest hover:text-indigo-300 transition-colors">Workspace</Link>
            <ChevronRight className="w-3 h-3" />
            <span className="text-[10px] font-black uppercase tracking-widest text-slate-200">Professional Identity</span>
         </nav>

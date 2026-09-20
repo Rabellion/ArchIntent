@@ -293,8 +293,7 @@ const HomePage: React.FC = () => {
                     <p className="text-[10px] font-black text-white uppercase tracking-widest italic">Navigation</p>
                     <ul className="space-y-4 text-sm font-bold text-slate-500 italic uppercase tracking-tight">
                        <li><Link to="/architects" className="hover:text-white transition-colors">Architects</Link></li>
-                       <li><Link to="/contractors" className="hover:text-white transition-colors">Contractors</Link></li>
-                       <li><Link to="/jobs" className="hover:text-white transition-colors">Project Board</Link></li>
+                       <li><Link to="/construction-jobs" className="hover:text-white transition-colors">Project Board</Link></li>
                     </ul>
                  </div>
                  <div className="space-y-6">

@@ -119,7 +119,7 @@ const MatchedArchitects: React.FC = () => {
       {/* Premium Header */}
       <div className="pt-12 pb-16">
         <nav className="flex items-center gap-3 text-slate-400 mb-8">
-          <Link to="/client/dashboard" className="text-[10px] font-black uppercase tracking-widest hover:text-indigo-400 transition-colors">Dashboard</Link>
+          <Link to="/dashboard/client" className="text-[10px] font-black uppercase tracking-widest hover:text-indigo-400 transition-colors">Dashboard</Link>
           <ChevronRight className="w-3 h-3" />
           <span className="text-[10px] font-black uppercase tracking-widest text-slate-200">Matches</span>
         </nav>
