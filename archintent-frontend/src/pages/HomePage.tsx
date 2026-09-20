@@ -20,13 +20,35 @@ import {
   Fingerprint
 } from 'lucide-react';
 import PublicNavbar from '../components/PublicNavbar';
+import { useCountUp } from '../hooks/useCountUp';
 
 const STATS = [
-  { label: 'VERIFIED ARCHITECTS', value: '450+', sub: 'PEC Registered' },
-  { label: 'ACTIVE MISSIONS', value: '1.2K', sub: 'In Pipeline' },
-  { label: 'TOTAL VALUATION', value: 'PKR 8.5B', sub: 'Under Management' },
-  { label: 'MATCH ACCURACY', value: '98%', sub: 'AI Optimized' }
+  { label: 'VERIFIED ARCHITECTS', end: 450, decimals: 0, prefix: '', suffix: '+', sub: 'PEC Registered' },
+  { label: 'ACTIVE MISSIONS', end: 1.2, decimals: 1, prefix: '', suffix: 'K', sub: 'In Pipeline' },
+  { label: 'TOTAL VALUATION', end: 8.5, decimals: 1, prefix: 'PKR ', suffix: 'B', sub: 'Under Management' },
+  { label: 'MATCH ACCURACY', end: 98, decimals: 0, prefix: '', suffix: '%', sub: 'AI Optimized' }
 ];
+
+/**
+ * One animated stat. Each stat gets its own IntersectionObserver (via
+ * useCountUp) rather than one shared observer for the whole section, so
+ * a card that scrolls into view earlier (e.g. on a narrow mobile layout
+ * where the grid wraps to a single column) starts counting immediately
+ * instead of waiting for every card to be visible at once.
+ */
+const StatCounter: React.FC<{ stat: (typeof STATS)[number] }> = ({ stat }) => {
+  const { ref, value } = useCountUp({ end: stat.end, decimals: stat.decimals });
+
+  return (
+    <div ref={ref as React.RefObject<HTMLDivElement>} className="space-y-2">
+      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">{stat.label}</p>
+      <p className="text-5xl font-black text-slate-100 italic tracking-tighter uppercase tabular-nums">
+        {stat.prefix}{value.toFixed(stat.decimals)}{stat.suffix}
+      </p>
+      <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{stat.sub}</p>
+    </div>
+  );
+};
 
 const STEPS = [
   { 
@@ -154,12 +176,8 @@ const HomePage: React.FC = () => {
       <section className="bg-slate-900 py-24 border-y border-slate-800">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-24">
-            {STATS.map((stat, i) => (
-              <div key={i} className="space-y-2">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">{stat.label}</p>
-                <p className="text-5xl font-black text-slate-100 italic tracking-tighter uppercase">{stat.value}</p>
-                <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{stat.sub}</p>
-              </div>
+            {STATS.map((stat) => (
+              <StatCounter key={stat.label} stat={stat} />
             ))}
           </div>
         </div>
