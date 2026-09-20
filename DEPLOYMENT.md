@@ -44,8 +44,9 @@ Add under **Settings → Secrets and variables → Actions**:
 | Secret | `VERCEL_PROJECT_ID` | same file |
 | Variable | `HEROKU_BACKEND_APP` | your backend app name, e.g. `archintent-api` |
 | Variable | `HEROKU_NLP_APP` | your NLP app name, e.g. `archintent-nlp` |
+| Variable | `VERCEL_ENABLED` | set to `true` to switch on Vercel deploys |
 
-Each deploy job **skips itself** until its secrets exist, so the pipeline stays green
+Each deploy job **skips itself** until its gating variable is set, so the pipeline stays green
 while you work through the provisioning steps, then activates automatically.
 
 ---

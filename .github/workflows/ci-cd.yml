@@ -15,9 +15,13 @@
 #    VERCEL_ORG_ID         from archintent-frontend/.vercel/project.json after `vercel link`
 #    VERCEL_PROJECT_ID     from the same file
 #
-#  REQUIRED REPO VARIABLES (same page, "Variables" tab) — app names:
+#  REQUIRED REPO VARIABLES (same page, "Variables" tab).
+#  These double as the on-switch for each deploy: a deploy job skips
+#  while its variable is unset. (GitHub does not allow the `secrets`
+#  context in a job-level `if:`, so the gate has to be a variable.)
 #    HEROKU_BACKEND_APP    e.g. archintent-api
 #    HEROKU_NLP_APP        e.g. archintent-nlp
+#    VERCEL_ENABLED        set to the string "true" to enable Vercel deploys
 #
 #  Until those exist, the test jobs run normally and each deploy job
 #  SKIPS itself rather than failing — so the pipeline reads green while
@@ -147,7 +151,6 @@ jobs:
       github.ref == 'refs/heads/main'
       && github.event_name != 'pull_request'
       && vars.HEROKU_BACKEND_APP != ''
-      && secrets.HEROKU_API_KEY != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -176,7 +179,6 @@ jobs:
       github.ref == 'refs/heads/main'
       && github.event_name != 'pull_request'
       && vars.HEROKU_NLP_APP != ''
-      && secrets.HEROKU_API_KEY != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -204,7 +206,7 @@ jobs:
     if: >-
       github.ref == 'refs/heads/main'
       && github.event_name != 'pull_request'
-      && secrets.VERCEL_TOKEN != ''
+      && vars.VERCEL_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
