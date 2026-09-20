@@ -527,8 +527,11 @@ const MyProjects: React.FC = () => {
 
                 {/* Table View */}
                 {viewType === 'table' && (
-                  <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-lg shadow-black/10 overflow-hidden mb-8">
-                    <table className="w-full">
+                  /* overflow-x-auto so all 7 columns (Location/Status/
+                     Created/Actions especially) scroll into reach on
+                     mobile instead of overflow-hidden clipping them. */
+                  <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-lg shadow-black/10 overflow-x-auto mb-8">
+                    <table className="w-full min-w-[960px]">
                       <thead>
                         <tr className="border-b border-slate-700 bg-slate-800/80">
                           <th className="px-6 py-3 text-left text-xs font-semibold text-slate-300 uppercase">Title</th>

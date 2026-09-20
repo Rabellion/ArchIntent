@@ -92,7 +92,7 @@ const ContractorBids: React.FC = () => {
                 <div className="w-12 h-[2px] bg-slate-900" />
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">CONSTRUCTION FLEET</p>
               </div>
-              <h1 className="text-6xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-none">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-none">
                 Bid <br />
                 <span className="text-outline-white">Registry</span>
               </h1>

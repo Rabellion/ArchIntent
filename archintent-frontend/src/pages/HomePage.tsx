@@ -95,7 +95,7 @@ const HomePage: React.FC = () => {
                 <p className="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400">MANIFEST YOUR VISION</p>
               </div>
 
-              <h1 className="text-6xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.85] animate-slide-up">
+              <h1 className="text-5xl sm:text-6xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.85] animate-slide-up">
                 Building <br />
                 The <span className="text-outline-white">Future</span> <br />
                 Of <span className="text-indigo-500">Design</span>

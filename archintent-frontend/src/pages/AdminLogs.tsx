@@ -157,8 +157,11 @@ export default function AdminLogs() {
         </div>
 
         {/* Table */}
-        <div className="bg-slate-900 rounded-lg shadow overflow-hidden">
-          <table className="w-full">
+        {/* overflow-x-auto + min-width so all 5 columns (Description
+            especially) stay reachable by horizontal swipe on mobile
+            instead of being clipped by overflow-hidden. */}
+        <div className="bg-slate-900 rounded-lg shadow overflow-x-auto">
+          <table className="w-full min-w-[900px]">
             <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-semibold text-slate-100">

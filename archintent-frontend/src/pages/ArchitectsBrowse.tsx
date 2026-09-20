@@ -186,7 +186,7 @@ export default function ArchitectsBrowse() {
               <span className="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-full border border-indigo-500/20 mb-6">
                 Discovery Network
               </span>
-              <h1 className="text-6xl md:text-7xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8">
                 Find Your <br/><span className="text-indigo-500">Perfect Match</span>
               </h1>
               <p className="text-slate-400 font-medium text-lg mb-12 max-w-xl">

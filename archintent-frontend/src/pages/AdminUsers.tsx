@@ -363,8 +363,16 @@ export default function AdminUsers() {
 
       {/* Users Table */}
       {!loading && users.length > 0 && (
-        <div className="bg-slate-900 rounded-lg shadow overflow-hidden">
-          <table className="w-full">
+        /*
+          overflow-hidden here used to clip the table entirely on narrow
+          screens rather than scroll it -- Role, Status, Joined and
+          Actions were not just cramped, they were unreachable, with no
+          scrollbar to indicate more columns existed. overflow-x-auto +
+          a min-width on the table (below) makes every column reachable
+          by horizontal swipe instead of silently dropping data.
+        */
+        <div className="bg-slate-900 rounded-lg shadow overflow-x-auto">
+          <table className="w-full min-w-[900px]">
             <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-slate-100 uppercase tracking-wider">

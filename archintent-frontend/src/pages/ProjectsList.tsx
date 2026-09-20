@@ -171,9 +171,10 @@ const ProjectsList: React.FC = () => {
           ))}
         </div>
       ) : (
-        /* Table View */
-        <div className="bg-slate-900 rounded-3xl border border-slate-700 overflow-hidden shadow-sm">
-          <table className="w-full text-left border-collapse">
+        /* Table View. overflow-x-auto so all 5 columns stay reachable
+           on mobile instead of overflow-hidden clipping Status/Date/Action. */
+        <div className="bg-slate-900 rounded-3xl border border-slate-700 overflow-x-auto shadow-sm">
+          <table className="w-full min-w-[720px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-800/50 border-b border-slate-800">
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Project Details</th>

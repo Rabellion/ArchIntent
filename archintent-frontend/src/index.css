@@ -52,6 +52,24 @@
   }
 
   /*
+   * Many inputs across the app use text-sm (14px) or text-xs (12px).
+   * iOS Safari auto-zooms the whole page in when a focused input's
+   * computed font-size is below 16px, which on a phone means the
+   * keyboard opening also yanks the viewport into an unwanted zoom.
+   * Scoped to the mobile-ish range only (matches Tailwind's `sm`
+   * breakpoint) since this is a Safari/iOS quirk that desktop and
+   * larger tablets never hit, so their intentionally smaller input
+   * text is left alone.
+   */
+  @media (max-width: 639px) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+
+  /*
    * Hollow/outlined accent headline words (used together with the
    * Tailwind utility `text-transparent`, e.g.
    * <span className="text-outline-white text-transparent">Hub</span>).

@@ -127,7 +127,7 @@ const ContractorDashboard: React.FC = () => {
                 <div className="w-12 h-[2px] bg-indigo-500" />
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">CONTRACTOR SUITE 01</p>
               </div>
-              <h1 className="text-7xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.8]">
+              <h1 className="text-4xl sm:text-6xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.8]">
                 Builder <br />
                 <span className="text-outline-white">Control</span>
               </h1>
@@ -215,8 +215,10 @@ const ContractorDashboard: React.FC = () => {
                 </Link>
               </div>
 
-              <div className="bg-slate-900 border border-slate-700 rounded-[2.5rem] overflow-hidden shadow-sm">
-                <table className="w-full text-left">
+              {/* overflow-x-auto so the table scrolls on mobile instead
+                  of overflow-hidden clipping the Valuation/Phase columns. */}
+              <div className="bg-slate-900 border border-slate-700 rounded-[2.5rem] overflow-x-auto shadow-sm">
+                <table className="w-full min-w-[480px] text-left">
                   <thead>
                     <tr className="bg-slate-800/80 border-b border-slate-700">
                       <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Operation</th>
