@@ -47,19 +47,19 @@ ArchIntent/
 ```
 
 ```
-┌──────────────────┐      REST + WebSocket      ┌───────────────────┐
-│  React frontend   │ ─────────────────────────▶ │  Laravel backend   │
-│  (Vite, :3000)    │ ◀───────────────────────── │  (:8000, Reverb    │
-└──────────────────┘                             │   on :8080)        │
-                                                  └─────────┬──────────┘
+┌──────────────────┐      REST + WebSocket       ┌───────────────────┐
+│  React frontend   │ ─────────────────────────▶ │  Laravel backend │
+│  (Vite, :3000)    │ ◀───────────────────────── │  (:8000, Reverb  │
+└──────────────────┘                              │   on :8080)      │
+                                                  └─────────┬────────┘
                                                             │ internal API,
                                                             │ shared key
                                                             ▼
                                                   ┌───────────────────┐
-                                                  │  NLP service        │
-                                                  │  (FastAPI, :8001)   │
-                                                  │  Sentence-BERT       │
-                                                  │  cosine similarity   │
+                                                  │  NLP service      │
+                                                  │  (FastAPI, :8001) │
+                                                  │  Sentence-BERT    │
+                                                  │  cosine similarity│
                                                   └───────────────────┘
 ```
 
@@ -213,8 +213,7 @@ payouts run through Stripe Connect, which is implemented separately.
 
 ## Documentation
 
-- `fyp-report/` — the full LaTeX final report (build with `fyp-report/compile.sh` or upload the
-  folder to Overleaf; see `fyp-report/README.md`)
+- `fyp-report/` — the full final year project report
 - `DEPLOYMENT.md` — provisioning and deployment for Heroku and Vercel
 - `ArchIntent.postman_collection.json` — a Postman collection for the API
 
