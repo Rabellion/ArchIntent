@@ -318,7 +318,7 @@ const ProjectAgreement: React.FC = () => {
                 min={1}
                 value={form.timeline_days}
                 onChange={(e) => setForm({ ...form, timeline_days: Math.max(1, parseInt(e.target.value || '1', 10)) })}
-                className="w-full px-4 py-2 border border-slate-700 rounded-lg"
+                className="w-full px-4 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100"
               />
             </div>
 
@@ -457,7 +457,7 @@ const ProjectAgreement: React.FC = () => {
               value={requestChangeMessage}
               onChange={(e) => setRequestChangeMessage(e.target.value)}
               rows={5}
-              className="w-full px-4 py-2 border border-slate-700 rounded-lg mb-4"
+              className="w-full px-4 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100 placeholder:text-slate-500 mb-4"
               placeholder="e.g. Please clarify milestone dates and add a second revision round."
               aria-label="Change request details"
             />
@@ -496,7 +496,7 @@ const ProjectAgreement: React.FC = () => {
               value={signName}
               onChange={(e) => setSignName(e.target.value)}
               placeholder="Your full name"
-              className="w-full px-4 py-2 border border-slate-700 rounded-lg mb-3"
+              className="w-full px-4 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100 placeholder:text-slate-500 mb-3"
             />
 
             <label className="flex items-start gap-2 text-sm text-slate-300 mb-4">
@@ -548,7 +548,7 @@ const Field = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       rows={rows}
-      className="w-full px-4 py-2 border border-slate-700 rounded-lg"
+      className="w-full px-4 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100"
     />
   </div>
 );

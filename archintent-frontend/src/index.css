@@ -17,6 +17,41 @@
 
 @layer components {
   /*
+   * Root cause: @tailwindcss/forms' base layer sets
+   * `background-color: #fff` on every input/textarea/select via
+   * selectors built with :where(), which carries ZERO specificity.
+   * Any input/textarea/select that doesn't explicitly set its own
+   * bg-* class therefore renders on a plain white box, while its text
+   * colour still inherits the light `text-slate-100` this site sets on
+   * <body> -- light text on a white input is invisible, not merely low
+   * contrast. That combination was found on 17 real inputs/textareas
+   * across the app (ProjectAgreement's Scope of Work / Deliverables /
+   * Payment Terms / Timeline / Sign Agreement fields, the review
+   * submission modal, the chat compose box, and several admin filters)
+   * where the dark-theme pass never got applied.
+   *
+   * CSS Cascade Layers make ANY declaration in a later layer win over
+   * an earlier one regardless of selector specificity, so this plain
+   * `@layer components` rule reliably overrides the forms plugin's
+   * base-layer default for every current and future input/textarea/
+   * select in the app -- while a component's own utility classes
+   * (compiled into the `utilities` layer, later still) continue to win
+   * over this whenever a component deliberately styles itself
+   * differently, e.g. an intentionally light search pill.
+   */
+  input,
+  textarea,
+  select {
+    @apply bg-slate-800 text-slate-100 border-slate-600 placeholder:text-slate-500;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    --tw-ring-offset-color: theme('colors.slate.900');
+  }
+
+  /*
    * Hollow/outlined accent headline words (used together with the
    * Tailwind utility `text-transparent`, e.g.
    * <span className="text-outline-white text-transparent">Hub</span>).

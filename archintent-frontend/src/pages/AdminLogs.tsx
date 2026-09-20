@@ -107,7 +107,7 @@ export default function AdminLogs() {
                   setAdminName(e.target.value);
                   handleFilterChange();
                 }}
-                className="w-full border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-600 bg-slate-800 text-slate-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
@@ -122,7 +122,7 @@ export default function AdminLogs() {
                   setActionFilter(e.target.value);
                   handleFilterChange();
                 }}
-                className="w-full border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-600 bg-slate-800 text-slate-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
@@ -136,7 +136,7 @@ export default function AdminLogs() {
                   setStartDate(e.target.value);
                   handleFilterChange();
                 }}
-                className="w-full border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-600 bg-slate-800 text-slate-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
@@ -150,7 +150,7 @@ export default function AdminLogs() {
                   setEndDate(e.target.value);
                   handleFilterChange();
                 }}
-                className="w-full border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-600 bg-slate-800 text-slate-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>

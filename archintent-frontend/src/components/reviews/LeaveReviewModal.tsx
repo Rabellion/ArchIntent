@@ -144,7 +144,7 @@ const LeaveReviewModal: React.FC<LeaveReviewModalProps> = ({
                 placeholder="Summarize your experience"
                 value={reviewTitle}
                 onChange={(e) => setReviewTitle(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
             </div>
 
@@ -156,7 +156,7 @@ const LeaveReviewModal: React.FC<LeaveReviewModalProps> = ({
                 placeholder="Describe your experience working with this architect/contractor. What went well? What could be improved?"
                 rows={5}
                 maxLength={2000}
-                className="min-h-[120px] w-full rounded-lg border border-slate-700 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="min-h-[120px] w-full rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
               <p className="mt-1 text-right text-xs text-slate-400">{reviewText.length}/2000</p>
             </div>

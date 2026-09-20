@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      This site is permanently dark-themed, never light. Without this,
+      the browser assumes the page only supports light mode and renders
+      native, non-CSS-stylable form UI -- <select> option list popups,
+      the <input type="date"> calendar picker, scrollbars -- in light
+      colors regardless of the page's own dark styling, which can put
+      light option text on a light native popup background.
+    -->
+    <meta name="color-scheme" content="dark" />
     <title>ArchIntent</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />

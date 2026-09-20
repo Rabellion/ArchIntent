@@ -306,7 +306,7 @@ export default function AdminUsers() {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, search: e.target.value }))
               }
-              className="w-full pl-10 pr-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-slate-600 bg-slate-800 text-slate-100 placeholder:text-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -316,7 +316,7 @@ export default function AdminUsers() {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, role: e.target.value }))
             }
-            className="px-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-slate-600 bg-slate-800 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">All Roles</option>
             <option value="client">Client</option>
@@ -331,7 +331,7 @@ export default function AdminUsers() {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, status: e.target.value }))
             }
-            className="px-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-slate-600 bg-slate-800 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -603,7 +603,7 @@ export default function AdminUsers() {
                       deleteConfirmEmail: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 border border-slate-600 bg-slate-800 text-slate-100 placeholder:text-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
             )}
