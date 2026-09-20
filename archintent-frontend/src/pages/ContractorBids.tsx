@@ -94,7 +94,7 @@ const ContractorBids: React.FC = () => {
               </div>
               <h1 className="text-6xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-none">
                 Bid <br />
-                <span className="text-outline-white text-transparent">Registry</span>
+                <span className="text-outline-white">Registry</span>
               </h1>
             </div>
 

@@ -129,7 +129,7 @@ const ContractorDashboard: React.FC = () => {
               </div>
               <h1 className="text-7xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.8]">
                 Builder <br />
-                <span className="text-outline-white text-transparent">Control</span>
+                <span className="text-outline-white">Control</span>
               </h1>
             </div>
 

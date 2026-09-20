@@ -160,7 +160,7 @@ const ClientDashboard: React.FC = () => {
               </div>
               <h1 className="text-7xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.8]">
                 Strategic <br />
-                <span className="text-outline-white text-transparent">Hub</span>
+                <span className="text-outline-white">Hub</span>
               </h1>
             </div>
 

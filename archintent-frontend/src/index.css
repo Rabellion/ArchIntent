@@ -16,12 +16,42 @@
 }
 
 @layer components {
+  /*
+   * Hollow/outlined accent headline words (used together with the
+   * Tailwind utility `text-transparent`, e.g.
+   * <span className="text-outline-white text-transparent">Hub</span>).
+   *
+   * BUG FIXED: -webkit-text-stroke is WebKit/Blink-only -- Firefox does
+   * not support it at all, with no fallback. Combined with a fully
+   * transparent fill, the accent word rendered 100% invisible in
+   * Firefox, and only as a faint 1px/40%-opacity outline elsewhere.
+   *
+   * Fix: give the word a real, always-visible fill colour by default.
+   * The hollow-outline look is then layered on top ONLY in browsers
+   * that actually support the stroke property, via @supports -- so it
+   * degrades to solid, readable text everywhere else instead of to
+   * nothing.
+   */
   .text-outline-white {
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.9);
   }
-  
+
   .text-outline-black {
-    -webkit-text-stroke: 1px rgba(15, 23, 42, 0.2);
+    color: rgba(15, 23, 42, 0.9);
+  }
+
+  @supports (-webkit-text-stroke: 1px black) or (text-stroke: 1px black) {
+    .text-outline-white {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+      text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+    }
+
+    .text-outline-black {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(15, 23, 42, 0.6);
+      text-stroke: 1.5px rgba(15, 23, 42, 0.6);
+    }
   }
 
   .custom-scrollbar::-webkit-scrollbar {

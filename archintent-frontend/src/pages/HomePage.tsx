@@ -97,7 +97,7 @@ const HomePage: React.FC = () => {
 
               <h1 className="text-6xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-[0.85] animate-slide-up">
                 Building <br />
-                The <span className="text-transparent text-outline-white">Future</span> <br />
+                The <span className="text-outline-white">Future</span> <br />
                 Of <span className="text-indigo-500">Design</span>
               </h1>
 

@@ -191,7 +191,7 @@ const ArchitectPortfolio: React.FC = () => {
               </div>
               <h1 className="mb-2 text-4xl font-black uppercase italic leading-[0.95] tracking-tighter text-white sm:text-5xl sm:leading-[0.9] md:text-6xl lg:text-7xl xl:text-8xl">
                 Masterworks <br />
-                <span className="text-outline-white text-transparent">Catalog</span>
+                <span className="text-outline-white">Catalog</span>
               </h1>
             </div>
 
