@@ -15,6 +15,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Behind Heroku's router (and Vercel in front of the SPA), the
+        // socket peer is the load balancer, not the visitor. Without
+        // this, $request->ip() returns whichever Heroku router handled
+        // the request -- a different address almost every time -- so
+        // every 'throttle:x,y' bucket got a unique key and rate
+        // limiting silently never engaged. It also fixes scheme
+        // detection (https) and the IP recorded in admin_logs.
+        //
+        // '*' here does NOT mean "trust any X-Forwarded-For". Laravel
+        // maps it to "trust only the calling IP", so Symfony walks the
+        // XFF chain from the right and stops at the first untrusted
+        // entry -- which on Heroku is the real client IP the router
+        // appends itself. A client-supplied XFF cannot displace it.
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => CheckRole::class,
             'auth.api' => AuthenticateApi::class,
