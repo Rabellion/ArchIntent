@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ImageUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -61,13 +62,9 @@ class ContractorPortfolioImage extends Model
     /**
      * Get the image URL.
      */
-    public function getImageUrlAttribute()
+    public function getImageUrlAttribute(): ?string
     {
-        if ($this->image_path) {
-            $baseUrl = rtrim(config('app.url') ?: 'http://127.0.0.1:8000', '/');
-            return "{$baseUrl}/api/storage/contractor_portfolios/{$this->portfolio_id}/" . rawurlencode(trim($this->image_path));
-        }
-        return null;
+        return ImageUrl::resolve($this->image_path, "contractor_portfolios/{$this->portfolio_id}");
     }
 
     /**

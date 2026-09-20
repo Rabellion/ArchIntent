@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ImageUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,9 +36,8 @@ class ArchitectProjectImage extends Model
         return $this->belongsTo(ArchitectProject::class, 'architect_project_id', 'architect_project_id');
     }
 
-    public function getImageUrlAttribute(): string
+    public function getImageUrlAttribute(): ?string
     {
-        $baseUrl = rtrim(config('app.url') ?: 'http://127.0.0.1:8000', '/');
-        return "{$baseUrl}/api/storage/architect_projects/{$this->architect_project_id}/" . rawurlencode(trim((string) $this->image_path));
+        return ImageUrl::resolve($this->image_path, "architect_projects/{$this->architect_project_id}");
     }
 }

@@ -82,15 +82,18 @@ class MatchingController extends Controller
                 $architect = $match->architect;
                 $matchedProject = $match->architectProject;
 
+                // image_url is an appended accessor on ArchitectProjectImage
+                // (App\Support\ImageUrl::resolve) that already handles both
+                // a locally-stored filename and an already-absolute URL
+                // correctly -- this used to duplicate that logic inline as
+                // a "just in case" fallback, with the same bug the accessor
+                // itself had before it was fixed: wrapping an absolute URL
+                // in the /api/storage path instead of using it as-is.
                 $portfolioImages = $matchedProject
-                    ? $matchedProject->images->map(function ($image) use ($matchedProject) {
-                        $baseUrl = rtrim(config('app.url') ?: url('/'), '/');
-
-                        return [
-                            'image_id' => $image->image_id,
-                            'image_url' => $image->image_url ?? "{$baseUrl}/api/storage/architect_projects/{$matchedProject->architect_project_id}/" . rawurlencode(trim((string) $image->image_path)),
-                        ];
-                    })->values()
+                    ? $matchedProject->images->map(fn ($image) => [
+                        'image_id' => $image->image_id,
+                        'image_url' => $image->image_url,
+                    ])->values()
                     : collect();
 
                 return [
