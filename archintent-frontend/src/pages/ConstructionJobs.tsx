@@ -352,7 +352,7 @@ const ConstructionJobs: React.FC = () => {
                             job.project_type === 'industrial' ? 'bg-amber-50 text-amber-500' :
                             'bg-green-50 text-green-500'
                           }`}>
-                            {React.cloneElement(getTypeIcon(job.project_type) as React.ReactElement, { size: 32 })}
+                            {React.cloneElement(getTypeIcon(job.project_type) as React.ReactElement<{ size?: number }>, { size: 32 })}
                           </div>
                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{getDaysAgo(job.created_at)}</span>
                         </div>

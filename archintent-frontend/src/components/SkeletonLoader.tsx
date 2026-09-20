@@ -93,7 +93,7 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({ type = 'card', count = 
     </div>
   );
 
-  const loaders: Record<string, () => JSX.Element> = {
+  const loaders: Record<string, () => React.JSX.Element> = {
     card: skeletonCard,
     list: skeletonList,
     grid: skeletonGrid,

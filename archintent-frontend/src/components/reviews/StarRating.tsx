@@ -3,12 +3,13 @@ import { Star } from 'lucide-react';
 
 interface StarRatingProps {
   rating: number;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   interactive?: boolean;
   onRate?: (rating: number) => void;
 }
 
 const sizeClasses: Record<NonNullable<StarRatingProps['size']>, string> = {
+  xs: 'w-3 h-3',
   sm: 'w-4 h-4',
   md: 'w-5 h-5',
   lg: 'w-8 h-8',

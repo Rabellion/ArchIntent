@@ -628,7 +628,7 @@ export default function AdminUsers() {
                     handleSuspend(confirmDialog.user!);
                   } else if (
                     confirmDialog.type === 'delete' &&
-                    confirmDialog.deleteConfirmEmail === confirmDialog.user.email
+                    confirmDialog.deleteConfirmEmail === confirmDialog.user?.email
                   ) {
                     handleDelete(confirmDialog.user!);
                   }

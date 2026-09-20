@@ -1,0 +1,225 @@
+# =====================================================================
+#  ArchIntent — CI/CD
+#
+#  On every push to main:   test  ->  deploy all three services
+#  On every pull request:   test only (no deploy)
+#
+#  Deployment jobs `need:` the test jobs, so a red test blocks the
+#  deploy rather than shipping a broken build. Each service deploys
+#  independently, so a Heroku outage does not block the Vercel deploy.
+#
+#  REQUIRED GITHUB SECRETS (Settings -> Secrets and variables -> Actions):
+#    HEROKU_API_KEY        `heroku authorizations:create` (or Account Settings -> API Key)
+#    HEROKU_EMAIL          the email on your Heroku account
+#    VERCEL_TOKEN          vercel.com/account/tokens
+#    VERCEL_ORG_ID         from archintent-frontend/.vercel/project.json after `vercel link`
+#    VERCEL_PROJECT_ID     from the same file
+#
+#  REQUIRED REPO VARIABLES (same page, "Variables" tab) — app names:
+#    HEROKU_BACKEND_APP    e.g. archintent-api
+#    HEROKU_NLP_APP        e.g. archintent-nlp
+#
+#  Until those exist, the test jobs run normally and each deploy job
+#  SKIPS itself rather than failing — so the pipeline reads green while
+#  you are still provisioning. Each deploy activates automatically the
+#  moment its secrets are present. See DEPLOYMENT.md for the one-time
+#  provisioning steps.
+# =====================================================================
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Lets you re-run a deploy from the Actions tab without a code change.
+  workflow_dispatch:
+
+# A newer push to main supersedes an in-flight run, so two deploys can
+# never race each other onto the same dyno.
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # -------------------------------------------------------------- CI
+  backend-test:
+    name: Backend — lint & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_mysql, bcmath, gd, zip
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: archintent-backend/vendor
+          key: composer-${{ hashFiles('archintent-backend/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        working-directory: archintent-backend
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Lint all PHP sources
+        working-directory: archintent-backend
+        run: find app routes config database -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Prepare test environment
+        working-directory: archintent-backend
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          # SQLite in-memory keeps CI self-contained — no MySQL service
+          # container needed just to boot the framework and run tests.
+          php artisan config:clear
+
+      - name: Run PHPUnit
+        working-directory: archintent-backend
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php artisan test
+
+  frontend-test:
+    name: Frontend — typecheck & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: archintent-frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: archintent-frontend
+        run: npm ci
+
+      # This is a real gate: the codebase type-checks clean as of the
+      # commit that added this workflow. Keep it that way.
+      - name: Type check
+        working-directory: archintent-frontend
+        run: npm run typecheck
+
+      - name: Build
+        working-directory: archintent-frontend
+        run: npm run build
+
+  nlp-test:
+    name: NLP service — lint & import
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Byte-compile sources
+        working-directory: nlp-service
+        run: python -m compileall -q main.py matcher.py
+
+      # Verifies requirements.txt actually resolves on Linux/py3.11 —
+      # which is what the Heroku container build will do — without
+      # downloading torch on every CI run.
+      - name: Validate dependency resolution
+        working-directory: nlp-service
+        run: |
+          python -m pip install --upgrade pip
+          pip install --dry-run -r requirements.txt
+
+  # ---------------------------------------------------------- DEPLOY
+  deploy-backend:
+    name: Deploy backend → Heroku
+    needs: [backend-test, frontend-test, nlp-test]
+    # Skips cleanly (rather than failing) until HEROKU_API_KEY and the
+    # app name are configured. See the secrets list at the top.
+    if: >-
+      github.ref == 'refs/heads/main'
+      && github.event_name != 'pull_request'
+      && vars.HEROKU_BACKEND_APP != ''
+      && secrets.HEROKU_API_KEY != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Heroku's git push needs real history, not a shallow clone.
+          fetch-depth: 0
+
+      - name: Push subdirectory to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          APP: ${{ vars.HEROKU_BACKEND_APP }}
+        run: |
+          # `git subtree split` rewrites archintent-backend/ as its own
+          # root, which is what Heroku's buildpack expects to find.
+          git config user.email "ci@github"
+          git config user.name "GitHub Actions"
+          SHA=$(git subtree split --prefix=archintent-backend main)
+          git push --force \
+            "https://heroku:${HEROKU_API_KEY}@git.heroku.com/${APP}.git" \
+            "${SHA}:refs/heads/main"
+
+  deploy-nlp:
+    name: Deploy NLP service → Heroku
+    needs: [backend-test, frontend-test, nlp-test]
+    if: >-
+      github.ref == 'refs/heads/main'
+      && github.event_name != 'pull_request'
+      && vars.HEROKU_NLP_APP != ''
+      && secrets.HEROKU_API_KEY != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push subdirectory to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          APP: ${{ vars.HEROKU_NLP_APP }}
+        run: |
+          # This app is on the container stack, so this push triggers a
+          # remote Docker build from nlp-service/heroku.yml. No Docker
+          # daemon is needed in the runner.
+          git config user.email "ci@github"
+          git config user.name "GitHub Actions"
+          SHA=$(git subtree split --prefix=nlp-service main)
+          git push --force \
+            "https://heroku:${HEROKU_API_KEY}@git.heroku.com/${APP}.git" \
+            "${SHA}:refs/heads/main"
+
+  deploy-frontend:
+    name: Deploy frontend → Vercel
+    needs: [backend-test, frontend-test, nlp-test]
+    if: >-
+      github.ref == 'refs/heads/main'
+      && github.event_name != 'pull_request'
+      && secrets.VERCEL_TOKEN != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Deploy to Vercel
+        working-directory: archintent-frontend
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npm i -g vercel@latest
+          vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+          vercel build --prod --token="${{ secrets.VERCEL_TOKEN }}"
+          vercel deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}"

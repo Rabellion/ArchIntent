@@ -215,7 +215,7 @@ const MatchedArchitects: React.FC = () => {
 
                   <div className="mt-auto grid grid-cols-2 gap-5">
                     <button 
-                      onClick={() => setSelectedArchitectId(match.architect_id) || setConfirmModalOpen(true)}
+                      onClick={() => { setSelectedArchitectId(match.architect_id); setConfirmModalOpen(true); }}
                       className="py-5 bg-slate-900 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-2xl flex items-center justify-center gap-3 group/btn"
                     >
                       Hire Expert

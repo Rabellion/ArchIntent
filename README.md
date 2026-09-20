@@ -140,20 +140,37 @@ across the stack:
 - **Frontend** (`archintent-frontend`) — deployed to Vercel, which builds and serves the
   static Vite output directly; no container is involved.
 
-**CI/CD**: there is currently **no automated pipeline**. Deployment is a manual, three-command
-process:
+**CI/CD**: automated via GitHub Actions (`.github/workflows/ci-cd.yml`). Pushing to `main`
+runs the full test suite, and all three services deploy **only if every check passes**:
 
-```bash
-git subtree push --prefix=archintent-backend heroku-backend main
-git subtree push --prefix=nlp-service heroku-nlp main
-vercel --prod
+```
+push to main
+     │
+     ├─ backend-test    PHP 8.2 · lint all 134 sources · PHPUnit
+     ├─ frontend-test   tsc --noEmit (zero errors) · vite build
+     └─ nlp-test        byte-compile · resolve requirements.txt on py3.11
+     │
+     └─ all green ──┬─ deploy backend  → Heroku (buildpack)
+                    ├─ deploy NLP      → Heroku (remote Docker build)
+                    └─ deploy frontend → Vercel
 ```
 
-This is a stated scope decision for the project's current stage, not an oversight — the full
-deployment architecture, environment variable wiring, and a post-deploy verification checklist
-are documented in `DEPLOYMENT.md`. The natural next step is a GitHub Actions workflow that runs
-the test suite on every push and triggers the three deploys above only once tests pass; that
-workflow has not been built.
+Design notes:
+
+- **Tests gate deploys.** Each deploy job `needs:` all three test jobs, so a failing
+  typecheck or test blocks the release rather than shipping a broken build.
+- **Deploys are independent.** A Heroku problem doesn't block the Vercel deploy.
+- **`concurrency` cancels superseded runs**, so two pushes in quick succession can't race
+  each other onto the same dyno.
+- **Unconfigured deploys skip rather than fail**, so the pipeline reads green while
+  infrastructure is still being provisioned; each one activates automatically once its
+  secrets exist.
+- Pull requests run the tests but never deploy.
+
+Required GitHub secrets (`HEROKU_API_KEY`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`,
+`VERCEL_PROJECT_ID`) and repo variables (`HEROKU_BACKEND_APP`, `HEROKU_NLP_APP`) are listed
+at the top of the workflow file. Full provisioning steps, environment variable wiring, and a
+post-deploy verification checklist are in `DEPLOYMENT.md`.
 
 ## Testing
 

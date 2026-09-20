@@ -15,6 +15,41 @@ This is a monorepo, so each Heroku app is deployed from its own subdirectory via
 | Reverb (chat) + queue worker | Single dyno, `QUEUE_CONNECTION=sync`, Reverb backgrounded inside the web dyno | Avoids paying for two extra always-on dynos. Nginx proxies WebSocket traffic to Reverb internally — one public hostname, one dyno. |
 | NLP service | Heroku, **container stack** via `heroku.yml` | `sentence-transformers` + `torch` exceed Heroku's 500MB buildpack slug limit. `heroku.yml` triggers a **remote** Docker build on Heroku's own servers — no Docker installed locally. Zero changes to `matcher.py`. |
 
+---
+
+## Deployment is automated — read this first
+
+Ongoing deployment is handled by GitHub Actions (`.github/workflows/ci-cd.yml`).
+**Once the one-time provisioning below is done, you never run a deploy command again:**
+push to `main`, and if the tests pass, all three services deploy automatically.
+
+```
+git push origin main   →   tests   →   Heroku (backend) + Heroku (NLP) + Vercel (frontend)
+```
+
+Everything below is **one-time setup**: creating the apps, provisioning add-ons, and
+setting environment variables. The `git subtree push` / `vercel --prod` commands shown
+are what the pipeline runs for you — useful for a manual first deploy or for debugging,
+but not part of the normal workflow.
+
+### GitHub secrets and variables the pipeline needs
+
+Add under **Settings → Secrets and variables → Actions**:
+
+| Type | Name | Where to get it |
+|---|---|---|
+| Secret | `HEROKU_API_KEY` | `heroku authorizations:create` |
+| Secret | `VERCEL_TOKEN` | vercel.com/account/tokens |
+| Secret | `VERCEL_ORG_ID` | `archintent-frontend/.vercel/project.json` after `vercel link` |
+| Secret | `VERCEL_PROJECT_ID` | same file |
+| Variable | `HEROKU_BACKEND_APP` | your backend app name, e.g. `archintent-api` |
+| Variable | `HEROKU_NLP_APP` | your NLP app name, e.g. `archintent-nlp` |
+
+Each deploy job **skips itself** until its secrets exist, so the pipeline stays green
+while you work through the provisioning steps, then activates automatically.
+
+---
+
 **Prerequisite: both CLIs are already installed** in this environment:
 ```
 "/c/Users/Huzaifa Imran/AppData/Roaming/npm/vercel"

@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 interface Props {
   recipientUserId: number;
   projectId?: number;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'outline';
   label?: string;
   className?: string;
   allowedRoles?: Array<'client' | 'architect' | 'contractor' | 'admin'>;
@@ -144,7 +144,9 @@ const StartChatButton: React.FC<Props> = ({
   const baseClass =
     variant === 'primary'
       ? 'bg-blue-600 hover:bg-blue-700 text-white'
-      : 'bg-white border border-blue-200 text-blue-700 hover:bg-blue-50';
+      : variant === 'outline'
+        ? 'bg-transparent border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
+        : 'bg-white border border-blue-200 text-blue-700 hover:bg-blue-50';
 
   return (
     <>

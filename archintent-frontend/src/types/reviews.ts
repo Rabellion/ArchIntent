@@ -11,6 +11,10 @@ export interface ReviewItem {
   review_text?: string | null;
   is_verified?: boolean;
   created_at: string;
+  // The architect dashboard endpoint returns these flattened, rather than
+  // the nested reviewer/review_text shape the public review list uses.
+  reviewer_name?: string;
+  comment?: string;
   reviewer?: {
     full_name: string;
   };

@@ -21,6 +21,16 @@ interface Project {
   created_at: string;
   mda_verification_deadline?: string;
   design_file_path?: string;
+  project_description?: string;
+  additional_notes?: string;
+  // NOTE: the render below reads `rev.timestamp` and `rev.feedback`, but the
+  // design_revisions table stores `requested_at` and `revision_message`.
+  // Typed here to match what the component actually consumes -- verify the
+  // API returns this shape, or the revision history will render blank.
+  revision_requests?: Array<{
+    timestamp: string;
+    feedback: string;
+  }>;
   selected_architect?: {
     architect_id: number;
     user_id: number;          // Direct FK column on architects table — the architect's user_id
