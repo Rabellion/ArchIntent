@@ -261,6 +261,15 @@ class AuthController extends Controller
                 . 'domain or switch mail to sandbox mode.';
         }
 
+        // Mailtrap's free tier rejects bursts with "Too many emails per
+        // second". Two people registering at once, or one person
+        // double-tapping resend, is enough to hit it -- and it clears
+        // within a second, so the useful advice is simply to wait.
+        if (stripos($error, 'too many') !== false) {
+            return 'Too many verification emails at once. Please wait a few '
+                . 'seconds and request the code again.';
+        }
+
         if (stripos($error, 'unauthor') !== false || stripos($error, '401') !== false) {
             return 'Email delivery is not configured correctly on this server.';
         }
