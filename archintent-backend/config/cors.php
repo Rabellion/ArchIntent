@@ -19,11 +19,21 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [],
+    // Set FRONTEND_URL on Heroku to the exact production Vercel domain,
+    // e.g. https://archintent.vercel.app. array_filter drops it cleanly
+    // when unset (local dev), rather than allowing an empty string.
+    'allowed_origins' => array_filter([
+        env('FRONTEND_URL'),
+    ]),
 
     'allowed_origins_patterns' => [
         '/^http:\/\/localhost(:\d+)?$/',
         '/^http:\/\/127\.0\.0\.1(:\d+)?$/',
+        // Vercel gives every branch/PR its own preview URL
+        // (my-app-<hash>-<team>.vercel.app). Matching the whole
+        // *.vercel.app suffix means a demo reviewer landing on a
+        // preview deployment isn't silently blocked by CORS.
+        '/^https:\/\/[a-z0-9-]+\.vercel\.app$/',
     ],
 
     'allowed_headers' => ['*'],

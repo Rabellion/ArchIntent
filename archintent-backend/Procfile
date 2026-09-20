@@ -1,0 +1,29 @@
+# =====================================================================
+#  Heroku process types — ArchIntent backend
+#
+#  Single-dyno, cost-minimized setup (chosen over separate reverb/worker
+#  dynos to avoid extra per-dyno billing):
+#
+#    - Reverb starts in the background, bound to 127.0.0.1:8080
+#      (internal only — never exposed directly by Heroku's router).
+#    - nginx (via heroku-php-nginx) binds Heroku's public $PORT and
+#      serves the Laravel app. Its custom config (nginx-app.conf) proxies
+#      WebSocket upgrade requests on the /app/ path through to Reverb,
+#      so the frontend connects over the SAME public hostname/port —
+#      no second dyno, no second domain.
+#    - QUEUE_CONNECTION is set to `sync` in this setup, so
+#      ComputeProjectMatchesJob runs inline on the request thread rather
+#      than needing a separate `queue:work` worker dyno. Slightly higher
+#      request latency on project creation; no extra dyno cost.
+#
+#  If real-time chat proves unreliable under this proxy, the fallback is
+#  to split `reverb` out into its own process type and scale it as a
+#  separate (billed) dyno: `heroku ps:scale reverb=1`. That requires no
+#  code changes, only removing the `php artisan reverb:start &` line
+#  below and adding a `reverb:` line instead.
+# =====================================================================
+
+web: php artisan reverb:start --host=127.0.0.1 --port=8080 --no-interaction & exec heroku-php-nginx -C nginx-app.conf public/
+
+# Runs automatically before each new release goes live.
+release: php artisan migrate --force
