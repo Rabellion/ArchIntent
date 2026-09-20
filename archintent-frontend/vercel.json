@@ -1,6 +1,12 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+
+  "//": "Vercel's own Git integration is switched OFF deliberately. `vercel link` connects the repo, which would otherwise auto-deploy on every push -- bypassing the test gate and double-deploying alongside the GitHub Actions job. Deploys come exclusively from .github/workflows/ci-cd.yml, which runs only after the test jobs pass.",
+  "git": {
+    "deploymentEnabled": false
+  },
+
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
