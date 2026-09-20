@@ -123,6 +123,38 @@ Seeded test accounts (password `Test@1234` for all): `admin@test.com`, `client@t
 `architect@test.com` / `architect2@test.com`, `contractor@test.com` / `contractor2@test.com`,
 and `pending@test.com` (an architect account awaiting admin verification).
 
+## Containerization & CI/CD
+
+Containerization is used selectively, based on an actual constraint, not applied uniformly
+across the stack:
+
+- **NLP service** — deployed as a **Docker container** (`nlp-service/Dockerfile` +
+  `heroku.yml`). This is a necessity, not a style choice: `sentence-transformers` pulls in
+  `torch`, and the combined dependency tree exceeds the 500MB slug size limit of a standard
+  Heroku buildpack deploy. Packaging it as a container removes that ceiling (Heroku's
+  Container Registry allows images up to 5GB). The image is built on **Heroku's own remote
+  build servers** via `heroku.yml`, so deploying it requires no local Docker installation.
+- **Backend** (`archintent-backend`) — deployed via Heroku's standard `heroku/php`
+  buildpack, **not** a container. The Laravel app is well within the buildpack slug limit,
+  and buildpack deploys are simpler to iterate on (a plain `git push`, no image build step).
+- **Frontend** (`archintent-frontend`) — deployed to Vercel, which builds and serves the
+  static Vite output directly; no container is involved.
+
+**CI/CD**: there is currently **no automated pipeline**. Deployment is a manual, three-command
+process:
+
+```bash
+git subtree push --prefix=archintent-backend heroku-backend main
+git subtree push --prefix=nlp-service heroku-nlp main
+vercel --prod
+```
+
+This is a stated scope decision for the project's current stage, not an oversight — the full
+deployment architecture, environment variable wiring, and a post-deploy verification checklist
+are documented in `DEPLOYMENT.md`. The natural next step is a GitHub Actions workflow that runs
+the test suite on every push and triggers the three deploys above only once tests pass; that
+workflow has not been built.
+
 ## Testing
 
 `TEST_PLAN.md` is the canonical test plan: 14 suites and 163 cases covering authentication,
