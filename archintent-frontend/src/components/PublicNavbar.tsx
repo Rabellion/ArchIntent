@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useUnreadCount } from '../context/UnreadCountContext';
 import {
   Building2,
   Menu,
@@ -20,18 +21,32 @@ const getDashboardPath = (role?: string) => {
 
 const PublicNavbar: React.FC = () => {
   const { user, token } = useAuth();
+  const { unreadCount } = useUnreadCount();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
+  const isAuthenticated = Boolean(token && user);
 
-  const navLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Browse Architects', path: '/architects' },
-    { label: 'Login', path: '/login' },
-    { label: 'Register', path: '/register' },
-  ];
+  // A logged-in visitor browsing a public page (home, architect
+  // profiles, etc.) previously still saw "Login" and "Register" here --
+  // both nonsensical once already signed in. Swapped for quick links
+  // back into the account instead, with the same unread-messages badge
+  // MainLayout's sidebar already shows.
+  const navLinks = isAuthenticated
+    ? [
+        { label: 'Home', path: '/' },
+        { label: 'Browse Architects', path: '/architects' },
+        { label: 'Messages', path: '/messages', badge: unreadCount > 0 ? unreadCount : undefined },
+        { label: 'Profile', path: '/profile' },
+      ]
+    : [
+        { label: 'Home', path: '/' },
+        { label: 'Browse Architects', path: '/architects' },
+        { label: 'Login', path: '/login' },
+        { label: 'Register', path: '/register' },
+      ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
@@ -51,13 +66,18 @@ const PublicNavbar: React.FC = () => {
               key={link.path}
               to={link.path}
               className={`
-                px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300
-                ${isActive(link.path) 
-                  ? 'bg-white/10 text-white' 
+                relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300
+                ${isActive(link.path)
+                  ? 'bg-white/10 text-white'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'}
               `}
             >
               {link.label}
+              {!!link.badge && (
+                <span className="flex items-center justify-center min-w-[16px] h-4 px-1 bg-indigo-600 text-white text-[9px] font-black rounded-full">
+                  {link.badge}
+                </span>
+              )}
             </Link>
           ))}
         </div>
@@ -101,11 +121,16 @@ const PublicNavbar: React.FC = () => {
               to={link.path}
               onClick={() => setMobileOpen(false)}
               className={`
-                block px-5 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all
+                flex items-center justify-between px-5 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all
                 ${isActive(link.path) ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'}
               `}
             >
               {link.label}
+              {!!link.badge && (
+                <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-indigo-600 text-white text-[10px] font-black rounded-full">
+                  {link.badge}
+                </span>
+              )}
             </Link>
           ))}
           <div className="pt-4 border-t border-white/5 space-y-2">
