@@ -60,6 +60,10 @@ class BudzController extends Controller
 
     public function purchase(Request $request): JsonResponse
     {
+        if ($guard = $this->stripeUnavailableResponse()) {
+            return $guard;
+        }
+
         $user = auth()->user();
         $contractor = Contractor::where('user_id', $user->user_id)->first();
 
@@ -104,6 +108,10 @@ class BudzController extends Controller
 
     public function confirmPurchase(Request $request): JsonResponse
     {
+        if ($guard = $this->stripeUnavailableResponse()) {
+            return $guard;
+        }
+
         $user = auth()->user();
         $contractor = Contractor::where('user_id', $user->user_id)->first();
 
@@ -205,6 +213,30 @@ class BudzController extends Controller
             'success' => true,
             'data' => $walletData,
         ]);
+    }
+
+    /**
+     * Returns a 503 response when Stripe has no secret configured, or null
+     * when it is safe to proceed.
+     *
+     * Without this, the private helpers below throw a RuntimeException that
+     * nothing catches, so an unconfigured environment answered a Budz
+     * purchase with a bare 500 "Server Error". ArchitectStripeConnectController
+     * already degrades this way; this brings Budz in line with it so the
+     * frontend gets a message it can actually show the user.
+     */
+    private function stripeUnavailableResponse(): ?JsonResponse
+    {
+        $secret = config('services.stripe.secret');
+
+        if (!is_string($secret) || $secret === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stripe is not configured',
+            ], 503);
+        }
+
+        return null;
     }
 
     private function createStripePaymentIntent(int $amountInCents, array $metadata): array
