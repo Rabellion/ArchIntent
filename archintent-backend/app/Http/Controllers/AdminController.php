@@ -340,6 +340,55 @@ class AdminController extends Controller
     }
 
     /**
+     * PUT /api/admin/projects/{id}/status
+     * Force a project's status, bypassing the normal transition
+     * endpoints. For correcting a project stuck in the wrong state
+     * (e.g. a dispute, or a status changed by direct API testing) --
+     * not exposed anywhere in the normal client/architect/contractor
+     * flow, which should only ever move a project forward through its
+     * own endpoints.
+     */
+    public function setProjectStatus(Request $request, $projectId): JsonResponse
+    {
+        $validated = $request->validate([
+            'project_status' => 'required|in:created,matched,architect_selected,agreement_pending,'
+                . 'payment_pending,design_in_progress,design_delivered,design_approved,'
+                . 'construction_open,contractor_selected,in_construction,completed',
+        ]);
+
+        try {
+            $project = Project::findOrFail($projectId);
+            $previousStatus = $project->project_status;
+            $project->update(['project_status' => $validated['project_status']]);
+
+            AdminHelper::logAction(
+                auth()->user()->user_id,
+                'set_project_status',
+                'projects',
+                $projectId,
+                "Project {$projectId} status forced from {$previousStatus} to {$validated['project_status']}"
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Project status updated',
+                'data' => $project,
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project not found',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update project status',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * DELETE /api/admin/users/{id}
      * Soft delete a user
      */

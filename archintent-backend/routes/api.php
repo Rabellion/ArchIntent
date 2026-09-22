@@ -207,7 +207,8 @@ Route::middleware('auth.api')->group(function () {
         Route::put('/admin/users/{id}/suspend', [AdminController::class, 'suspendUser']);
         Route::put('/admin/users/{id}/activate', [AdminController::class, 'activateUser']);
         Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser']);
-        
+        Route::put('/admin/projects/{id}/status', [AdminController::class, 'setProjectStatus']);
+
         Route::get('/admin/architects/pending', [AdminController::class, 'pendingArchitects']);
         Route::get('/admin/architects/{id}/review', [AdminController::class, 'reviewArchitect']);
         Route::get('/admin/architects/{id}/document', [AdminController::class, 'viewArchitectDocument']);
