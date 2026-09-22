@@ -22,7 +22,8 @@ import {
   Banknote,
   ArrowRight,
   Zap,
-  Image as ImageIcon
+  Image as ImageIcon,
+  X
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -302,6 +303,27 @@ const ArchitectDashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+      {/* Error banner. setError() was already called from both the
+          initial dashboard-data fetch and the Stripe onboarding flow,
+          but nothing ever rendered {error} -- so a failure (e.g. Stripe
+          not configured) was captured into state and then silently
+          dropped, which is exactly what "the button doesn't do
+          anything" looks like from the outside. */}
+      {error && (
+        <div className="flex items-start gap-3 bg-rose-950/40 border border-rose-800/60 rounded-2xl px-5 py-4">
+          <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+          <p className="flex-1 text-sm font-medium text-rose-300">{error}</p>
+          <button
+            type="button"
+            onClick={() => setError('')}
+            aria-label="Dismiss"
+            className="text-rose-400 hover:text-rose-200 transition-colors shrink-0"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>

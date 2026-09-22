@@ -22,7 +22,8 @@ import {
   Briefcase,
   Activity,
   ArrowRight,
-  Fingerprint
+  Fingerprint,
+  X
 } from 'lucide-react';
 
 interface DashboardData {
@@ -114,6 +115,26 @@ const ContractorDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-inter pb-24">
+      {/* Error banner: setError() was already called on a failed load
+          but nothing ever rendered {error} -- same dead-state bug found
+          and fixed on ArchitectDashboard. */}
+      {error && (
+        <div className="max-w-7xl mx-auto px-6 pt-6">
+          <div className="flex items-start gap-3 bg-rose-950/40 border border-rose-800/60 rounded-2xl px-5 py-4">
+            <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+            <p className="flex-1 text-sm font-medium text-rose-300">{error}</p>
+            <button
+              type="button"
+              onClick={() => setError('')}
+              aria-label="Dismiss"
+              className="text-rose-400 hover:text-rose-200 transition-colors shrink-0"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* --- HERO SECTION --- */}
       <section className="bg-slate-950 pt-20 pb-32 px-6 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
