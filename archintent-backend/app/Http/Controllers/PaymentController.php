@@ -287,7 +287,12 @@ class PaymentController extends Controller
 
         $payload = [
             'amount' => $amountInCents,
-            'currency' => strtolower(config('payment.currency', 'usd')),
+            // Not payment.currency -- that's the PKR display/DB
+            // currency. $amountInCents (from PaymentService::
+            // convertToStripeAmount, i.e. CurrencyConverter) is already
+            // converted into stripe_currency's minor units, so the
+            // currency named here has to match that, not PKR.
+            'currency' => (string) config('payment.stripe_currency', 'usd'),
             'metadata' => $metadata,
         ];
 

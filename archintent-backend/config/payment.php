@@ -11,6 +11,12 @@ return [
     |
     */
 
+    /*
+    | Display currency: what every price on the frontend, the Payment
+    | table's amount/platform_fee/payee_amount columns, and admin
+    | analytics are denominated in. This is deliberately NOT what
+    | actually gets charged through Stripe -- see stripe_currency below.
+    */
     'currency' => strtolower((string) env('PAYMENT_CURRENCY', 'pkr')),
 
     /*
@@ -18,6 +24,25 @@ return [
     | Architect receives (gross - platform_fee) recorded as payee_amount.
     */
     'platform_fee_percent' => (float) env('PLATFORM_FEE_PERCENT', 10),
+
+    /*
+    | The platform's Stripe account is US-region and does not settle in
+    | PKR, so every amount actually sent to Stripe (PaymentIntents,
+    | Transfers, Refunds) is converted from PKR to this currency first.
+    | Every PKR figure the frontend shows, and everything stored in the
+    | database, is completely unaffected -- only the number handed to
+    | Stripe's API changes.
+    */
+    'stripe_currency' => strtolower((string) env('STRIPE_CHARGE_CURRENCY', 'usd')),
+
+    /*
+    | Fixed PKR-per-USD rate used to convert an amount before it's sent
+    | to Stripe. Deliberately a fixed rate, not a live FX lookup -- a
+    | client's charge and the architect's later payout for the same
+    | project must convert at the same number, or the two sides of one
+    | transaction would drift apart.
+    */
+    'pkr_per_usd' => (float) env('PKR_PER_USD_RATE', 280),
 
     'stripe' => [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),

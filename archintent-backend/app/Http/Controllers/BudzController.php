@@ -7,6 +7,7 @@ use App\Models\BudzPackage;
 use App\Models\BudzTransaction;
 use App\Models\BudzWallet;
 use App\Models\Contractor;
+use App\Support\CurrencyConverter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -89,7 +90,10 @@ class BudzController extends Controller
             ], 422);
         }
 
-        $amountInCents = (int) round(((float) $package->price_pkr) * 100);
+        // price_pkr is what the contractor sees on the Buy Budz screen;
+        // the actual charge has to move through Stripe in
+        // stripe_currency, converted at the fixed platform rate.
+        $amountInCents = CurrencyConverter::pkrToStripeMinorUnits((float) $package->price_pkr);
 
         $intent = $this->createStripePaymentIntent($amountInCents, [
             'contractor_id' => (string) $contractor->contractor_id,
@@ -248,7 +252,9 @@ class BudzController extends Controller
 
         $payload = [
             'amount' => $amountInCents,
-            'currency' => strtolower(config('payment.currency', 'pkr')),
+            // Not payment.currency (PKR display/DB currency) -- see
+            // CurrencyConverter; $amountInCents is already converted.
+            'currency' => (string) config('payment.stripe_currency', 'usd'),
             'metadata' => $metadata,
         ];
 

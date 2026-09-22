@@ -6,6 +6,7 @@ use App\Helpers\StripeSslHelper;
 use App\Models\Architect;
 use App\Models\Payment;
 use App\Models\AdminLog;
+use App\Support\CurrencyConverter;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -83,10 +84,13 @@ class PaymentService
             return;
         }
 
+        // payee_amount/amount are PKR (what the architect actually
+        // earned, shown throughout the app); the transfer itself has to
+        // move through Stripe in stripe_currency, converted at the
+        // fixed platform rate -- see CurrencyConverter.
         $payee = (float) ($payment->payee_amount ?? $payment->amount);
-        $currency = strtolower((string) config('payment.currency', 'pkr'));
-        $minor = $currency === 'jpy' ? 1 : 100;
-        $amountUnits = (int) max(1, round($payee * $minor));
+        $currency = (string) config('payment.stripe_currency', 'usd');
+        $amountUnits = CurrencyConverter::pkrToStripeMinorUnits($payee);
 
         $verify = StripeSslHelper::verify();
 
@@ -134,14 +138,16 @@ class PaymentService
     }
 
     /**
-     * Calculate payment amount from project budget
-     * 
-     * @param float $budget
-     * @return int Amount in cents
+     * Convert a PKR figure (a project budget, a refund amount) into
+     * the minor units Stripe expects for its configured charge
+     * currency. See CurrencyConverter for why this is a fixed rate
+     * rather than a live FX lookup.
+     *
+     * @param float $pkrAmount
+     * @return int Amount in Stripe's minor unit (cents, for USD)
      */
-    public function convertToStripeAmount($budget): int
+    public function convertToStripeAmount($pkrAmount): int
     {
-        // Convert to cents
-        return (int) ($budget * 100);
+        return CurrencyConverter::pkrToStripeMinorUnits((float) $pkrAmount);
     }
 }
