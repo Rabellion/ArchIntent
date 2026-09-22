@@ -87,10 +87,18 @@ class ArchitectStripeConnectController extends Controller
                 'contact_email' => $user->email,
                 'identity' => ['country' => $country],
                 'dashboard' => 'express',
+                // Verified live: 'stripe' here 400s for a recipient-only
+                // account with "Losses/Fees collector can only be
+                // 'application' for the set of configurations this
+                // account has." Stripe can only collect fees/absorb
+                // losses out of a payment flow it processes -- a pure
+                // recipient (transfers only, no merchant/card-payments
+                // configuration) has no such flow, so the platform must
+                // be the collector for both.
                 'defaults' => [
                     'responsibilities' => [
-                        'fees_collector' => 'stripe',
-                        'losses_collector' => 'stripe',
+                        'fees_collector' => 'application',
+                        'losses_collector' => 'application',
                     ],
                 ],
                 'configuration' => [
