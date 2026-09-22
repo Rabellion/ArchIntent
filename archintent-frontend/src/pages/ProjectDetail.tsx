@@ -359,22 +359,27 @@ const ProjectDetail: React.FC = () => {
     return icons[type] || 'architecture';
   };
 
-  const handleDesignUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!designFile) return;
+  const handleDesignUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    // Selecting a file re-uses the same <input>, so it has to be
+    // cleared here -- otherwise choosing the same file twice in a row
+    // fires no change event the second time.
+    e.target.value = '';
+    if (!file) return;
 
+    setDesignFile(file);
     setUploading(true);
     try {
       const formData = new FormData();
-      formData.append('design_file', designFile);
+      formData.append('design_file', file);
       await axiosInstance.post(`/projects/${id}/deliver-design`, formData);
       alert('Design uploaded successfully!');
-      setDesignFile(null);
       fetchData();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to upload design');
     } finally {
       setUploading(false);
+      setDesignFile(null);
     }
   };
 
@@ -1093,11 +1098,15 @@ const ProjectDetail: React.FC = () => {
                           <h4 className="text-lg font-black text-violet-200 mb-2">Submit Design</h4>
                           <p className="text-xs text-violet-300">Once your drawings are ready, upload them for client approval.</p>
                         </div>
-                        <label className="block">
-                          <div className="p-8 border-2 border-dashed border-slate-700 rounded-[1.5rem] text-center hover:border-indigo-400 transition-colors cursor-pointer group">
-                            <span className="material-symbols-outlined text-4xl text-slate-300 group-hover:text-indigo-300 mb-4 transition-colors">cloud_upload</span>
-                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Upload Final Package</p>
-                            <input type="file" className="hidden" onChange={handleDesignUpload} />
+                        <label className={uploading ? 'block' : 'block cursor-pointer'}>
+                          <div className={`p-8 border-2 border-dashed rounded-[1.5rem] text-center transition-colors group ${uploading ? 'border-slate-700 opacity-60' : 'border-slate-700 hover:border-indigo-400'}`}>
+                            <span className="material-symbols-outlined text-4xl text-slate-300 group-hover:text-indigo-300 mb-4 transition-colors">
+                              {uploading ? 'progress_activity' : 'cloud_upload'}
+                            </span>
+                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                              {uploading ? `Uploading ${designFile?.name ?? 'file'}...` : 'Upload Final Package'}
+                            </p>
+                            <input type="file" className="hidden" onChange={handleDesignUpload} disabled={uploading} />
                           </div>
                         </label>
                       </div>
