@@ -965,19 +965,19 @@ const ProjectDetail: React.FC = () => {
             </div>
           )}
 
-          {/* Architect/Contractor Reviews Section */}
+          {/* Completion banner. The actual review prompts live in the
+              "Professional Reviews Section" further down -- this used
+              to also have a "Leave Project Review" button with no
+              onClick, which did nothing when clicked. */}
           {project.project_status === 'completed' && (
              <div className="p-8 bg-indigo-600 rounded-[2rem] text-white shadow-xl shadow-indigo-900/40">
-               <div className="flex items-center gap-4 mb-6">
+               <div className="flex items-center gap-4">
                  <span className="material-symbols-outlined text-4xl">celebration</span>
                  <div>
                    <h3 className="text-xl font-black uppercase tracking-tight">Project Completed</h3>
                    <p className="text-indigo-100 text-sm">Congratulations on finishing your journey with ArchIntent.</p>
                  </div>
                </div>
-               <button className="w-full py-4 bg-slate-950 text-indigo-300 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-900 transition-all">
-                 Leave Project Review
-               </button>
              </div>
           )}
         </div>
@@ -1095,12 +1095,22 @@ const ProjectDetail: React.FC = () => {
                     )}
 
                     {project.project_status === 'in_construction' && (
-                      <div className="p-6 bg-amber-950/50 rounded-[1.5rem] border border-amber-800/60">
-                        <h4 className="text-lg font-black text-amber-200 mb-2">Construction Underway</h4>
-                        <p className="text-xs text-amber-300">
-                          {project.selected_contractor?.company_name || 'Your contractor'} is building your project. There's no
-                          in-app milestone tracker for this phase yet -- coordinate directly with them via chat for updates.
-                        </p>
+                      <div className="space-y-6">
+                        <div className="p-6 bg-amber-950/50 rounded-[1.5rem] border border-amber-800/60">
+                          <h4 className="text-lg font-black text-amber-200 mb-2">Construction Underway</h4>
+                          <p className="text-xs text-amber-300">
+                            {project.selected_contractor?.company_name || 'Your contractor'} is building your project. There's no
+                            in-app milestone tracker for this phase yet -- coordinate directly with them via chat for updates.
+                            Once the work is actually finished, either of you can mark it complete.
+                          </p>
+                        </div>
+                        <button
+                          onClick={handleCompleteConstruction}
+                          disabled={constructionBusy}
+                          className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-500 disabled:opacity-50 transition-all shadow-lg"
+                        >
+                          {constructionBusy ? 'Submitting...' : 'Mark Project Complete'}
+                        </button>
                       </div>
                     )}
                   </div>
@@ -1227,7 +1237,17 @@ const ProjectDetail: React.FC = () => {
         </div>
       </div>
 
-            {project.selected_architect && ['design_approved', 'construction_open', 'contractor_selected', 'in_construction', 'completed'].includes(project.project_status) && (
+            {/* Available as soon as the design is approved -- lets the
+                client review the architect before construction even
+                starts. Excludes 'completed': the fuller "Professional
+                Reviews Section" below covers both architect and
+                contractor once the whole project is done, so showing
+                this one too would just duplicate it. Client-only: the
+                backend already rejects a non-client's attempt to
+                review, but showing this prompt to the architect or
+                contractor themselves (previously ungated here) looked
+                broken rather than simply inapplicable. */}
+            {isClient && project.selected_architect && ['design_approved', 'construction_open', 'contractor_selected', 'in_construction'].includes(project.project_status) && (
               <div className="mb-8">
                 {loadingReviewEligibility && !architectCanReview ? (
                   <div className="rounded-lg border border-slate-700 bg-slate-900 p-6 text-sm text-slate-400">Checking architect review eligibility...</div>
@@ -1267,7 +1287,7 @@ const ProjectDetail: React.FC = () => {
                 )}
 
           {/* Professional Reviews Section */}
-          {project.project_status === 'completed' && (
+          {isClient && project.project_status === 'completed' && (
             <div className="space-y-6">
               {/* Architect Review */}
               {project.selected_architect && (

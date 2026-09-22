@@ -612,7 +612,10 @@ class ProjectController extends Controller
 
     /**
      * POST /api/projects/{id}/complete-construction
-     * Selected contractor marks the job as finished.
+     * Either the selected contractor or the project's client can mark
+     * the job as finished -- whichever of them notices it's done
+     * first (there's no separate confirmation step, since there's no
+     * status between in_construction and completed to hold one).
      *
      * No payment is released here -- unlike the design phase, there is
      * no in-app escrow for the construction bid amount, so there is
@@ -623,11 +626,14 @@ class ProjectController extends Controller
         $project = Project::findOrFail($projectId);
         $user = auth()->user();
 
+        $isClientOwner = $project->client_id === $user->user_id;
         $contractor = Contractor::where('user_id', $user->user_id)->first();
-        if (!$contractor || $project->selected_contractor_id !== $contractor->contractor_id) {
+        $isSelectedContractor = $contractor && $project->selected_contractor_id === $contractor->contractor_id;
+
+        if (!$isClientOwner && !$isSelectedContractor) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized - You are not the selected contractor',
+                'message' => 'Unauthorized - You are not party to this project',
             ], 403);
         }
 

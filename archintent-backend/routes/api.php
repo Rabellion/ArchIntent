@@ -126,7 +126,6 @@ Route::middleware('auth.api')->group(function () {
         Route::get('/projects/construction-jobs', [ProjectController::class, 'constructionJobs']);
         Route::post('/projects/{id}/bids', [BiddingController::class, 'submitBid']);
         Route::post('/projects/{id}/start-construction', [ProjectController::class, 'startConstruction']);
-        Route::post('/projects/{id}/complete-construction', [ProjectController::class, 'completeConstruction']);
     });
 
     // Client project routes
@@ -161,6 +160,10 @@ Route::middleware('auth.api')->group(function () {
 
     // Design download (accessible to authenticated users - client or architect)
     Route::get('/projects/{id}/design', [ProjectController::class, 'downloadDesign']);
+
+    // Construction completion -- either the selected contractor or the
+    // project's client can mark it complete.
+    Route::post('/projects/{id}/complete-construction', [ProjectController::class, 'completeConstruction']);
 
     // Design revisions (accessible to authenticated users - client or architect)
     Route::get('/projects/{id}/revisions', [ProjectController::class, 'getRevisions']);
