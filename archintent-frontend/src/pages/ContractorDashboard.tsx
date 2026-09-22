@@ -289,6 +289,15 @@ const ContractorDashboard: React.FC = () => {
                 </Link>
               </div>
 
+              {jobs.length === 0 ? (
+                <div className="p-12 text-center bg-slate-900 rounded-[2.5rem] border border-slate-700 border-dashed">
+                  <div className="w-16 h-16 bg-slate-800/60 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                    <Construction size={28} />
+                  </div>
+                  <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No Open Jobs Right Now</p>
+                  <p className="text-xs text-slate-500 mt-1">Check back soon, or browse the full Mission Board for anything just posted.</p>
+                </div>
+              ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {jobs.slice(0, 4).map(job => (
                   <article key={job.project_id} className="group bg-slate-900 border border-slate-700 rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl hover:shadow-black/30 transition-all duration-700 relative overflow-hidden">
@@ -315,6 +324,7 @@ const ContractorDashboard: React.FC = () => {
                   </article>
                 ))}
               </div>
+              )}
             </div>
           </div>
 
