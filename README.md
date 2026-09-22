@@ -130,6 +130,48 @@ Seeded test accounts (password `Test@1234` for all): `admin@test.com`, `client@t
 `architect@test.com` / `architect2@test.com`, `contractor@test.com` / `contractor2@test.com`,
 and `pending@test.com` (an architect account awaiting admin verification).
 
+Beyond those baseline accounts, `PakistaniMarketplaceSeeder` seeds a deeper marketplace of 12
+architects and 8 construction companies, each in a deliberately distinct niche so semantic
+matching (Section below) has something real to discriminate between rather than a handful of
+near-identical "modern residential" profiles. Same password, `Test@1234`, for all of them.
+
+**Architects**
+
+| Name | Specialization | Email |
+|---|---|---|
+| Ayesha Tariq | Heritage Conservation | `ayesha.tariq@archintent.pk` |
+| Usman Ghani | Islamic and Religious Architecture | `usman.ghani@archintent.pk` |
+| Farah Siddiqui | Sustainable and Passive Design | `farah.siddiqui@archintent.pk` |
+| Kamran Rashid | High-Rise Commercial | `kamran.rashid@archintent.pk` |
+| Nida Baloch | Healthcare Architecture | `nida.baloch@archintent.pk` |
+| Imran Qureshi | Educational Architecture | `imran.qureshi@archintent.pk` |
+| Mehwish Iqbal | Hospitality and Resorts | `mehwish.iqbal@archintent.pk` |
+| Asad Mehmood | Industrial and Logistics | `asad.mehmood@archintent.pk` |
+| Saima Rauf | Interior Architecture | `saima.rauf@archintent.pk` |
+| Hamza Sheikh | Landscape and Urban Design | `hamza.sheikh@archintent.pk` |
+| Rabia Noor | Affordable and Resilient Housing | `rabia.noor@archintent.pk` |
+| Tariq Jameel | Luxury Contemporary Residential | `tariq.jameel@archintent.pk` |
+
+**Construction companies**
+
+| Company | Specialization | Contact | Email |
+|---|---|---|---|
+| Chenab Builders (Pvt) Ltd | High-Rise Reinforced Concrete | Shahid Mahmood | `shahid@chenabbuilders.pk` |
+| Karakoram Infrastructure Co. | Roads, Bridges and Infrastructure | Wajid Ali Khan | `wajid@karakoraminfra.pk` |
+| Indus Steel Structures | Pre-Engineered Steel Buildings | Faisal Habib | `faisal@industeel.pk` |
+| Sarhad Construction & Developers | Residential Housing Schemes | Noman Afridi | `noman@sarhaddev.pk` |
+| Meezan Interiors & Finishes | Interior Fit-Out and Finishes | Zeeshan Abbasi | `zeeshan@meezaninteriors.pk` |
+| Gadoon Industrial Contractors | Plant and Factory Construction | Tahir Yousafzai | `tahir@gadoonindustrial.pk` |
+| Murree Hills Builders | Hillside and Slope Construction | Adnan Satti | `adnan@murreehills.pk` |
+| Al-Barkat Renovation Works | Renovation and Restoration | Rizwan Cheema | `rizwan@albarkatworks.pk` |
+
+Re-seed or refresh their portfolio images at any time (idempotent, safe against production):
+
+```bash
+php artisan db:seed --class=PakistaniMarketplaceSeeder --force
+php artisan db:seed --class=MarketplaceImageSeeder --force
+```
+
 ## Containerization & CI/CD
 
 Containerization is used selectively, based on an actual constraint, not applied uniformly
