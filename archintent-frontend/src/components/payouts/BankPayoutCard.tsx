@@ -155,8 +155,11 @@ export default function BankPayoutCard() {
         </h3>
       </div>
 
-      {/* Balance */}
-      <div className="grid grid-cols-3 gap-2 mb-6">
+      {/* Balance. A stacked list rather than a 3-column grid -- a
+          6-7 digit PKR amount needs more width than a third of this
+          card can spare, and label-left/value-right on one row fits
+          it without truncating or wrapping mid-number. */}
+      <div className="space-y-2 mb-6">
         {[
           { label: 'Available', value: available, color: 'text-emerald-400' },
           { label: 'Earned', value: balance?.total_earned ?? 0, color: 'text-slate-200' },
@@ -164,12 +167,14 @@ export default function BankPayoutCard() {
         ].map(({ label, value, color }) => {
           const formatted = `${currency}${value.toLocaleString()}`;
           return (
-            <div key={label} className="p-3 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
-              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">{label}</p>
-              <p
-                title={formatted}
-                className={`text-sm sm:text-base font-black mt-1 truncate ${color}`}
-              >
+            <div
+              key={label}
+              className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-slate-900 border border-slate-700"
+            >
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 shrink-0">
+                {label}
+              </p>
+              <p title={formatted} className={`text-sm font-black truncate ${color}`}>
                 {formatted}
               </p>
             </div>
