@@ -1051,10 +1051,41 @@ const ProjectDetail: React.FC = () => {
                       </div>
                     )}
 
-                    {['construction_open', 'contractor_selected', 'in_construction'].includes(project.project_status) && (
-                      <div className="p-6 bg-slate-800/60 rounded-[1.5rem] border border-slate-800">
-                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Project Phase</h4>
-                        <p className="text-sm font-bold text-slate-100 capitalize">{project.project_status.replace(/_/g, ' ')}</p>
+                    {project.project_status === 'construction_open' && (
+                      <div className="p-6 bg-sky-950/50 rounded-[1.5rem] border border-sky-800/60">
+                        <h4 className="text-lg font-black text-sky-200 mb-2">Reviewing Bids</h4>
+                        <p className="text-xs text-sky-300">Compare the construction bids below and accept one to hire your contractor.</p>
+                      </div>
+                    )}
+
+                    {['contractor_selected', 'in_construction'].includes(project.project_status) && (
+                      <div className="p-6 bg-lime-950/50 rounded-[1.5rem] border border-lime-800/60">
+                        <h4 className="text-lg font-black text-lime-200 mb-2">Construction Underway</h4>
+                        <p className="text-xs text-lime-300">
+                          {project.selected_contractor?.company_name || 'Your contractor'} has been hired and is building your project.
+                          There's no in-app progress tracker for this phase yet -- coordinate directly with them via chat for updates.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {isContractor && (
+                  <div className="space-y-6">
+                    {project.project_status === 'construction_open' && (
+                      <div className="p-6 bg-sky-950/50 rounded-[1.5rem] border border-sky-800/60">
+                        <h4 className="text-lg font-black text-sky-200 mb-2">Awaiting Client Decision</h4>
+                        <p className="text-xs text-sky-300">The client is reviewing bids from you and other contractors. Check "My Bids" for your bid's status.</p>
+                      </div>
+                    )}
+
+                    {['contractor_selected', 'in_construction'].includes(project.project_status) && (
+                      <div className="p-6 bg-lime-950/50 rounded-[1.5rem] border border-lime-800/60">
+                        <h4 className="text-lg font-black text-lime-200 mb-2">You Won This Job</h4>
+                        <p className="text-xs text-lime-300">
+                          Coordinate directly with the client via chat about scheduling and progress -- there's no in-app milestone
+                          tracker for construction yet.
+                        </p>
                       </div>
                     )}
                   </div>
