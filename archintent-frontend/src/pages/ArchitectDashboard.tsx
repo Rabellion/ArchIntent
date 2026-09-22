@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axios';
 import BankPayoutCard from '../components/payouts/BankPayoutCard';
@@ -10,7 +10,6 @@ import {
   Target,
   Briefcase,
   Trophy,
-  Wallet,
   ExternalLink,
   UserCircle,
   ChevronRight,
@@ -116,15 +115,8 @@ interface DashboardReviews {
   recent_reviews: ReviewItem[];
 }
 
-interface StripeConnectStatus {
-  has_account: boolean;
-  onboarding_complete: boolean;
-  account_id?: string | null;
-}
-
 const ArchitectDashboard: React.FC = () => {
   const { user } = useAuth();
-  const navigate = useNavigate()
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [profileStatus, setProfileStatus] = useState<ProfileStatus | null>(null);
@@ -139,8 +131,6 @@ const ArchitectDashboard: React.FC = () => {
     recent_reviews: [],
   });
   const [publicArchitectId, setPublicArchitectId] = useState<number | null>(null);
-  const [stripeConnect, setStripeConnect] = useState<StripeConnectStatus | null>(null);
-  const [stripeBusy, setStripeBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -148,12 +138,11 @@ const ArchitectDashboard: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const [dashboardRes, agreementsRes, portfolioRes, paymentsRes, stripeRes] = await Promise.all([
+      const [dashboardRes, agreementsRes, portfolioRes, paymentsRes] = await Promise.all([
         axiosInstance.get('/architect/dashboard').catch(() => ({ data: { data: {} } })),
         axiosInstance.get('/agreements/pending').catch(() => ({ data: { data: [] } })),
         axiosInstance.get('/architect/portfolio').catch(() => ({ data: { data: null } })),
         axiosInstance.get('/payments').catch(() => ({ data: { data: [] } })),
-        axiosInstance.get('/architect/stripe-connect/status').catch(() => ({ data: { data: null } })),
       ]);
 
       const dashboardData = dashboardRes.data.data || {};
@@ -183,13 +172,6 @@ const ArchitectDashboard: React.FC = () => {
       setPendingAgreements(agreementsRes.data.data || []);
       setPortfolio(portfolioRes.data.data);
       setPayments(paymentsRes.data.data || []);
-
-      const stripeData = stripeRes.data?.data;
-      if (stripeData) setStripeConnect({
-        has_account: Boolean(stripeData.has_account),
-        onboarding_complete: Boolean(stripeData.onboarding_complete),
-        account_id: stripeData.account_id ?? null,
-      });
 
       const actions: ActionItem[] = [];
       (agreementsRes.data.data || []).forEach((agr: Agreement) => {
@@ -224,52 +206,10 @@ const ArchitectDashboard: React.FC = () => {
 
   useEffect(() => {
     document.title = 'Dashboard — ArchIntent'
-
-    const params = new URLSearchParams(window.location.search)
-    const stripe = params.get('stripe')
-    const shouldClearStripe = stripe === 'return' || stripe === 'refresh'
-
-    void (async () => {
-      await fetchAllData()
-      if (shouldClearStripe) {
-        params.delete('stripe')
-        const next = params.toString()
-        navigate({ pathname: '/dashboard/architect', search: next ? `?${next}` : '' }, { replace: true })
-      }
-    })()
-    // fetchAllData is stable enough for mount + Stripe return refresh; avoid deps loop
+    void fetchAllData()
+    // fetchAllData is stable enough for a mount-only run; avoid deps loop
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
-  }, [navigate])
-
-  const handleStartStripeOnboarding = async () => {
-    setStripeBusy(true)
-    setError('')
-    try {
-      if (!stripeConnect?.has_account) {
-        const accountRes = await axiosInstance.post('/architect/stripe-connect/account')
-        if (accountRes.data?.success === false) {
-          setError(accountRes.data?.message || 'Could not create Stripe Connect account')
-          return
-        }
-      }
-      const linkRes = await axiosInstance.post('/architect/stripe-connect/onboarding-link')
-      if (linkRes.data?.success === false) {
-        setError(linkRes.data?.message || 'Could not start Stripe onboarding')
-        return
-      }
-      const url = linkRes.data?.data?.url as string | undefined
-      if (!url || typeof url !== 'string') {
-        setError('Stripe did not return an onboarding URL. Check server logs and STRIPE_SECRET.')
-        return
-      }
-      window.location.href = url
-    } catch (err: unknown) {
-      const ax = err as { response?: { data?: { message?: string } } }
-      setError(ax.response?.data?.message || 'Stripe setup failed')
-    } finally {
-      setStripeBusy(false)
-    }
-  }
+  }, [])
 
   const getStatusBadge = (status: string) => {
     const configs: { [key: string]: { color: string } } = {
@@ -303,12 +243,6 @@ const ArchitectDashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-      {/* Error banner. setError() was already called from both the
-          initial dashboard-data fetch and the Stripe onboarding flow,
-          but nothing ever rendered {error} -- so a failure (e.g. Stripe
-          not configured) was captured into state and then silently
-          dropped, which is exactly what "the button doesn't do
-          anything" looks like from the outside. */}
       {error && (
         <div className="flex items-start gap-3 bg-rose-950/40 border border-rose-800/60 rounded-2xl px-5 py-4">
           <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
@@ -532,24 +466,6 @@ const ArchitectDashboard: React.FC = () => {
                         </div>
                       ))}
                    </div>
-                </div>
-             </section>
-           )}
-
-           {/* Stripe Connect Widget */}
-           {!stripeConnect?.onboarding_complete && (
-             <section className="bg-indigo-600 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
-                <div className="relative z-10">
-                   <Wallet className="w-8 h-8 mb-4 text-indigo-200" />
-                   <h3 className="text-lg font-black italic uppercase tracking-tight mb-2">Enable Payouts</h3>
-                   <p className="text-indigo-100 text-xs font-medium mb-6 leading-relaxed">Connect your bank via Stripe to receive payments released from escrow.</p>
-                   <button
-                     onClick={handleStartStripeOnboarding}
-                     disabled={stripeBusy}
-                     className="w-full py-4 bg-slate-800 text-indigo-300 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-xl disabled:opacity-50"
-                   >
-                     {stripeBusy ? 'Syncing...' : 'Setup Stripe'}
-                   </button>
                 </div>
              </section>
            )}

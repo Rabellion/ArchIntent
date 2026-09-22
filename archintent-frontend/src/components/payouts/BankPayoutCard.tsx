@@ -5,9 +5,10 @@ import axiosInstance from '../../api/axios';
 /**
  * Demo bank-transfer payout panel for the architect dashboard.
  *
- * Separate from the Stripe Connect widget, which performs real
- * transfers. This records bank details and withdrawal requests; it does
- * not move money. An operator settles a request manually.
+ * This is the only payout path in the app: it records bank details and
+ * withdrawal requests, but does not move money. An operator settles
+ * each request manually. Real Stripe Connect payouts were removed --
+ * Stripe does not support cross-border Connect payouts to Pakistan.
  *
  * Self-contained: it owns its own fetching and state so the dashboard
  * page does not grow another five useStates.
@@ -156,23 +157,23 @@ export default function BankPayoutCard() {
 
       {/* Balance */}
       <div className="grid grid-cols-3 gap-3 mb-6">
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700">
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
           <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Available</p>
-          <p className="text-lg font-black text-emerald-400 mt-1">
+          <p className="text-base sm:text-lg font-black text-emerald-400 mt-1 break-all">
             {currency}
             {available.toLocaleString()}
           </p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700">
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
           <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Earned</p>
-          <p className="text-lg font-black text-slate-200 mt-1">
+          <p className="text-base sm:text-lg font-black text-slate-200 mt-1 break-all">
             {currency}
             {(balance?.total_earned ?? 0).toLocaleString()}
           </p>
         </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700">
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
           <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Pending</p>
-          <p className="text-lg font-black text-amber-400 mt-1">
+          <p className="text-base sm:text-lg font-black text-amber-400 mt-1 break-all">
             {currency}
             {(balance?.withdrawn_or_pending ?? 0).toLocaleString()}
           </p>
@@ -275,18 +276,18 @@ export default function BankPayoutCard() {
 
       {/* Withdraw */}
       {bank?.has_bank_details && (
-        <div className="flex gap-2 mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 mb-6">
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder={`Amount (max ${available.toLocaleString()})`}
             inputMode="decimal"
-            className="flex-1 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 text-sm placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
+            className="min-w-0 flex-1 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 text-sm placeholder:text-slate-500 placeholder:text-xs placeholder:truncate focus:outline-none focus:border-emerald-500"
           />
           <button
             onClick={withdraw}
             disabled={!canWithdraw}
-            className="px-6 py-3 rounded-xl bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-6 py-3 rounded-xl bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
             {busy ? 'Sending...' : 'Withdraw'}
           </button>
@@ -335,7 +336,7 @@ export default function BankPayoutCard() {
 
       <p className="text-[9px] text-slate-400 font-bold mt-6 leading-relaxed">
         Demo payout path. Requests are recorded for manual settlement and do not transfer funds
-        automatically. Use Stripe Connect for automated payouts.
+        automatically.
       </p>
     </section>
   );
