@@ -249,7 +249,11 @@ const ContractorDashboard: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-800">
                     {bids.slice(0, 5).map(bid => (
-                      <tr key={bid.bid_id} className="hover:bg-slate-800/40 transition-colors group">
+                      <tr
+                        key={bid.bid_id}
+                        onClick={() => navigate(bid.status === 'accepted' ? `/project/${bid.project_id}` : `/construction-jobs/${bid.project_id}`)}
+                        className="hover:bg-slate-800/40 transition-colors group cursor-pointer"
+                      >
                         <td className="px-8 py-6">
                           <p className="text-sm font-black italic uppercase tracking-tight text-slate-100 group-hover:text-indigo-400 transition-colors">{bid.project_title}</p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">LOGGED: {new Date(bid.bid_date).toLocaleDateString()}</p>

@@ -612,6 +612,7 @@ const ProjectDetail: React.FC = () => {
   const contractorRecipientUserId =
     project.selected_contractor?.user?.user_id || project.selected_contractor?.user_id;
   const clientRecipientUserId = project.client?.user_id;
+  const isSelectedContractor = isContractor && !!user?.user_id && user.user_id === contractorRecipientUserId;
   const chatRecipientUserId = isClient
     ? architectRecipientUserId || contractorRecipientUserId
     : isArchitect || isContractor
@@ -1114,7 +1115,7 @@ const ProjectDetail: React.FC = () => {
                       </div>
                     )}
 
-                    {project.project_status === 'contractor_selected' && (
+                    {project.project_status === 'contractor_selected' && isSelectedContractor && (
                       <div className="space-y-6">
                         <div className="p-6 bg-lime-950/50 rounded-[1.5rem] border border-lime-800/60">
                           <h4 className="text-lg font-black text-lime-200 mb-2">You Won This Job</h4>
@@ -1130,7 +1131,14 @@ const ProjectDetail: React.FC = () => {
                       </div>
                     )}
 
-                    {project.project_status === 'in_construction' && (
+                    {project.project_status === 'contractor_selected' && !isSelectedContractor && (
+                      <div className="p-6 bg-slate-800/60 rounded-[1.5rem] border border-slate-800">
+                        <h4 className="text-lg font-black text-slate-200 mb-2">Bid Not Selected</h4>
+                        <p className="text-xs text-slate-400">The client chose a different contractor for this project.</p>
+                      </div>
+                    )}
+
+                    {project.project_status === 'in_construction' && isSelectedContractor && (
                       <div className="space-y-6">
                         <div className="p-6 bg-amber-950/50 rounded-[1.5rem] border border-amber-800/60">
                           <h4 className="text-lg font-black text-amber-200 mb-2">Construction In Progress</h4>

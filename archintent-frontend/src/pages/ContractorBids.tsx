@@ -30,6 +30,15 @@ interface Bid {
   };
 }
 
+// An accepted bid means the contractor is now managing the actual
+// project (Start Construction / Mark Complete live on /project/{id});
+// pending/rejected bids only ever had the original job posting at
+// /construction-jobs/{id}.
+const bidDestination = (bid: Bid): string =>
+  bid.bid_status === 'accepted'
+    ? `/project/${bid.project.project_id}`
+    : `/construction-jobs/${bid.project.project_id}`;
+
 const ContractorBids: React.FC = () => {
   const { user } = useAuth();
   const [bids, setBids] = useState<Bid[]>([]);
@@ -202,8 +211,8 @@ const ContractorBids: React.FC = () => {
                                 {bid.project.type}
                               </span>
                             </div>
-                            <Link 
-                              to={`/construction-jobs/${bid.project.project_id}`}
+                            <Link
+                              to={bidDestination(bid)}
                               className="block text-2xl font-black italic uppercase tracking-tighter text-slate-100 hover:text-indigo-400 transition-colors group-hover:translate-x-1 duration-500"
                             >
                               {bid.project.title}
@@ -230,8 +239,8 @@ const ContractorBids: React.FC = () => {
                             </div>
 
                             <div className="col-span-2 md:col-span-1 flex items-end justify-end">
-                              <Link 
-                                to={`/construction-jobs/${bid.project.project_id}`}
+                              <Link
+                                to={bidDestination(bid)}
                                 className="p-4 bg-slate-800 rounded-2xl text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300"
                               >
                                 <ExternalLink size={20} />
