@@ -156,28 +156,25 @@ export default function BankPayoutCard() {
       </div>
 
       {/* Balance */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
-          <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Available</p>
-          <p className="text-base sm:text-lg font-black text-emerald-400 mt-1 break-all">
-            {currency}
-            {available.toLocaleString()}
-          </p>
-        </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
-          <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Earned</p>
-          <p className="text-base sm:text-lg font-black text-slate-200 mt-1 break-all">
-            {currency}
-            {(balance?.total_earned ?? 0).toLocaleString()}
-          </p>
-        </div>
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
-          <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Pending</p>
-          <p className="text-base sm:text-lg font-black text-amber-400 mt-1 break-all">
-            {currency}
-            {(balance?.withdrawn_or_pending ?? 0).toLocaleString()}
-          </p>
-        </div>
+      <div className="grid grid-cols-3 gap-2 mb-6">
+        {[
+          { label: 'Available', value: available, color: 'text-emerald-400' },
+          { label: 'Earned', value: balance?.total_earned ?? 0, color: 'text-slate-200' },
+          { label: 'Pending', value: balance?.withdrawn_or_pending ?? 0, color: 'text-amber-400' },
+        ].map(({ label, value, color }) => {
+          const formatted = `${currency}${value.toLocaleString()}`;
+          return (
+            <div key={label} className="p-3 rounded-2xl bg-slate-900 border border-slate-700 min-w-0">
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">{label}</p>
+              <p
+                title={formatted}
+                className={`text-sm sm:text-base font-black mt-1 truncate ${color}`}
+              >
+                {formatted}
+              </p>
+            </div>
+          );
+        })}
       </div>
 
       {error && (
