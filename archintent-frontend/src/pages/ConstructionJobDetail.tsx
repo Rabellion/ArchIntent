@@ -40,6 +40,11 @@ interface WalletData {
   balance: number;
 }
 
+// Matches the backend's `proposal_text` validation
+// (BiddingController::submitBid) -- kept in sync so the form can warn
+// before submitting instead of round-tripping a 422.
+const MIN_PROPOSAL_LENGTH = 50;
+
 const ConstructionJobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -99,6 +104,11 @@ const ConstructionJobDetail: React.FC = () => {
       return;
     }
 
+    if (bidNotes.trim().length < MIN_PROPOSAL_LENGTH) {
+      alert(`Proposal narrative must be at least ${MIN_PROPOSAL_LENGTH} characters (currently ${bidNotes.trim().length}).`);
+      return;
+    }
+
     if (wallet.balance <= 0) {
       alert('You need Budz to submit a bid');
       return;
@@ -109,7 +119,7 @@ const ConstructionJobDetail: React.FC = () => {
       await axiosInstance.post(`/projects/${id}/bids`, {
         proposed_cost: parseInt(bidAmount, 10),
         estimated_duration: parseInt(estimatedDuration, 10),
-        proposal_text: bidNotes || undefined,
+        proposal_text: bidNotes,
         budz_to_spend: budzToSpend,
       });
 
@@ -122,7 +132,13 @@ const ConstructionJobDetail: React.FC = () => {
         navigate('/dashboard/contractor/bids');
       }, 1500);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to submit bid');
+      // A 422 carries field errors under `errors`, not just the generic
+      // top-level `message` ("Validation failed") -- show the actual
+      // reason (e.g. "proposal text must be at least 50 characters")
+      // instead of that generic string.
+      const errors = err.response?.data?.errors;
+      const firstError = errors ? String(Object.values(errors)[0]) : null;
+      alert(firstError || err.response?.data?.message || 'Failed to submit bid');
       setSubmittingBid(false);
     }
   };
@@ -386,11 +402,16 @@ const ConstructionJobDetail: React.FC = () => {
                            </div>
 
                            <div className="space-y-2">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Proposal Narrative</label>
-                              <textarea 
-                                 value={bidNotes} 
+                              <div className="flex items-center justify-between">
+                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Proposal Narrative</label>
+                                 <span className={`text-[10px] font-black tracking-widest ${bidNotes.trim().length < MIN_PROPOSAL_LENGTH ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                    {bidNotes.trim().length}/{MIN_PROPOSAL_LENGTH} min
+                                 </span>
+                              </div>
+                              <textarea
+                                 value={bidNotes}
                                  onChange={(e) => setBidNotes(e.target.value)}
-                                 placeholder="Outline your execution strategy..."
+                                 placeholder="Outline your execution strategy... (minimum 50 characters)"
                                  rows={3}
                                  className="w-full bg-white/5 border border-white/10 rounded-3xl p-6 text-white text-sm font-medium focus:border-indigo-500 focus:ring-0 outline-none transition-all italic"
                               />
@@ -415,9 +436,9 @@ const ConstructionJobDetail: React.FC = () => {
                               </div>
                            </div>
 
-                           <button 
-                              type="submit" 
-                              disabled={submittingBid || !bidAmount || !estimatedDuration}
+                           <button
+                              type="submit"
+                              disabled={submittingBid || !bidAmount || !estimatedDuration || bidNotes.trim().length < MIN_PROPOSAL_LENGTH}
                               className="w-full py-6 bg-indigo-600 text-white rounded-full text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl flex items-center justify-center gap-4"
                            >
                               {submittingBid ? 'Synchronizing...' : <>Submit Proposal <Send className="w-4 h-4" /></>}
