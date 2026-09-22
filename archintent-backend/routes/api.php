@@ -125,6 +125,8 @@ Route::middleware('auth.api')->group(function () {
         Route::get('/contractor/bids', [BiddingController::class, 'getContractorBids']);
         Route::get('/projects/construction-jobs', [ProjectController::class, 'constructionJobs']);
         Route::post('/projects/{id}/bids', [BiddingController::class, 'submitBid']);
+        Route::post('/projects/{id}/start-construction', [ProjectController::class, 'startConstruction']);
+        Route::post('/projects/{id}/complete-construction', [ProjectController::class, 'completeConstruction']);
     });
 
     // Client project routes

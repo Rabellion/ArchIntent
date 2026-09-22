@@ -123,6 +123,7 @@ const ProjectDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [constructionBusy, setConstructionBusy] = useState(false);
   const [designFile, setDesignFile] = useState<File | null>(null);
   const [expandedBidId, setExpandedBidId] = useState<number | null>(null);
 
@@ -430,6 +431,31 @@ const ProjectDetail: React.FC = () => {
         // Keep the default message if the body is not JSON.
       }
       alert(message);
+    }
+  };
+
+  const handleStartConstruction = async () => {
+    setConstructionBusy(true);
+    try {
+      await axiosInstance.post(`/projects/${id}/start-construction`);
+      fetchData();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to start construction');
+    } finally {
+      setConstructionBusy(false);
+    }
+  };
+
+  const handleCompleteConstruction = async () => {
+    setConstructionBusy(true);
+    try {
+      await axiosInstance.post(`/projects/${id}/complete-construction`);
+      alert('Construction marked complete!');
+      fetchData();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to mark construction complete');
+    } finally {
+      setConstructionBusy(false);
     }
   };
 
@@ -1058,12 +1084,21 @@ const ProjectDetail: React.FC = () => {
                       </div>
                     )}
 
-                    {['contractor_selected', 'in_construction'].includes(project.project_status) && (
+                    {project.project_status === 'contractor_selected' && (
                       <div className="p-6 bg-lime-950/50 rounded-[1.5rem] border border-lime-800/60">
-                        <h4 className="text-lg font-black text-lime-200 mb-2">Construction Underway</h4>
+                        <h4 className="text-lg font-black text-lime-200 mb-2">Contractor Hired</h4>
                         <p className="text-xs text-lime-300">
-                          {project.selected_contractor?.company_name || 'Your contractor'} has been hired and is building your project.
-                          There's no in-app progress tracker for this phase yet -- coordinate directly with them via chat for updates.
+                          {project.selected_contractor?.company_name || 'Your contractor'} has been hired and will start construction shortly.
+                        </p>
+                      </div>
+                    )}
+
+                    {project.project_status === 'in_construction' && (
+                      <div className="p-6 bg-amber-950/50 rounded-[1.5rem] border border-amber-800/60">
+                        <h4 className="text-lg font-black text-amber-200 mb-2">Construction Underway</h4>
+                        <p className="text-xs text-amber-300">
+                          {project.selected_contractor?.company_name || 'Your contractor'} is building your project. There's no
+                          in-app milestone tracker for this phase yet -- coordinate directly with them via chat for updates.
                         </p>
                       </div>
                     )}
@@ -1079,13 +1114,37 @@ const ProjectDetail: React.FC = () => {
                       </div>
                     )}
 
-                    {['contractor_selected', 'in_construction'].includes(project.project_status) && (
-                      <div className="p-6 bg-lime-950/50 rounded-[1.5rem] border border-lime-800/60">
-                        <h4 className="text-lg font-black text-lime-200 mb-2">You Won This Job</h4>
-                        <p className="text-xs text-lime-300">
-                          Coordinate directly with the client via chat about scheduling and progress -- there's no in-app milestone
-                          tracker for construction yet.
-                        </p>
+                    {project.project_status === 'contractor_selected' && (
+                      <div className="space-y-6">
+                        <div className="p-6 bg-lime-950/50 rounded-[1.5rem] border border-lime-800/60">
+                          <h4 className="text-lg font-black text-lime-200 mb-2">You Won This Job</h4>
+                          <p className="text-xs text-lime-300">Let the client know when you're ready to break ground.</p>
+                        </div>
+                        <button
+                          onClick={handleStartConstruction}
+                          disabled={constructionBusy}
+                          className="w-full py-4 bg-lime-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-lime-500 disabled:opacity-50 transition-all shadow-lg"
+                        >
+                          {constructionBusy ? 'Starting...' : 'Start Construction'}
+                        </button>
+                      </div>
+                    )}
+
+                    {project.project_status === 'in_construction' && (
+                      <div className="space-y-6">
+                        <div className="p-6 bg-amber-950/50 rounded-[1.5rem] border border-amber-800/60">
+                          <h4 className="text-lg font-black text-amber-200 mb-2">Construction In Progress</h4>
+                          <p className="text-xs text-amber-300">
+                            Coordinate with the client via chat as you work. Mark it complete once the job is finished.
+                          </p>
+                        </div>
+                        <button
+                          onClick={handleCompleteConstruction}
+                          disabled={constructionBusy}
+                          className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-500 disabled:opacity-50 transition-all shadow-lg"
+                        >
+                          {constructionBusy ? 'Submitting...' : 'Mark Construction Complete'}
+                        </button>
                       </div>
                     )}
                   </div>

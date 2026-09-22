@@ -573,6 +573,81 @@ class ProjectController extends Controller
     }
 
     /**
+     * POST /api/projects/{id}/start-construction
+     * Selected contractor marks the job as started.
+     *
+     * Mirrors the architect's design_in_progress step, but there is no
+     * agreement/escrow stage for construction -- the accepted bid is
+     * the agreed terms, so this is a single status transition with no
+     * payment side effect.
+     */
+    public function startConstruction(Request $request, $projectId): JsonResponse
+    {
+        $project = Project::findOrFail($projectId);
+        $user = auth()->user();
+
+        $contractor = Contractor::where('user_id', $user->user_id)->first();
+        if (!$contractor || $project->selected_contractor_id !== $contractor->contractor_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized - You are not the selected contractor',
+            ], 403);
+        }
+
+        if ($project->project_status !== 'contractor_selected') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Construction cannot be started from the current project status',
+            ], 422);
+        }
+
+        $project->update(['project_status' => 'in_construction']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Construction started',
+            'data' => $project,
+        ]);
+    }
+
+    /**
+     * POST /api/projects/{id}/complete-construction
+     * Selected contractor marks the job as finished.
+     *
+     * No payment is released here -- unlike the design phase, there is
+     * no in-app escrow for the construction bid amount, so there is
+     * nothing for PaymentService to release.
+     */
+    public function completeConstruction(Request $request, $projectId): JsonResponse
+    {
+        $project = Project::findOrFail($projectId);
+        $user = auth()->user();
+
+        $contractor = Contractor::where('user_id', $user->user_id)->first();
+        if (!$contractor || $project->selected_contractor_id !== $contractor->contractor_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized - You are not the selected contractor',
+            ], 403);
+        }
+
+        if ($project->project_status !== 'in_construction') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Construction must be in progress before it can be marked complete',
+            ], 422);
+        }
+
+        $project->update(['project_status' => 'completed']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Construction marked complete',
+            'data' => $project,
+        ]);
+    }
+
+    /**
      * GET /api/construction-jobs
      * Get all available construction jobs for contractors
      */
