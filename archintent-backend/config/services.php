@@ -47,6 +47,29 @@ return [
         'continue_url' => env('FIREBASE_EMAIL_CONTINUE_URL'),
     ],
 
+    /*
+    | WhatsApp Cloud API, for free "reverse" phone verification: the user
+    | sends ArchIntent's WhatsApp number a one-time code, and WhatsApp's
+    | webhook tells us which (WhatsApp-verified) number sent it. Messages a
+    | user sends to a business are not charged, nor are free-form replies
+    | within the 24-hour customer service window.
+    |
+    | business_number: ArchIntent's WhatsApp number, digits only with country
+    |   code (e.g. 923001234567) -- used for the wa.me link.
+    | phone_number_id / access_token: for the confirmation reply (optional;
+    |   verification still works without them, it just stays silent).
+    | app_secret: verifies Meta's X-Hub-Signature-256 on every webhook.
+    | verify_token: any string you choose, entered again in Meta's webhook setup.
+    */
+    'whatsapp' => [
+        'business_number' => preg_replace('/\D+/', '', (string) env('WHATSAPP_BUSINESS_NUMBER', '')),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'app_secret' => env('WHATSAPP_APP_SECRET'),
+        'verify_token' => env('WHATSAPP_WEBHOOK_VERIFY_TOKEN'),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v25.0'),
+    ],
+
     'mailtrap' => [
         'api_token'   => env('MAILTRAP_API_TOKEN'),
         'inbox_id'    => env('MAILTRAP_INBOX_ID'),

@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import axiosInstance from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { resolveImageUrl } from '../utils/storage';
-import { CheckCircle2, Phone, ShieldAlert, User, Camera, ShieldCheck, ChevronRight, Save, Send } from 'lucide-react';
+import { CheckCircle2, Phone, ShieldAlert, User, Camera, ShieldCheck, ChevronRight, Save, Send, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ProfileForm {
@@ -28,6 +28,11 @@ export default function ProfilePage() {
   const [otpVerifying, setOtpVerifying] = useState(false);
   const [otpHint, setOtpHint] = useState('');
   const [devOtpCode, setDevOtpCode] = useState<string | null>(null);
+  const [phoneMethods, setPhoneMethods] = useState<{ sms: boolean; whatsapp: boolean } | null>(null);
+  const [waSession, setWaSession] = useState<{ message: string; wa_link: string } | null>(null);
+  const [waStarting, setWaStarting] = useState(false);
+  const [waChecking, setWaChecking] = useState(false);
+  const lastWaAutoCheck = useRef(0);
 
   const currentImage = useMemo(() => resolveImageUrl(user?.profile_image), [user?.profile_image]);
 
@@ -167,6 +172,69 @@ export default function ProfilePage() {
     }
   };
 
+  const phoneVerified = Boolean(user?.phone_verified_at);
+
+  // Only offer the verification methods this server can actually deliver.
+  useEffect(() => {
+    if (phoneVerified) return;
+    axiosInstance
+      .get('/auth/phone-verification/methods')
+      .then((res) => setPhoneMethods(res.data?.data ?? { sms: false, whatsapp: false }))
+      .catch(() => setPhoneMethods({ sms: false, whatsapp: false }));
+  }, [phoneVerified]);
+
+  const handleStartWhatsApp = async () => {
+    setError('');
+    setSuccess('');
+    setWaStarting(true);
+    try {
+      const res = await axiosInstance.post('/auth/phone-whatsapp/start');
+      setWaSession({ message: res.data.data.message, wa_link: res.data.data.wa_link });
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Could not start WhatsApp verification.');
+    } finally {
+      setWaStarting(false);
+    }
+  };
+
+  // The webhook verifies server-side; this just reads the result back.
+  const checkWhatsAppVerified = useCallback(async (silent: boolean) => {
+    setWaChecking(true);
+    if (!silent) setError('');
+    try {
+      const res = await axiosInstance.get('/profile');
+      if (res.data?.data?.phone_verified_at) {
+        await refreshUser();
+        setWaSession(null);
+        setSuccess('Phone verified via WhatsApp.');
+      } else if (!silent) {
+        setError("We haven't received your WhatsApp message yet. Make sure you sent it from the number on your profile, then try again.");
+      }
+    } catch {
+      if (!silent) setError('Could not check right now. Please try again.');
+    } finally {
+      setWaChecking(false);
+    }
+  }, [refreshUser]);
+
+  // The message is sent from WhatsApp, so re-check when they come back.
+  useEffect(() => {
+    if (!waSession) return;
+    const onReturn = () => {
+      if (document.visibilityState !== 'visible') return;
+      const now = Date.now();
+      if (now - lastWaAutoCheck.current < 5000) return;
+      lastWaAutoCheck.current = now;
+      checkWhatsAppVerified(true);
+    };
+    window.addEventListener('focus', onReturn);
+    document.addEventListener('visibilitychange', onReturn);
+    return () => {
+      window.removeEventListener('focus', onReturn);
+      document.removeEventListener('visibilitychange', onReturn);
+    };
+  }, [waSession, checkWhatsAppVerified]);
+
   if (pageLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-40">
@@ -304,10 +372,63 @@ export default function ProfilePage() {
                     )}
                  </div>
 
-                 {!user?.phone_verified_at && (
+                 {!user?.phone_verified_at && phoneMethods && !phoneMethods.sms && !phoneMethods.whatsapp && (
+                    <p className="text-sm font-medium text-slate-400">
+                      Phone verification is optional and isn&apos;t available on this server right now.
+                    </p>
+                 )}
+
+                 {!user?.phone_verified_at && phoneMethods?.whatsapp && (
+                    <div className="space-y-6 mb-10">
+                       <p className="text-sm font-medium text-slate-400">
+                         Verify your phone for free with WhatsApp: send us a one-time code from the WhatsApp account on{' '}
+                         <span className="font-bold text-slate-200">{user?.phone_number || 'your profile number'}</span>.
+                       </p>
+
+                       {!waSession ? (
+                          <button
+                             type="button"
+                             onClick={handleStartWhatsApp}
+                             disabled={waStarting || !user?.phone_number?.trim()}
+                             className="flex items-center gap-3 rounded-2xl bg-emerald-600 px-6 py-4 text-[10px] font-black uppercase tracking-[0.15em] text-white shadow-lg shadow-emerald-900/40 transition-all hover:bg-emerald-500 disabled:opacity-50"
+                          >
+                             <MessageCircle className="w-4 h-4" />
+                             {waStarting ? 'Preparing...' : 'Verify with WhatsApp'}
+                          </button>
+                       ) : (
+                          <div className="space-y-5 rounded-2xl border border-emerald-800/60 bg-emerald-950/30 p-6">
+                             <p className="text-xs font-bold uppercase tracking-widest text-emerald-300">Send this message on WhatsApp</p>
+                             <p className="font-mono text-2xl font-black tracking-widest text-white">{waSession.message}</p>
+                             <div className="flex flex-wrap gap-3">
+                                <a
+                                   href={waSession.wa_link}
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:bg-emerald-500"
+                                >
+                                   <MessageCircle className="w-4 h-4" /> Open WhatsApp
+                                </a>
+                                <button
+                                   type="button"
+                                   onClick={() => checkWhatsAppVerified(false)}
+                                   disabled={waChecking}
+                                   className="rounded-xl border-2 border-slate-600 bg-slate-800 px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-100 transition-all hover:border-emerald-500 disabled:opacity-50"
+                                >
+                                   {waChecking ? 'Checking...' : "I've sent it"}
+                                </button>
+                             </div>
+                             <p className="text-xs text-slate-400">
+                               The code expires in 10 minutes. It must be sent from the WhatsApp account on your profile number.
+                             </p>
+                          </div>
+                       )}
+                    </div>
+                 )}
+
+                 {!user?.phone_verified_at && phoneMethods?.sms && (
                     <div className="space-y-8">
                        <p className="text-sm font-medium text-slate-400">
-                         To ensure secure project communications, please verify your mobile terminal. A 6-digit one-time sequence will be transmitted.
+                         {phoneMethods.whatsapp ? 'Or receive a 6-digit code by SMS.' : 'To ensure secure project communications, please verify your mobile terminal. A 6-digit one-time sequence will be transmitted.'}
                        </p>
 
                        <div className="flex flex-wrap gap-4">

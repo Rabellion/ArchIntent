@@ -19,6 +19,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PhoneOtpController;
+use App\Http\Controllers\WhatsAppWebhookController;
 use App\Http\Controllers\ArchitectPayoutController;
 use App\Http\Controllers\ArchitectStripeConnectController;
 
@@ -59,6 +60,11 @@ Route::post('/register', [AuthController::class, 'register'])->middleware('throt
 Route::post('/verify-email-otp', [AuthController::class, 'verifyEmailOtp'])->middleware('throttle:10,1');
 Route::post('/resend-email-otp', [AuthController::class, 'resendEmailOtp'])->middleware('throttle:6,1');
 Route::post('/check-email-verification', [AuthController::class, 'checkEmailVerification'])->middleware('throttle:20,1');
+
+// Meta WhatsApp Cloud API webhook: public, authenticated by the
+// X-Hub-Signature-256 HMAC (POST) or the verify token (GET handshake).
+Route::get('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'verify']);
+Route::post('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'receive']);
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
 // Public architect/contractor portfolio routes
@@ -78,6 +84,8 @@ Route::middleware('auth.api')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     // POST + PUT: multipart profile_image is unreliable on PUT with PHP; clients should POST FormData
     Route::match(['put', 'post'], '/profile', [AuthController::class, 'updateProfile']);
+    Route::get('/auth/phone-verification/methods', [PhoneOtpController::class, 'methods']);
+    Route::post('/auth/phone-whatsapp/start', [PhoneOtpController::class, 'startWhatsApp'])->middleware('throttle:6,1');
     Route::post('/auth/phone-otp/send', [PhoneOtpController::class, 'send'])->middleware('throttle:6,1');
     Route::post('/auth/phone-otp/verify', [PhoneOtpController::class, 'verify'])->middleware('throttle:20,1');
 
