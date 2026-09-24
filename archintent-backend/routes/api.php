@@ -20,6 +20,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PhoneOtpController;
 use App\Http\Controllers\WhatsAppWebhookController;
+use App\Http\Controllers\WhatsAppSessionController;
 use App\Http\Controllers\ArchitectPayoutController;
 use App\Http\Controllers\ArchitectStripeConnectController;
 
@@ -50,9 +51,15 @@ Route::get('/storage/{path}', function (string $path) {
     ]);
 })->where('path', '.*');
 
-// Internal routes (for AI service, protected with internal API key)
+// Internal routes (for AI/whatsapp services, protected with internal API key)
 Route::middleware('internal.key')->group(function () {
     Route::post('/internal/project-matches', [MatchingController::class, 'storeMatches']);
+
+    // Called by whatsapp-service to persist/restore its logged-in WhatsApp
+    // session across restarts, since Heroku's own disk does not survive them.
+    Route::get('/internal/whatsapp-session/{sessionId}', [WhatsAppSessionController::class, 'show']);
+    Route::put('/internal/whatsapp-session/{sessionId}', [WhatsAppSessionController::class, 'store']);
+    Route::delete('/internal/whatsapp-session/{sessionId}', [WhatsAppSessionController::class, 'destroy']);
 });
 
 // Auth routes with rate limiting

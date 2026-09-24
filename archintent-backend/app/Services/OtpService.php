@@ -62,6 +62,7 @@ class OtpService
         $to = $this->normalizeToE164($phone);
 
         match (config('otp.sms_driver')) {
+            'openwa' => $this->sendViaOpenWa($to, $text),
             'smsgate' => $this->sendViaSmsGate($to, $text),
             'twilio' => $this->sendViaTwilio($to, $text),
             default => throw new \RuntimeException('SMS delivery is not configured on this server.'),
@@ -110,6 +111,46 @@ class OtpService
         Cache::forget($key);
 
         return true;
+    }
+
+    /**
+     * open-wa's Easy API. "to" is E.164 (leading +); WhatsApp's own chat id
+     * format has no +, so it is stripped here, not in normalizeToE164,
+     * which every other driver still needs in +-form.
+     */
+    private function sendViaOpenWa(string $to, string $text): void
+    {
+        $baseUrl = (string) config('otp.openwa.base_url');
+        $apiKey = (string) config('otp.openwa.api_key');
+        if ($baseUrl === '' || $apiKey === '') {
+            throw new \RuntimeException('SMS delivery is not configured on this server.');
+        }
+
+        $chatId = ltrim($to, '+').'@c.us';
+
+        try {
+            $response = Http::withHeaders(['X-API-Key' => $apiKey])
+                ->acceptJson()
+                ->timeout(30)
+                ->post($baseUrl.'/api/sendText', ['to' => $chatId, 'content' => $text]);
+        } catch (\Throwable $e) {
+            Log::error('open-wa SMS send failed', ['error' => $e->getMessage()]);
+
+            throw new \RuntimeException('Could not send the WhatsApp message right now. Please try again shortly.');
+        }
+
+        if (!$response->successful()) {
+            $this->logFailure('open-wa', $response);
+
+            throw new \RuntimeException(match (true) {
+                $response->status() === 401 => 'SMS delivery is not configured correctly on this server.',
+                // WhatsApp session logged out / needs re-linking (QR scan).
+                $response->status() === 503 => 'WhatsApp verification is temporarily unavailable. Please try again later.',
+                default => 'Could not send the WhatsApp message right now. Please try again shortly.',
+            });
+        }
+
+        Log::info('open-wa accepted WhatsApp message', ['to_tail' => substr($to, -4)]);
     }
 
     private function sendViaSmsGate(string $to, string $text): void

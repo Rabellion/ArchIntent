@@ -1,0 +1,17 @@
+{
+  "name": "archintent-whatsapp-service",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Free WhatsApp OTP delivery for ArchIntent: keeps a real WhatsApp login (via open-wa) alive on Heroku, persisting the session in the Laravel database so it survives dyno restarts without a fresh QR scan every time.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node index.mjs",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@open-wa/wa-automate": "4.76.0"
+  }
+}

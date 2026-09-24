@@ -3,7 +3,6 @@
 #  Covers: archintent-backend (Laravel/PHP), archintent-frontend (Vite/
 #  React/TS), nlp-service (Python/FastAPI), fyp-report (LaTeX).
 # =====================================================================
-
 # ---------------------------------------------------------------------
 # SECRETS -- never commit real credentials.
 # .env.example files ARE tracked (they hold placeholders only).
@@ -12,7 +11,6 @@
 .env.*
 !.env.example
 !.env.*.example
-
 # ---------------------------------------------------------------------
 # PHP / Laravel (archintent-backend)
 # ---------------------------------------------------------------------
@@ -42,7 +40,6 @@ archintent-backend/bootstrap/ssr
 archintent-backend/public/hot
 archintent-backend/public/storage
 archintent-backend/public/build
-
 # ---------------------------------------------------------------------
 # Node / Vite (archintent-frontend)
 # ---------------------------------------------------------------------
@@ -54,7 +51,11 @@ archintent-frontend/npm-debug.log*
 archintent-frontend/yarn-debug.log*
 archintent-frontend/yarn-error.log*
 archintent-frontend/pnpm-debug.log*
-
+# ---------------------------------------------------------------------
+# Node (whatsapp-service)
+# ---------------------------------------------------------------------
+whatsapp-service/node_modules/
+whatsapp-service/.wa-session/
 # ---------------------------------------------------------------------
 # Python (nlp-service)
 # ---------------------------------------------------------------------
@@ -64,13 +65,11 @@ nlp-service/*.egg-info/
 nlp-service/.venv/
 nlp-service/venv/
 nlp-service/.pytest_cache/
-
 # Any Python tooling caches, wherever they show up (ruff, mypy, etc.)
 **/__pycache__/
 **/.ruff_cache/
 **/.mypy_cache/
 **/.pytest_cache/
-
 # ---------------------------------------------------------------------
 # LaTeX build artefacts (fyp-report)
 # ---------------------------------------------------------------------
@@ -86,7 +85,6 @@ fyp-report/**/*.run.xml
 fyp-report/**/*.toc
 fyp-report/**/*.synctex.gz
 fyp-report/**/*.pdf
-
 # ---------------------------------------------------------------------
 # Project documents not meant for the public repo
 # (internal working docs, generated reports, DB dumps, editor exports)
@@ -97,7 +95,6 @@ Rubrics for Evaluation of FYP Report.docx
 TEST_PLAN.md
 VERIFICATION_REPORT.md
 archintent.sql
-
 # ---------------------------------------------------------------------
 # General
 # ---------------------------------------------------------------------
@@ -107,11 +104,9 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
-
 # Local scratch / IDE project files some editors drop at the repo root
 .claude/settings.local.json
 .playwright-mcp/
-
 # ---------------------------------------------------------------------
 # Credentials
 # ---------------------------------------------------------------------
@@ -120,3 +115,9 @@ Thumbs.db
 groq_keys.txt
 groq_keys*.txt
 *_keys.txt
+
+# managed
+**.data.json
+**.node-persist**
+**_IGNORE_**
+# end managed

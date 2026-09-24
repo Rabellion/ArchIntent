@@ -138,4 +138,69 @@ class OtpServiceSmsTest extends TestCase
         $this->assertSame('+923253697546', $service->normalizeToE164('923253697546'));
         $this->assertSame('+923253697546', $service->normalizeToE164('+92 325-3697546'));
     }
+
+    private function useOpenWa(): void
+    {
+        config([
+            'otp.sms_driver' => 'openwa',
+            'otp.openwa.base_url' => 'https://whatsapp-service.example.com',
+            'otp.openwa.api_key' => 'wa-secret-key',
+            'otp.expose_code_in_response' => false,
+        ]);
+    }
+
+    public function test_openwa_sends_the_code_as_a_whatsapp_chat_id_with_the_api_key_header(): void
+    {
+        $this->useOpenWa();
+        Http::fake(['whatsapp-service.example.com/*' => Http::response(['id' => 'true_923253697546@c.us_ABC123'])]);
+
+        $result = app(OtpService::class)->sendForUser($this->user());
+
+        $this->assertTrue($result['sent']);
+        Http::assertSent(function (Request $request) {
+            return $request->url() === 'https://whatsapp-service.example.com/api/sendText'
+                && $request->hasHeader('X-API-Key', 'wa-secret-key')
+                // No leading + -- open-wa's chat id format is bare digits + "@c.us".
+                && $request['to'] === '923253697546@c.us'
+                && preg_match('/^Your ArchIntent verification code is: \d{6}$/', $request['content']) === 1;
+        });
+    }
+
+    public function test_openwa_session_not_ready_is_reported_plainly(): void
+    {
+        $this->useOpenWa();
+        Http::fake(['whatsapp-service.example.com/*' => Http::response(
+            ['error' => 'API not available until the session is truly ready', 'status' => 503],
+            503
+        )]);
+
+        $this->expectExceptionMessage('WhatsApp verification is temporarily unavailable. Please try again later.');
+
+        app(OtpService::class)->sendForUser($this->user());
+    }
+
+    public function test_openwa_bad_api_key_is_reported_as_misconfiguration(): void
+    {
+        $this->useOpenWa();
+        Http::fake(['whatsapp-service.example.com/*' => Http::response(
+            ['error' => 'Unauthorized', 'details' => 'Invalid or missing API key'],
+            401
+        )]);
+
+        $this->expectExceptionMessage('SMS delivery is not configured correctly on this server.');
+
+        app(OtpService::class)->sendForUser($this->user());
+    }
+
+    public function test_openwa_unreachable_service_does_not_leak_a_raw_exception(): void
+    {
+        $this->useOpenWa();
+        Http::fake(function () {
+            throw new \Illuminate\Http\Client\ConnectionException('cURL error 7: Failed to connect');
+        });
+
+        $this->expectExceptionMessage('Could not send the WhatsApp message right now. Please try again shortly.');
+
+        app(OtpService::class)->sendForUser($this->user());
+    }
 }

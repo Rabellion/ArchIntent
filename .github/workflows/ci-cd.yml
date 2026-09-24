@@ -21,6 +21,7 @@
 #  context in a job-level `if:`, so the gate has to be a variable.)
 #    HEROKU_BACKEND_APP    e.g. archintent-api
 #    HEROKU_NLP_APP        e.g. archintent-nlp
+#    HEROKU_WHATSAPP_APP   e.g. archintent-whatsapp -- see whatsapp-service/README.md
 #    VERCEL_ENABLED        set to the string "true" to enable Vercel deploys
 #
 #  Until those exist, the test jobs run normally and each deploy job
@@ -153,10 +154,41 @@ jobs:
           python -m pip install --upgrade pip
           pip install --dry-run -r requirements.txt
 
+  whatsapp-test:
+    name: WhatsApp service — lint & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: whatsapp-service/package-lock.json
+
+      # CI only runs the pure-logic tests below, never a real Chrome —
+      # skip Puppeteer's ~200MB Chromium download entirely.
+      - name: Install dependencies
+        working-directory: whatsapp-service
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: true
+        run: npm ci
+
+      - name: Syntax-check every source file
+        working-directory: whatsapp-service
+        run: find . -name "*.mjs" -not -path "./node_modules/*" -print0 | xargs -0 -n1 node --check
+
+      # No network, no Chrome, no real WhatsApp session -- covers the
+      # Laravel session-persistence client, the API-key auth check, and
+      # the QR page renderer against fakes/fixtures only.
+      - name: Unit tests
+        working-directory: whatsapp-service
+        run: node --test
+
   # ---------------------------------------------------------- DEPLOY
   deploy-backend:
     name: Deploy backend → Heroku
-    needs: [backend-test, frontend-test, nlp-test]
+    needs: [backend-test, frontend-test, nlp-test, whatsapp-test]
     # Skips cleanly (rather than failing) until HEROKU_API_KEY and the
     # app name are configured. See the secrets list at the top.
     if: >-
@@ -186,7 +218,7 @@ jobs:
 
   deploy-nlp:
     name: Deploy NLP service → Heroku
-    needs: [backend-test, frontend-test, nlp-test]
+    needs: [backend-test, frontend-test, nlp-test, whatsapp-test]
     if: >-
       github.ref == 'refs/heads/main'
       && github.event_name != 'pull_request'
@@ -212,9 +244,38 @@ jobs:
             "https://heroku:${HEROKU_API_KEY}@git.heroku.com/${APP}.git" \
             "${SHA}:refs/heads/main"
 
+  deploy-whatsapp:
+    name: Deploy WhatsApp service → Heroku
+    needs: [backend-test, frontend-test, nlp-test, whatsapp-test]
+    if: >-
+      github.ref == 'refs/heads/main'
+      && github.event_name != 'pull_request'
+      && vars.HEROKU_WHATSAPP_APP != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push subdirectory to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          APP: ${{ vars.HEROKU_WHATSAPP_APP }}
+        run: |
+          # This app is on the container stack, so this push triggers a
+          # remote Docker build from whatsapp-service/heroku.yml. No
+          # Docker daemon is needed in the runner. See
+          # whatsapp-service/README.md for the one-time app setup.
+          git config user.email "ci@github"
+          git config user.name "GitHub Actions"
+          SHA=$(git subtree split --prefix=whatsapp-service main)
+          git push --force \
+            "https://heroku:${HEROKU_API_KEY}@git.heroku.com/${APP}.git" \
+            "${SHA}:refs/heads/main"
+
   deploy-frontend:
     name: Deploy frontend → Vercel
-    needs: [backend-test, frontend-test, nlp-test]
+    needs: [backend-test, frontend-test, nlp-test, whatsapp-test]
     if: >-
       github.ref == 'refs/heads/main'
       && github.event_name != 'pull_request'

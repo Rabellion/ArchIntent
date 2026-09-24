@@ -3,6 +3,8 @@
 $smsGateUser = trim((string) env('SMSGATE_USERNAME', ''));
 $smsGatePass = trim((string) env('SMSGATE_PASSWORD', ''));
 $twilioSid = trim((string) env('TWILIO_ACCOUNT_SID', ''));
+$openWaBaseUrl = trim((string) env('OPENWA_BASE_URL', ''));
+$openWaApiKey = trim((string) env('OPENWA_API_KEY', ''));
 
 return [
 
@@ -11,16 +13,30 @@ return [
     'length' => 6,
 
     /*
-    | SMS driver: 'smsgate' | 'twilio' | 'none'.
+    | SMS driver: 'openwa' | 'smsgate' | 'twilio' | 'none'.
     |
     | Left unset, it is inferred from whichever credentials are present, so
-    | adding SMSGATE_* switches delivery over without a second env change.
+    | adding e.g. OPENWA_* switches delivery over without a second env change.
     */
     'sms_driver' => env('OTP_SMS_DRIVER') ?: match (true) {
+        $openWaBaseUrl !== '' && $openWaApiKey !== '' => 'openwa',
         $smsGateUser !== '' && $smsGatePass !== '' => 'smsgate',
         $twilioSid !== '' => 'twilio',
         default => 'none',
     },
+
+    /*
+    | Free phone verification via WhatsApp, delivered through a
+    | self-hosted open-wa instance (see whatsapp-service/) logged in as a
+    | real personal/business WhatsApp number. Messages open-wa's own
+    | WhatsApp account sends are free -- the cost is running the instance,
+    | not per message. base_url is that service's own root URL (its Easy
+    | API), not this app's URL.
+    */
+    'openwa' => [
+        'base_url' => rtrim($openWaBaseUrl, '/'),
+        'api_key' => $openWaApiKey,
+    ],
 
     /*
     | SMS Gateway for Android (https://sms-gate.app, Apache-2.0). Texts are

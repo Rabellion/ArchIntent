@@ -1,0 +1,15 @@
+# =====================================================================
+#  Tells Heroku to build this app from the Dockerfile ON HEROKU'S OWN
+#  build servers, via a plain `git push` -- NOT via `heroku container:push`,
+#  which would require Docker installed and running locally.
+#
+#  Setup (one-time, per Heroku app):
+#      heroku stack:set container -a <whatsapp-app-name>
+#
+#  After that, a normal git push triggers a remote Docker build.
+# =====================================================================
+build:
+  docker:
+    web: Dockerfile
+run:
+  web: node index.mjs
