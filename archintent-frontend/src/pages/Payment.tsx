@@ -176,6 +176,11 @@ const PaymentForm: React.FC<{ projectId: number; project: ProjectData }> = ({
       }
 
       if (confirmRes.paymentIntent.status === 'succeeded') {
+        // Lets the backend verify the charge with Stripe and notify the
+        // architect. The card has already been charged at this point, so
+        // a failure here must not turn a successful payment into an error
+        // screen -- it only means the architect's notification is missed.
+        await axiosInstance.post(`/payments/${d.payment_id}/confirm`).catch(() => undefined);
         setSuccess(true);
       }
     } catch (err: any) {

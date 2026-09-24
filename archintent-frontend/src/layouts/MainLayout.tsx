@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axios';
 import BudzWallet from '../components/BudzWallet';
+import NotificationBell from '../components/notifications/NotificationBell';
 import { useUnreadCount } from '../context/UnreadCountContext';
 import { resolveImageUrl } from '../utils/storage';
 import {
@@ -18,7 +19,6 @@ import {
   Shield,
   Activity,
   LogOut,
-  Bell,
   Fingerprint,
   Wallet,
   Store,
@@ -333,15 +333,9 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     </span>
                   )}
                </button>
-               <button className="relative p-3 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-2xl transition-all group" title="Notifications">
-                  <Bell size={20} />
-                  {pendingCount > 0 && (
-                    <span className="absolute top-2 right-2 w-4 h-4 bg-indigo-600 text-white text-[8px] font-black rounded-md flex items-center justify-center border-2 border-slate-900">
-                      {pendingCount}
-                    </span>
-                  )}
-               </button>
             </div>
+
+            <NotificationBell />
 
             {/* Profile Protocol */}
             <div className="flex items-center gap-6">

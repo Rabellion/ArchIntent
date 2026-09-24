@@ -21,7 +21,6 @@ interface Project {
   created_at: string;
   mda_verification_deadline?: string;
   design_file_path?: string;
-  project_description?: string;
   additional_notes?: string;
   // NOTE: the render below reads `rev.timestamp` and `rev.feedback`, but the
   // design_revisions table stores `requested_at` and `revision_message`.
@@ -770,8 +769,8 @@ const ProjectDetail: React.FC = () => {
               <div className="p-8 space-y-8">
                 <div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Project Description</p>
-                  <p className="text-slate-300 leading-relaxed text-sm">
-                    {project.project_description}
+                  <p className="text-slate-300 leading-relaxed text-sm whitespace-pre-line">
+                    {project.brief_text}
                   </p>
                 </div>
 

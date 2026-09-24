@@ -33,6 +33,7 @@ class Payment extends Model
         'stripe_transfer_id',
         'payment_type',
         'payment_status',
+        'payee_notified_at',
     ];
 
     /**
@@ -44,6 +45,7 @@ class Payment extends Model
         'amount' => 'decimal:2',
         'platform_fee' => 'decimal:2',
         'payee_amount' => 'decimal:2',
+        'payee_notified_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

@@ -6,6 +6,7 @@ use App\Helpers\StripeSslHelper;
 use App\Models\Payment;
 use App\Models\Project;
 use App\Models\User;
+use App\Notifications\PaymentReceived;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -139,6 +140,59 @@ class PaymentController extends Controller
                 'message' => 'Payment creation failed: ' . $e->getMessage(),
             ], 422);
         }
+    }
+
+    /**
+     * POST /api/payments/{id}/confirm
+     * Called by the client's browser once Stripe.js reports the card
+     * payment succeeded. Re-checks the PaymentIntent with Stripe itself
+     * rather than trusting the browser, then notifies the payee
+     * (architect) exactly once.
+     */
+    public function confirmPayment(Request $request, $paymentId): JsonResponse
+    {
+        $payment = Payment::with(['payer:user_id,full_name', 'payee', 'project:project_id,project_title'])
+            ->findOrFail($paymentId);
+
+        if ($payment->payer_id !== auth()->user()->user_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        if (!$payment->stripe_payment_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment has no Stripe reference',
+            ], 422);
+        }
+
+        try {
+            $intent = $this->retrieveStripePaymentIntent($payment->stripe_payment_id);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Could not verify payment with Stripe: ' . $e->getMessage(),
+            ], 422);
+        }
+
+        if (($intent['status'] ?? null) !== 'succeeded') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment has not succeeded yet',
+            ], 422);
+        }
+
+        if ($payment->payee_notified_at === null && $payment->payee) {
+            $payment->payee->notify(new PaymentReceived($payment));
+            $payment->update(['payee_notified_at' => now()]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment confirmed',
+        ]);
     }
 
     /**

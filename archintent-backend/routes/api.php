@@ -16,6 +16,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BudzController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PhoneOtpController;
 use App\Http\Controllers\ArchitectPayoutController;
@@ -188,8 +189,14 @@ Route::middleware('auth.api')->group(function () {
 
     // Payment routes - accessible to payer or payee
     Route::post('/payments/{id}/refund', [PaymentController::class, 'refundPayment']);
+    Route::post('/payments/{id}/confirm', [PaymentController::class, 'confirmPayment']);
     Route::get('/payments', [PaymentController::class, 'index']);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
+
+    // In-app notifications (any authenticated role, scoped to the caller)
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead']);
 
     // Budz routes
     Route::get('/budz/packages', [BudzController::class, 'packages']);
