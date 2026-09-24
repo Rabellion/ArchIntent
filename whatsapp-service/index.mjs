@@ -100,6 +100,38 @@ async function main() {
     }
   });
 
+  // Heroku's Basic dyno only has 512MB total -- Chromium doing WhatsApp
+  // Web's first-login chat sync alone has been observed hitting 1GB+
+  // and getting SIGKILL'd (Heroku's R15). These are opt-in beyond the
+  // library's already-aggressive defaults (GPU/WebGL/canvas/site-
+  // isolation are already off there -- see node_modules/@open-wa/
+  // wa-automate/dist/config/puppeteer.config.js).
+  //
+  // --single-process/--no-zygote are commented out in that same
+  // default list (the library authors clearly considered them for
+  // memory but didn't enable them, likely over stability) -- they're
+  // the single biggest lever (one process instead of browser+GPU+
+  // renderer+zygote), so they're here as an explicit opt-in rather
+  // than always-on, toggleable with a config var + restart, no
+  // redeploy, in case they make WhatsApp Web's heavy JS unstable.
+  const chromiumArgs = [
+    // Caps the renderer's V8 heap so the chat-history sync can't grow
+    // unbounded; keeps the library's own default `--expose-gc` too
+    // (last --js-flags wins in Chromium, so these must be combined
+    // into one flag, not two separate --js-flags entries).
+    '--js-flags=--expose-gc,--max-old-space-size=192',
+    '--disable-background-networking',
+    '--disable-sync',
+    '--disable-translate',
+    '--disable-component-extensions-with-background-pages',
+    '--disable-ipc-flooding-protection',
+    '--metrics-recording-only',
+    '--mute-audio',
+  ];
+  if (process.env.WA_SINGLE_PROCESS === 'true') {
+    chromiumArgs.push('--single-process', '--no-zygote', '--renderer-process-limit=1');
+  }
+
   create({
     sessionId: SESSION_ID,
     sessionData: savedSessionData || undefined,
@@ -113,6 +145,8 @@ async function main() {
     disableSpins: true,
     logConsole: false,
     popup: false,
+    cacheEnabled: false,
+    chromiumArgs,
   })
     .then((readyClient) => {
       client = readyClient;
