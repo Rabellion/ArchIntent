@@ -9,9 +9,11 @@
   },
   "scripts": {
     "start": "node index.mjs",
-    "test": "node --test test/"
+    "test": "node --test test/",
+    "postinstall": "patch-package"
   },
   "dependencies": {
-    "@open-wa/wa-automate": "4.76.0"
+    "@open-wa/wa-automate": "4.76.0",
+    "patch-package": "^8.0.0"
   }
 }

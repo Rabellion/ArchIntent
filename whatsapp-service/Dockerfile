@@ -45,6 +45,11 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
+# patches/ has to exist before `npm install` runs -- its postinstall
+# script (patch-package) reads from it. See the patch file itself for
+# why: WhatsApp Web currently refuses to fully load for the outdated
+# Chrome/104 user agent this library's 4.76.0 release hardcodes.
+COPY patches ./patches
 RUN npm install --omit=dev
 
 COPY . .
