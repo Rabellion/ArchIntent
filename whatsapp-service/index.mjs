@@ -86,10 +86,16 @@ async function main() {
     }
   });
 
-  // The plain `qr` event (not `qr.qrData` / `qr.qrUrl`) carries the
-  // actual base64 PNG; renderQrPage() adds the data: URI prefix.
-  ev.on('qr.**', (data, subEvent) => {
-    if (!subEvent && typeof data === 'string') {
+  // open-wa's EvEmitter.emit(data, eventNamespaceOverride) calls
+  // listeners as (data, sessionId, eventNamespace) -- the 2nd argument
+  // here is the session id (e.g. "default"), always truthy, NOT a
+  // per-event marker. `qrData`/`qrUrl` emit under their own top-level
+  // namespaces (qrData.<id> / qrUrl.<id>), which this `qr.**` wildcard
+  // never matches anyway, so any string payload reaching this handler
+  // is already the actual base64 PNG; renderQrPage() adds the data:
+  // URI prefix.
+  ev.on('qr.**', (data) => {
+    if (typeof data === 'string') {
       latestQr = data;
     }
   });
