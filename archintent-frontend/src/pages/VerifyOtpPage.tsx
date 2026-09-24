@@ -142,10 +142,8 @@ const VerifyOtpPage = () => {
               {resending ? 'Sending…' : 'Resend code'}
             </button>
             <p className="text-xs text-slate-500">
-              Didn&apos;t receive it? Check spam. For local dev, set{' '}
-              <code className="text-slate-400">APP_DEBUG=true</code> to see{' '}
-              <code className="text-slate-400">dev_otp</code> after register, or configure{' '}
-              <code className="text-slate-400">MAILTRAP_API_TOKEN</code>.
+              Didn&apos;t receive it? Check your spam or promotions folder, then tap
+              &ldquo;Resend code&rdquo;. Codes expire after 10 minutes.
             </p>
             <button
               type="button"

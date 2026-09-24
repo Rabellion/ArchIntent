@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -10,6 +11,10 @@ use Illuminate\Support\Facades\Log;
 class OtpService
 {
     private const CACHE_PREFIX = 'phone_otp:user:';
+
+    // Twilio: "The number is unverified. Trial accounts cannot send
+    // messages to unverified numbers."
+    private const TWILIO_TRIAL_UNVERIFIED = 21608;
 
     public function sendForUser(User $user): array
     {
@@ -20,26 +25,29 @@ class OtpService
 
         $length = (int) config('otp.length', 6);
         $code = str_pad((string) random_int(0, (10 ** $length) - 1), $length, '0', STR_PAD_LEFT);
-
         $ttl = (int) config('otp.ttl_seconds', 600);
-        Cache::put(self::CACHE_PREFIX . $user->user_id, password_hash($code, PASSWORD_BCRYPT), now()->addSeconds($ttl));
+        $exposeCode = (bool) config('otp.expose_code_in_response');
 
-        $to = $this->normalizeToE164($phone);
-        $sid = trim((string) (config('otp.twilio.account_sid') ?? ''));
-        $token = trim((string) (config('otp.twilio.auth_token') ?? ''));
-        $from = trim((string) (config('otp.twilio.from') ?? ''));
-
-        if ($sid !== '' && $token !== '' && $from !== '') {
-            $this->sendTwilioOtp($sid, $token, $from, $to, $code);
-        } else {
-            Log::info('Phone OTP (Twilio not configured — set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM)', [
+        if (config('otp.sms_driver') === 'none') {
+            // Previously this logged and still reported success, so the UI
+            // said "code sent" while nothing was sent. Only local QA with
+            // the code exposed in the response may proceed without SMS.
+            if (!$exposeCode) {
+                throw new \RuntimeException('SMS delivery is not configured on this server.');
+            }
+            Log::info('Phone OTP not sent: no SMS driver configured (code exposed for QA)', [
                 'user_id' => $user->user_id,
-                'phone_tail' => substr($phone, -4),
             ]);
+        } else {
+            $this->sendSms($phone, 'Your ArchIntent verification code is: '.$code);
         }
 
+        // Stored only once the SMS was accepted, so a failed send can't
+        // leave a code behind that the user was never told.
+        Cache::put(self::CACHE_PREFIX.$user->user_id, password_hash($code, PASSWORD_BCRYPT), now()->addSeconds($ttl));
+
         $out = ['sent' => true, 'expires_in_seconds' => $ttl];
-        if (config('otp.expose_code_in_response')) {
+        if ($exposeCode) {
             $out['dev_code'] = $code;
         }
 
@@ -47,22 +55,17 @@ class OtpService
     }
 
     /**
-     * Send a plain SMS (e.g. artisan sms:twilio-test). Requires Twilio env vars.
+     * Send one SMS through the configured driver (also used by artisan sms:test).
      */
-    public function sendCustomSms(string $phone, string $messageText): void
+    public function sendSms(string $phone, string $text): void
     {
-        $to = $this->normalizeToE164(trim($phone));
-        $sid = trim((string) (config('otp.twilio.account_sid') ?? ''));
-        $token = trim((string) (config('otp.twilio.auth_token') ?? ''));
-        $from = trim((string) (config('otp.twilio.from') ?? ''));
+        $to = $this->normalizeToE164($phone);
 
-        if ($sid === '' || $token === '' || $from === '') {
-            throw new \RuntimeException(
-                'Twilio is not configured. Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_FROM in archintent-backend/.env then run php artisan config:clear.'
-            );
-        }
-
-        $this->sendTwilioRaw($sid, $token, $from, $to, $messageText);
+        match (config('otp.sms_driver')) {
+            'smsgate' => $this->sendViaSmsGate($to, $text),
+            'twilio' => $this->sendViaTwilio($to, $text),
+            default => throw new \RuntimeException('SMS delivery is not configured on this server.'),
+        };
     }
 
     public function normalizeToE164(string $phone): string
@@ -94,7 +97,7 @@ class OtpService
 
     public function verifyForUser(User $user, string $code): bool
     {
-        $key = self::CACHE_PREFIX . $user->user_id;
+        $key = self::CACHE_PREFIX.$user->user_id;
         $hash = Cache::get($key);
         if (!$hash || !is_string($hash)) {
             return false;
@@ -109,33 +112,67 @@ class OtpService
         return true;
     }
 
-    private function sendTwilioOtp(string $sid, string $token, string $from, string $to, string $code): void
+    private function sendViaSmsGate(string $to, string $text): void
     {
-        $body = 'Your ArchIntent verification code is: '.$code;
-        $this->sendTwilioRaw($sid, $token, $from, $to, $body);
+        $username = (string) config('otp.smsgate.username');
+        $password = (string) config('otp.smsgate.password');
+        if ($username === '' || $password === '') {
+            throw new \RuntimeException('SMS delivery is not configured on this server.');
+        }
+
+        $response = Http::withBasicAuth($username, $password)
+            ->acceptJson()
+            ->timeout(30)
+            ->post(config('otp.smsgate.base_url').'/message', [
+                'textMessage' => ['text' => $text],
+                'phoneNumbers' => [$to],
+            ]);
+
+        if (!$response->successful()) {
+            $this->logFailure('SMS Gateway', $response);
+
+            throw new \RuntimeException($response->status() === 401
+                ? 'SMS delivery is not configured correctly on this server.'
+                : 'Could not send the SMS right now. Please try again shortly.');
+        }
+
+        Log::info('SMS Gateway accepted SMS', ['to_tail' => substr($to, -4), 'id' => $response->json('id')]);
     }
 
-    private function sendTwilioRaw(string $sid, string $token, string $from, string $to, string $body): void
+    private function sendViaTwilio(string $to, string $text): void
     {
-        $url = "https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json";
+        $sid = (string) config('otp.twilio.account_sid');
+        $token = (string) config('otp.twilio.auth_token');
+        $from = (string) config('otp.twilio.from');
+        if ($sid === '' || $token === '' || $from === '') {
+            throw new \RuntimeException('SMS delivery is not configured on this server.');
+        }
 
         $response = Http::withBasicAuth($sid, $token)
             ->asForm()
             ->timeout(30)
-            ->post($url, [
+            ->post("https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json", [
                 'From' => $from,
                 'To' => $to,
-                'Body' => $body,
+                'Body' => $text,
             ]);
 
         if (!$response->successful()) {
-            Log::error('Twilio SMS send failed', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-            throw new \RuntimeException('SMS provider rejected the request: HTTP '.$response->status());
+            $this->logFailure('Twilio', $response);
+
+            throw new \RuntimeException((int) $response->json('code') === self::TWILIO_TRIAL_UNVERIFIED
+                ? 'This server can currently only text its own verified number. Ask the administrator to switch SMS providers.'
+                : 'Could not send the SMS right now. Please try again shortly.');
         }
 
-        Log::info('Twilio SMS accepted', ['to_tail' => substr($to, -4)]);
+        Log::info('Twilio accepted SMS', ['to_tail' => substr($to, -4)]);
+    }
+
+    private function logFailure(string $provider, Response $response): void
+    {
+        Log::error("{$provider} SMS send failed", [
+            'status' => $response->status(),
+            'body' => $response->body(),
+        ]);
     }
 }

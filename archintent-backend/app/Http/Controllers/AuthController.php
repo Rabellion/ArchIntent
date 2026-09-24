@@ -10,9 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Mailtrap\MailtrapClient;
-use Mailtrap\Mime\MailtrapEmail;
-use Symfony\Component\Mime\Address;
+use App\Services\EmailOtpService;
 
 class AuthController extends Controller
 {
@@ -162,10 +160,6 @@ class AuthController extends Controller
         return $otp;
     }
 
-    /**
-     * Send OTP email via Mailtrap API (sandbox or sending mode).
-     * Returns true when the recipient should receive mail via Mailtrap, or in local debug without a token (OTP is in logs / dev_otp).
-     */
     private function sendOtpEmail(string $toEmail, string $toName, string $otp): bool
     {
         return $this->deliverOtpEmail($toEmail, $toName, $otp)['sent'];
@@ -173,108 +167,10 @@ class AuthController extends Controller
 
     /**
      * @return array{sent: bool, reason: string|null}
-     *
-     * Returns the reason alongside the outcome because the caller used to
-     * report every failure as "set MAILTRAP_API_TOKEN", which is actively
-     * misleading when the token is set and Mailtrap rejected the request
-     * for some other reason -- most commonly a demo sending domain, which
-     * is only permitted to deliver to the account owner's own address.
      */
     private function deliverOtpEmail(string $toEmail, string $toName, string $otp): array
     {
-        $token = config('services.mailtrap.api_token');
-
-        if (!$token) {
-            \Log::warning('MAILTRAP_API_TOKEN not set — OTP not sent by email', ['email' => $toEmail]);
-
-            return [
-                'sent' => (bool) config('app.debug'),
-                'reason' => 'Email delivery is not configured on this server.',
-            ];
-        }
-
-        try {
-            $htmlBody = view('emails.otp', ['userName' => $toName, 'otpCode' => $otp])->render();
-            $textBody = "Hi {$toName},\n\nYour ArchIntent verification code is: {$otp}\n\nThis code expires in 10 minutes.\n\nIf you did not register, ignore this email.";
-
-            $fromEmail = (string) config('services.mailtrap.from_email', 'hello@demomailtrap.co');
-            $fromName = (string) config('services.mailtrap.from_name', 'ArchIntent');
-
-            $email = (new MailtrapEmail())
-                ->from(new Address($fromEmail, $fromName))
-                ->to(new Address($toEmail, $toName))
-                ->subject('Your ArchIntent verification code')
-                ->text($textBody)
-                ->html($htmlBody)
-                ->category('OTP');
-
-            // config/services.php has always declared a mode and an inbox
-            // id, but this call hardcoded live sending and ignored both, so
-            // 'sandbox' silently behaved as 'send'. Sandbox matters: a demo
-            // sending domain can only deliver to the account owner, whereas
-            // sandbox captures mail for any recipient in a Mailtrap inbox,
-            // which is what makes a multi-user demo possible at all.
-            $isSandbox = config('services.mailtrap.mode') === 'sandbox';
-            $inboxId = config('services.mailtrap.inbox_id');
-
-            if ($isSandbox && !$inboxId) {
-                \Log::error('MAILTRAP_MODE=sandbox but MAILTRAP_INBOX_ID is not set');
-
-                return [
-                    'sent' => false,
-                    'reason' => 'Email delivery is misconfigured on this server.',
-                ];
-            }
-
-            $mailtrap = MailtrapClient::initSendingEmails(
-                apiKey: $token,
-                isSandbox: $isSandbox,
-                inboxId: $isSandbox ? (int) $inboxId : null,
-            );
-            $mailtrap->send($email);
-
-            \Log::info('OTP email sent via Mailtrap', [
-                'email' => $toEmail,
-                'mode' => $isSandbox ? 'sandbox' : 'send',
-            ]);
-
-            return ['sent' => true, 'reason' => null];
-        } catch (\Throwable $e) {
-            \Log::error('Mailtrap OTP send failed', ['error' => $e->getMessage(), 'email' => $toEmail]);
-
-            return [
-                'sent' => false,
-                'reason' => $this->describeMailtrapFailure($e->getMessage()),
-            ];
-        }
-    }
-
-    /**
-     * Turn a Mailtrap API error into something a user can act on.
-     */
-    private function describeMailtrapFailure(string $error): string
-    {
-        if (stripos($error, 'demo domain') !== false
-            || stripos($error, 'account owner') !== false) {
-            return 'This server can currently only email the address that owns '
-                . 'its mail account. Ask the administrator to verify a sending '
-                . 'domain or switch mail to sandbox mode.';
-        }
-
-        // Mailtrap's free tier rejects bursts with "Too many emails per
-        // second". Two people registering at once, or one person
-        // double-tapping resend, is enough to hit it -- and it clears
-        // within a second, so the useful advice is simply to wait.
-        if (stripos($error, 'too many') !== false) {
-            return 'Too many verification emails at once. Please wait a few '
-                . 'seconds and request the code again.';
-        }
-
-        if (stripos($error, 'unauthor') !== false || stripos($error, '401') !== false) {
-            return 'Email delivery is not configured correctly on this server.';
-        }
-
-        return 'Could not send the verification email. Please try again shortly.';
+        return app(EmailOtpService::class)->deliver($toEmail, $toName, $otp);
     }
 
     /**
