@@ -35,6 +35,18 @@ return [
         ],
     ],
 
+    /*
+    | Firebase Authentication (free Spark plan), used only to send email
+    | verification links. The Web API key identifies the project and is
+    | not a secret (Firebase ships it in every client app), but it still
+    | belongs in env. continue_url is optional; if set, its domain must be
+    | in Firebase > Authentication > Settings > Authorized domains.
+    */
+    'firebase' => [
+        'api_key' => env('FIREBASE_WEB_API_KEY'),
+        'continue_url' => env('FIREBASE_EMAIL_CONTINUE_URL'),
+    ],
+
     'mailtrap' => [
         'api_token'   => env('MAILTRAP_API_TOKEN'),
         'inbox_id'    => env('MAILTRAP_INBOX_ID'),

@@ -58,6 +58,7 @@ Route::middleware('internal.key')->group(function () {
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
 Route::post('/verify-email-otp', [AuthController::class, 'verifyEmailOtp'])->middleware('throttle:10,1');
 Route::post('/resend-email-otp', [AuthController::class, 'resendEmailOtp'])->middleware('throttle:6,1');
+Route::post('/check-email-verification', [AuthController::class, 'checkEmailVerification'])->middleware('throttle:20,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
 // Public architect/contractor portfolio routes

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Services\EmailOtpService;
+use App\Services\FirebaseEmailVerifier;
 
 class AuthController extends Controller
 {
@@ -102,8 +103,7 @@ class AuthController extends Controller
                 \Log::info('Contractor record created', ['user_id' => $user->user_id]);
             }
 
-            $otp = $this->issueEmailOtpForUser($user);
-            $emailSent = $this->sendOtpEmail($user->email, $user->full_name, $otp);
+            $delivery = $this->sendVerificationEmail($user);
 
             \Log::info('Registration successful', ['user_id' => $user->user_id, 'email' => $user->email]);
 
@@ -115,18 +115,20 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $user->role,
                     'needs_email_verification' => true,
+                    'verification_method' => $delivery['method'],
                     'account_status' => $user->account_status,
                     'profile_completed' => $user->profile_completed,
-                    'email_delivered' => $emailSent,
+                    'email_delivered' => $delivery['sent'],
                 ],
             ];
 
-            if (config('app.debug')) {
-                $response['data']['dev_otp'] = $otp;
+            if (config('app.debug') && $delivery['otp'] !== null) {
+                $response['data']['dev_otp'] = $delivery['otp'];
             }
 
-            if (!$emailSent) {
-                $response['message'] .= ' We could not send the email — use "Resend code" on the verification page after configuring mail, or check logs in local debug.';
+            if (!$delivery['sent']) {
+                $response['message'] .= ' ' . ($delivery['reason'] ?? 'We could not send the verification email.')
+                    . ' You can request it again from the verification page.';
             }
 
             return response()->json($response, 201);
@@ -160,17 +162,34 @@ class AuthController extends Controller
         return $otp;
     }
 
-    private function sendOtpEmail(string $toEmail, string $toName, string $otp): bool
+    /**
+     * Send the user whatever the configured driver verifies email with:
+     * a Firebase link, or a 6-digit code by mail.
+     *
+     * @return array{sent: bool, reason: string|null, method: 'link'|'code', otp: string|null}
+     */
+    private function sendVerificationEmail(User $user): array
     {
-        return $this->deliverOtpEmail($toEmail, $toName, $otp)['sent'];
+        if (config('otp.email_driver') === 'firebase') {
+            return app(FirebaseEmailVerifier::class)->sendVerification($user)
+                + ['method' => 'link', 'otp' => null];
+        }
+
+        $otp = $this->issueEmailOtpForUser($user);
+
+        return app(EmailOtpService::class)->deliver($user->email, $user->full_name, $otp)
+            + ['method' => 'code', 'otp' => $otp];
     }
 
-    /**
-     * @return array{sent: bool, reason: string|null}
-     */
-    private function deliverOtpEmail(string $toEmail, string $toName, string $otp): array
+    private function markEmailVerified(User $user): void
     {
-        return app(EmailOtpService::class)->deliver($toEmail, $toName, $otp);
+        $user->forceFill([
+            'email_verified_at' => now(),
+            'email_otp' => null,
+            'email_otp_expires_at' => null,
+            // Only ever needed to reach the unverified Firebase account.
+            'firebase_password' => null,
+        ])->save();
     }
 
     /**
@@ -195,25 +214,56 @@ class AuthController extends Controller
             ]);
         }
 
-        $otp = $this->issueEmailOtpForUser($user);
-        $result = $this->deliverOtpEmail($user->email, $user->full_name, $otp);
-        $sent = $result['sent'];
+        $delivery = $this->sendVerificationEmail($user);
+        $sent = $delivery['sent'];
+        $what = $delivery['method'] === 'link' ? 'link' : 'code';
 
         $payload = [
             'message' => $sent
-                ? 'A new verification code was sent to your email.'
-                : ($result['reason'] ?? 'Could not send the verification email. Please try again shortly.'),
+                ? "A new verification {$what} was sent to your email."
+                : ($delivery['reason'] ?? 'Could not send the verification email. Please try again shortly.'),
             'data' => [
                 'user_id' => $user->user_id,
                 'email_delivered' => $sent,
+                'verification_method' => $delivery['method'],
             ],
         ];
 
-        if (config('app.debug')) {
-            $payload['data']['dev_otp'] = $otp;
+        if (config('app.debug') && $delivery['otp'] !== null) {
+            $payload['data']['dev_otp'] = $delivery['otp'];
         }
 
         return response()->json($payload, $sent ? 200 : 503);
+    }
+
+    /**
+     * POST /api/check-email-verification
+     * For the Firebase link flow: has the user clicked the emailed link?
+     * Requires the user id AND its email, and answers identically for a
+     * mismatch as for "not yet", so it can't be used to probe accounts.
+     */
+    public function checkEmailVerification(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer',
+            'email' => 'required|string|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
+
+        $user = User::find($request->user_id);
+        $matches = $user && strcasecmp($user->email, (string) $request->email) === 0;
+
+        if ($matches && !$user->email_verified_at && $user->firebase_password
+            && app(FirebaseEmailVerifier::class)->isVerified($user)) {
+            $this->markEmailVerified($user);
+        }
+
+        return response()->json([
+            'data' => ['verified' => $matches && (bool) $user->email_verified_at],
+        ]);
     }
 
     /**
@@ -253,11 +303,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid verification code'], 422);
         }
 
-        $user->forceFill([
-            'email_verified_at'     => now(),
-            'email_otp'             => null,
-            'email_otp_expires_at'  => null,
-        ])->save();
+        $this->markEmailVerified($user);
 
         return response()->json([
             'message' => 'Email verified successfully. You can now log in.',
@@ -295,14 +341,28 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            // Reject unverified emails only when this account has a pending OTP flow (OTP columns set at registration)
+            // Reject unverified emails only when this account has a pending
+            // verification flow (set at registration: OTP columns for the
+            // code flow, firebase_password for the Firebase link flow).
+            $awaitingLink = filled($user->firebase_password);
             $pendingEmailVerification = !$user->email_verified_at
-                && (filled($user->email_otp) || filled($user->email_otp_expires_at));
+                && (filled($user->email_otp) || filled($user->email_otp_expires_at) || $awaitingLink);
+
+            // Clicking the Firebase link doesn't tell us directly -- so a
+            // user who clicked it and then just signs in gets checked here.
+            if ($pendingEmailVerification && $awaitingLink
+                && app(FirebaseEmailVerifier::class)->isVerified($user)) {
+                $this->markEmailVerified($user);
+                $pendingEmailVerification = false;
+            }
 
             if ($pendingEmailVerification) {
                 return response()->json([
-                    'message' => 'Email not verified. Check your inbox for the code, or use Resend on the verification page.',
+                    'message' => $awaitingLink
+                        ? 'Email not verified. Click the link we emailed you, or request a new one on the verification page.'
+                        : 'Email not verified. Check your inbox for the code, or use Resend on the verification page.',
                     'needs_email_verification' => true,
+                    'verification_method' => $awaitingLink ? 'link' : 'code',
                     'user_id' => $user->user_id,
                     'email' => $user->email,
                 ], 403);

@@ -55,6 +55,8 @@ class User extends Authenticatable
         'remember_token',
         'email_otp',
         'email_otp_expires_at',
+        'firebase_uid',
+        'firebase_password',
     ];
 
     /**
@@ -68,6 +70,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'email_otp_expires_at' => 'datetime',
             'phone_verified_at' => 'datetime',
+            'firebase_password' => 'encrypted',
         ];
     }
 

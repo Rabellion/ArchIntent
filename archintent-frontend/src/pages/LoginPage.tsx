@@ -100,9 +100,10 @@ const LoginPage: React.FC = () => {
       }
     } catch (error: any) {
       if (error.response?.status === 403 && error.response?.data?.needs_email_verification) {
-        const { user_id, email } = error.response.data;
+        const { user_id, email, verification_method } = error.response.data;
+        const method = verification_method === 'link' ? 'link' : 'code';
         toast.error('Please verify your email first.');
-        navigate(`/verify-otp?userId=${user_id}&email=${encodeURIComponent(email)}`);
+        navigate(`/verify-otp?userId=${user_id}&email=${encodeURIComponent(email)}&method=${method}`);
         return;
       } else if (error.response?.status === 403) {
         setApiError(error.response.data.message);

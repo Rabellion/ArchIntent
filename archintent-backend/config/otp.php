@@ -46,13 +46,20 @@ return [
     ],
 
     /*
-    | Email driver: 'mail' (Laravel mailer -- any SMTP, e.g. Gmail) | 'mailtrap'.
+    | Email driver:
+    |   'firebase' -- Firebase sends a verification LINK (free Spark plan,
+    |                 1000/day, any recipient). No 6-digit code.
+    |   'mail'     -- 6-digit code via Laravel's mailer (any SMTP, e.g. Gmail).
+    |   'mailtrap' -- 6-digit code via Mailtrap's API.
     |
-    | Left unset, it stays on Mailtrap while MAILTRAP_API_TOKEN is present,
-    | so deploying this doesn't change delivery until OTP_EMAIL_DRIVER=mail
-    | and the MAIL_* SMTP settings are in place.
+    | Left unset, it is inferred: Firebase once FIREBASE_WEB_API_KEY is set,
+    | else Mailtrap while MAILTRAP_API_TOKEN is set, else the mailer.
     */
-    'email_driver' => env('OTP_EMAIL_DRIVER') ?: (env('MAILTRAP_API_TOKEN') ? 'mailtrap' : 'mail'),
+    'email_driver' => env('OTP_EMAIL_DRIVER') ?: match (true) {
+        filled(env('FIREBASE_WEB_API_KEY')) => 'firebase',
+        filled(env('MAILTRAP_API_TOKEN')) => 'mailtrap',
+        default => 'mail',
+    },
 
     /*
     | When true, API responses from send-otp may include the plaintext code (local QA only).

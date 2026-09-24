@@ -124,12 +124,14 @@ const RegisterPage: React.FC = () => {
       }
 
       const response = await axiosInstance.post('/register', payload);
-      const { user_id, email, email_delivered } = response.data.data;
-      toast.success('Registration successful! Check your email for the verification code.');
+      const { user_id, email, email_delivered, verification_method } = response.data.data;
+      const method = verification_method === 'link' ? 'link' : 'code';
       if (email_delivered === false) {
-        toast.error('Email could not be sent. Use Resend on the verification page or set MAILTRAP_API_TOKEN (see .env.example).');
+        toast.error(response.data.message || 'We could not send the verification email. You can request it again on the next page.');
+      } else {
+        toast.success(`Registration successful! Check your email for the verification ${method}.`);
       }
-      navigate(`/verify-otp?userId=${user_id}&email=${encodeURIComponent(email)}`);
+      navigate(`/verify-otp?userId=${user_id}&email=${encodeURIComponent(email)}&method=${method}`);
     } catch (err: any) {
       if (err.response?.status === 422 && err.response.data.errors) {
         const backendErrors = err.response.data.errors as Record<string, string[]>;
