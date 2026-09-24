@@ -181,7 +181,7 @@ class PakistaniMarketplaceSeeder extends Seeder
     }
 
     /**
-     * Twelve architects, each in a distinct semantic niche.
+     * Fifty architects, each in a distinct semantic niche.
      */
     private function architects(): array
     {
